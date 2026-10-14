@@ -218,3 +218,12 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Datos del piloto y secretos (RNF-03, RNF-09)
+.env
+media/
+data/
+mascaras/
+*.jpg
+*.jpeg
+*.png

@@ -1,0 +1,3 @@
+ultralytics
+opencv-python-headless
+# Framework del endpoint HTTP: pendiente de definir (P-07)

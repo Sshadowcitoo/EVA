@@ -1,1 +1,4 @@
-
+Django
+djangorestframework
+boto3
+python-dotenv

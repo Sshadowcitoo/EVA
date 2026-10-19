@@ -4,7 +4,9 @@ Prototipo web para apoyar decisiones de porcionamiento y preparación en un esta
 
 Proyecto de la asignatura Construcción de Software, Ingeniería de Software, UNEMI (Milagro, Ecuador). Período agosto a noviembre de 2026.
 
-**Estado:** diseño y estructura del repositorio. Aún no hay implementación.
+**Estado:** base inicial de Django ejecutable en desarrollo local.
+Aplicación captura registrada y rutas preparadas.
+Modelo de servicio, formulario y pantallas pendientes.
 
 **Alcance del piloto:** un establecimiento, uno o dos platos y tres a cinco componentes. No incluye inventario, precios ni conversión a gramos.
 

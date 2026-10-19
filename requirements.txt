@@ -1,4 +1,4 @@
-Django
+Django>=5.2,<5.3
 djangorestframework
 boto3
 python-dotenv

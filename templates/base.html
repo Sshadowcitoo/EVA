@@ -1,0 +1,28 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}EVA{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/eva.css' %}">
+</head>
+<body>
+    <header class="site-header">
+        <div class="container">
+            <span class="brand">EVA</span>
+            <p>Registro de servicios de alimentación</p>
+        </div>
+    </header>
+
+    <main class="container main-content">
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <p>Prototipo académico · Opciones de demostración</p>
+        </div>
+    </footer>
+</body>
+</html>

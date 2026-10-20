@@ -1,0 +1,41 @@
+{% extends "base.html" %} {% block title %}Nueva bandeja | EVA{% endblock %} {%
+block content %}
+<section class="card" aria-labelledby="titulo-registro">
+  <span class="eyebrow">EVA / REGISTRO</span>
+  <h1 id="titulo-registro">Nueva bandeja</h1>
+  <p class="description">
+    Selecciona el plato y la porción para crear un registro.
+  </p>
+
+  <p class="demo-notice">
+    Los platos y las porciones son opciones de demostración.
+  </p>
+
+  <form method="post" action="{% url 'captura:nueva_bandeja' %}">
+    {% csrf_token %} {% if form.errors %}
+    <div class="error-summary" role="alert">
+      Revisa los campos indicados antes de continuar. {{ form.non_field_errors
+      }}
+    </div>
+    {% endif %}
+
+    <div class="form-field">
+      <label for="{{ form.plato.id_for_label }}">Plato</label>
+      {{ form.plato }} {{ form.plato.errors }}
+    </div>
+
+    <div class="form-field">
+      <label for="{{ form.tipo_porcion.id_for_label }}">
+        Tipo de porción
+      </label>
+      {{ form.tipo_porcion }} {{ form.tipo_porcion.errors }}
+    </div>
+
+    <p class="help-text">
+      El identificador y la fecha se generarán automáticamente.
+    </p>
+
+    <button type="submit" class="button">Crear registro</button>
+  </form>
+</section>
+{% endblock %}

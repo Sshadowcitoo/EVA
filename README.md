@@ -6,7 +6,7 @@ EVA busca apoyar decisiones sobre porciones y preparación mediante fotografías
 
 ## Estado actual
 
-Primer avance funcional del módulo de captura, reunido y probado en la rama `integracion-captura`, pendiente de integración en `main`.
+Primer avance funcional del módulo de captura, integrado en `main` después de reunir y probar las entregas del equipo en `integracion-captura`.
 
 El avance permite:
 
@@ -48,15 +48,12 @@ Estas opciones son ejemplos de desarrollo, no un catálogo aprobado para el pilo
 
 ## Descargar y preparar el proyecto
 
+Descarga la versión integrada:
+
 ```powershell
 git clone https://github.com/Sshadowcitoo/EVA.git
 cd EVA
-```
-
-Mientras el avance no esté integrado en `main`, selecciona su rama:
-
-```powershell
-git switch integracion-captura
+git switch main
 ```
 
 Crea el entorno virtual e instala las dependencias:
@@ -68,7 +65,14 @@ py -m venv .venv
 
 Los comandos utilizan directamente el Python del entorno virtual. No es necesario activarlo ni modificar las políticas de PowerShell.
 
-Si ya tienes una copia del repositorio, conserva tus cambios antes de actualizarla. No vuelvas a crear el proyecto ni la aplicación `captura`.
+Si ya tienes una copia del repositorio, conserva tus cambios antes de actualizarla:
+
+```powershell
+git switch main
+git pull origin main
+```
+
+No vuelvas a crear el proyecto ni la aplicación `captura`.
 
 ## Ejecutar el proyecto
 
@@ -112,6 +116,8 @@ Si necesitas una cuenta administrativa local:
 
 Cada integrante crea su propia cuenta en su base local. Las cuentas de demostración de Figma no se crean automáticamente en Django.
 
+La aplicación `captura` no aparece automáticamente en el administrador. Para gestionar sus registros allí, es necesario registrar el modelo `Servicio` en `apps/captura/admin.py`.
+
 ## Pruebas
 
 Ejecuta:
@@ -130,7 +136,7 @@ Las siete pruebas cubren:
 - Respuesta 404 para un UUID inexistente.
 - Respuesta 404 para un UUID mal formado.
 
-Validación realizada en la rama de integración:
+Validación realizada antes de integrar en `main`:
 
 - `manage.py check`: sin errores.
 - Migración inicial de `captura`: aplicada correctamente.
@@ -169,12 +175,13 @@ Las carpetas restantes conservan la estructura prevista para siguientes etapas.
 
 ## Trabajo en equipo
 
-- César: base del proyecto, pantallas e integración.
+- César: base del proyecto e integración.
 - Isaac: modelo `Servicio` y migración inicial.
 - Lino: formulario, vistas y rutas.
 - Eduardo: pruebas y documentación.
+- Jean: pantallas.
 
-Cada integrante trabaja en su rama y entrega sus cambios mediante un Pull Request. Las partes se reúnen en `integracion-captura` y se comprueban antes de incorporarlas a `main`.
+Cada integrante trabaja en su rama y entrega sus cambios mediante un Pull Request. Para este avance, las partes se reunieron en `integracion-captura`, se comprobaron conjuntamente y después se incorporaron a `main`.
 
 ## Archivos locales
 

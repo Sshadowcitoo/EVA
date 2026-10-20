@@ -7,5 +7,5 @@ app_name = "captura"
 urlpatterns = [
     path("nueva/", views.nueva_bandeja, name="nueva_bandeja"),
     # cualquier otro formato termina en 404 automáticamente.
-    path("<uuid:pk/confirmacion/",views.confirmacion, name="confirmacion"),
+    path("<uuid:pk>/confirmacion/", views.confirmacion, name="confirmacion"),
 ]

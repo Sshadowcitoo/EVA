@@ -169,10 +169,11 @@ Las carpetas restantes conservan la estructura prevista para siguientes etapas.
 
 ## Trabajo en equipo
 
-- César: base del proyecto, pantallas e integración.
+- César: base del proyecto e integración.
 - Isaac: modelo `Servicio` y migración inicial.
 - Lino: formulario, vistas y rutas.
 - Eduardo: pruebas y documentación.
+- Jean: pantallas 
 
 Cada integrante trabaja en su rama y entrega sus cambios mediante un Pull Request. Las partes se reúnen en `integracion-captura` y se comprueban antes de incorporarlas a `main`.
 

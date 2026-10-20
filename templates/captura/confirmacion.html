@@ -1,0 +1,31 @@
+{% extends "base.html" %} {% block title %}Registro creado | EVA{% endblock %}
+{% block content %}
+<section class="card" aria-labelledby="titulo-confirmacion">
+  <span class="eyebrow">EVA / REGISTRO</span>
+  <h1 id="titulo-confirmacion">Registro creado</h1>
+  <p class="description">Los datos de la bandeja quedaron guardados.</p>
+
+  <dl class="record-details">
+    <div>
+      <dt>Identificador</dt>
+      <dd class="record-id">{{ servicio.id }}</dd>
+    </div>
+    <div>
+      <dt>Plato</dt>
+      <dd>{{ servicio.get_plato_display }}</dd>
+    </div>
+    <div>
+      <dt>Tipo de porción</dt>
+      <dd>{{ servicio.get_tipo_porcion_display }}</dd>
+    </div>
+    <div>
+      <dt>Fecha y hora</dt>
+      <dd>{{ servicio.fecha_creacion|date:"d/m/Y H:i" }}</dd>
+    </div>
+  </dl>
+
+  <a class="button" href="{% url 'captura:nueva_bandeja' %}">
+    Crear otro registro
+  </a>
+</section>
+{% endblock %}

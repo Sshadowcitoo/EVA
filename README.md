@@ -1,66 +1,78 @@
 # EVA: sistema de análisis visual de sobrantes alimentarios
 
-Prototipo web para apoyar decisiones de porcionamiento y preparación en un establecimiento piloto, a partir de fotografías del plato servido y devuelto.
+Proyecto de la asignatura Construcción de Software, Ingeniería de Software, UNEMI.
 
-Proyecto de la asignatura Construcción de Software, Ingeniería de Software, UNEMI (Milagro, Ecuador). Período agosto a noviembre de 2026.
+EVA busca apoyar decisiones sobre porciones y preparación mediante fotografías del plato servido y devuelto, revisión humana, indicadores y recomendaciones.
 
-**Estado:** estructura base de Django, con la aplicación captura registrada y sus rutas conectadas al proyecto.
-En la revisión del 19 de octubre de 2026 falta `manage.py` en la raíz; el modelo, formulario, vistas y pantallas están pendientes. Las pruebas de comportamiento están preparadas, pendientes de ejecución tras integrar sus dependencias.
-Las instrucciones siguientes describen la ejecución prevista una vez integradas esas piezas; todavía no se ha validado el recorrido completo.
+## Estado actual
 
-**Alcance del piloto:** un establecimiento, uno o dos platos y tres a cinco componentes. No incluye inventario, precios ni conversión a gramos.
+Primer avance funcional del módulo de captura, reunido y probado en la rama `integracion-captura`, pendiente de integración en `main`.
 
-**Informe:** ver la carpeta docs/informe/.
+El avance permite:
 
-**Pendientes de validación:** P-01 a P-07, descritos en el apartado 6.6 y en el apartado 9.5 del informe.
+- Seleccionar un plato y un tipo de porción de demostración.
+- Validar los campos antes de guardar.
+- Crear un servicio con identificador UUID único y fecha automática.
+- Guardar los datos en una base SQLite local.
+- Consultar la confirmación del registro.
+- Recargar la confirmación sin crear otro servicio.
 
-## Primer avance de captura
+Las pantallas toman como referencia el diseño de EVA en Figma y se adaptan a móvil y escritorio.
 
-El objetivo de este avance es abrir **Nueva bandeja**, seleccionar un plato y un tipo de porción, validar los datos y guardar un `Servicio` con UUID y fecha/hora automáticos. La confirmación debe mostrar los datos del registro guardado; recargarla no debe crear otro servicio.
+Este avance cubre una parte de RF-01/HU-02; no representa la historia completa ni el sistema terminado.
 
-Las opciones de demostración acordadas son:
+## Alcance del piloto
+
+El proyecto contempla un establecimiento, uno o dos platos y entre tres y cinco componentes distinguibles.
+
+No incluye inventario, precios ni conversión directa de imágenes a gramos.
+
+## Opciones de demostración
 
 | Campo | Valor interno | Etiqueta |
 |---|---|---|
 | Plato | `arroz_con_pollo` | Arroz con pollo |
 | Plato | `lentejas` | Lentejas |
-| Porción | `pequena` | Pequeña |
-| Porción | `regular` | Regular |
-| Porción | `grande` | Grande |
+| Tipo de porción | `pequena` | Pequeña |
+| Tipo de porción | `regular` | Regular |
+| Tipo de porción | `grande` | Grande |
 
-Son ejemplos de desarrollo, no un catálogo aprobado del piloto. Ambos campos son obligatorios y el servidor debe rechazar opciones inválidas.
+Estas opciones son ejemplos de desarrollo, no un catálogo aprobado para el piloto.
 
-La persistencia prevista es local, en SQLite. Fotografías, retorno, análisis visual con IA, autenticación propia, permisos por rol, catálogo editable, indicadores, recomendaciones y AWS S3 quedan pendientes. Este avance es parcial de RF-01/HU-02 y no representa la historia completa.
+## Requisitos para desarrollo
 
-## Preparar el entorno en Windows
+- Python 3.13.
+- Git.
+- Un editor de código.
+- PowerShell para los comandos de esta guía.
 
-Instala Python 3.13 con el lanzador `py`, Git y un editor como VS Code. Abre PowerShell y comprueba:
-
-```powershell
-py --version
-git --version
-```
-
-Para una copia nueva, ejecuta:
+## Descargar y preparar el proyecto
 
 ```powershell
 git clone https://github.com/Sshadowcitoo/EVA.git
 cd EVA
-git switch main
-git pull origin main
+```
+
+Mientras el avance no esté integrado en `main`, selecciona su rama:
+
+```powershell
+git switch integracion-captura
+```
+
+Crea el entorno virtual e instala las dependencias:
+
+```powershell
 py -m venv .venv
 .\.venv\Scripts\python.exe -m pip install -r requirements.txt
 ```
 
-Si ya tienes una copia del proyecto, utiliza esa carpeta y conserva tus cambios antes de actualizarla. No vuelvas a crear el proyecto ni la aplicación con `startproject` o `startapp`.
+Los comandos utilizan directamente el Python del entorno virtual. No es necesario activarlo ni modificar las políticas de PowerShell.
 
-Los comandos usan directamente el Python del entorno virtual: no es necesario activar `.venv` ni cambiar las políticas de PowerShell.
+Si ya tienes una copia del repositorio, conserva tus cambios antes de actualizarla. No vuelvas a crear el proyecto ni la aplicación `captura`.
 
-## Ejecutar en desarrollo local
+## Ejecutar el proyecto
 
-**Bloqueo actual:** falta `manage.py`. Coordina su incorporación con César antes de ejecutar los comandos de esta sección y de pruebas. Para comprobar el flujo de captura también deben estar integrados el modelo y su migración, formulario, vistas, rutas y plantillas.
-
-Una vez disponibles, ejecuta desde la raíz de EVA, donde debe estar `manage.py`:
+Desde la raíz de EVA, donde está `manage.py`:
 
 ```powershell
 .\.venv\Scripts\python.exe manage.py check
@@ -68,39 +80,112 @@ Una vez disponibles, ejecuta desde la raíz de EVA, donde debe estar `manage.py`
 .\.venv\Scripts\python.exe manage.py runserver
 ```
 
-Abre `http://127.0.0.1:8000/captura/nueva/` para registrar un servicio. Después de un envío válido se debe redirigir a `/captura/<uuid>/confirmacion/`, con el UUID del servicio creado.
+Abre:
 
-El acceso de Django Admin está en `http://127.0.0.1:8000/admin/login/`; no necesitas crear un administrador para probar el formulario de captura. La portada `/` puede devolver 404 porque no tiene una vista definida. Detén el servidor con `Ctrl+C`.
+- Formulario: http://127.0.0.1:8000/captura/nueva/
+- Administrador de Django: http://127.0.0.1:8000/admin/login/
 
-SQLite se guarda localmente en `db.sqlite3`, que no debe subirse al repositorio. El avance es solo para desarrollo, sin control de acceso: no debe recibir datos reales ni publicarse como aplicación operativa.
+La dirección `/` puede devolver 404 porque todavía no tiene una página de inicio.
 
-## Pruebas y comprobaciones
+Para detener el servidor, pulsa `Ctrl+C`.
 
-Las pruebas de este avance están preparadas en `apps/captura/tests.py`, con `TestCase`, `Client` y `reverse` de Django. No se requiere pytest ni una segunda colección en `tests/`. Django debe crear automáticamente la base de pruebas; no se necesitan servicios creados a mano.
+## Recorrido de demostración
 
-Cuando estén integradas las piezas del flujo y las pruebas, ejecuta:
+1. Abre «Nueva bandeja».
+2. Comprueba que no permite enviar los campos vacíos.
+3. Selecciona un plato y una porción.
+4. Pulsa «Guardar registro».
+5. Revisa el identificador, plato, porción y fecha en la confirmación.
+6. Recarga la confirmación y comprueba que mantiene el mismo identificador.
+
+La sección de fotografía y las etapas posteriores se muestran como pendientes. Todavía no realizan captura ni análisis.
+
+## Administrador local
+
+No necesitas entrar al administrador para utilizar el formulario de captura.
+
+Si necesitas una cuenta administrativa local:
 
 ```powershell
-.\.venv\Scripts\python.exe manage.py check
-.\.venv\Scripts\python.exe manage.py test apps.captura
-.\.venv\Scripts\python.exe manage.py makemigrations --check --dry-run
+.\.venv\Scripts\python.exe manage.py createsuperuser
 ```
 
-La cobertura prevista incluye:
+Cada integrante crea su propia cuenta en su base local. Las cuentas de demostración de Figma no se crean automáticamente en Django.
 
-- GET del formulario con respuesta 200 y ambos campos.
-- POST válido que guarda exactamente un servicio y redirige a su confirmación.
-- Datos vacíos, campos omitidos u opciones manipuladas que muestran errores sin guardar.
-- UUID distintos y fecha automática para dos servicios.
+## Pruebas
+
+Ejecuta:
+
+```powershell
+.\.venv\Scripts\python.exe manage.py test apps.captura
+```
+
+Las siete pruebas cubren:
+
+- UUID distintos y fecha automática.
+- Presentación del formulario vacío.
+- Guardado válido y redirección a confirmación.
+- Rechazo de campos omitidos y opciones inválidas.
 - Confirmación del servicio correcto y recarga sin duplicados.
-- Respuesta 404 para UUID inexistente o con formato inválido.
+- Respuesta 404 para un UUID inexistente.
+- Respuesta 404 para un UUID mal formado.
 
-**Validación pendiente:** estas comprobaciones y el recorrido de captura no se han ejecutado en esta revisión. La ausencia de `manage.py` y de las funcionalidades indicadas impide el cierre final.
+Validación realizada en la rama de integración:
 
-Para la demostración manual, abre el formulario, envíalo incompleto y comprueba los errores; después crea un registro válido, revisa su UUID y recarga la confirmación para verificar que no se duplica. Revisa también las pantallas en móvil (aproximadamente 390 px) y escritorio.
+- `manage.py check`: sin errores.
+- Migración inicial de `captura`: aplicada correctamente.
+- Siete pruebas automatizadas: aprobadas, repetidas después de los ajustes visuales.
+- `makemigrations --check --dry-run`: sin cambios detectados antes de los ajustes visuales.
+- Creación de un registro y consulta de su confirmación: comprobadas en el navegador antes de los últimos ajustes visuales.
+
+## Organización de este avance
+
+| Ubicación | Responsabilidad |
+|---|---|
+| `config/` | Configuración y rutas principales de Django |
+| `apps/captura/models.py` | Modelo `Servicio` |
+| `apps/captura/migrations/` | Cambios de estructura de la base de datos |
+| `apps/captura/forms.py` | Formulario y validación |
+| `apps/captura/views.py` | Guardado y consulta de confirmación |
+| `apps/captura/urls.py` | Rutas del módulo |
+| `apps/captura/tests.py` | Pruebas automatizadas |
+| `templates/` | Pantallas de EVA |
+| `static/css/eva.css` | Estilos de la interfaz |
+| `docs/informe/` | Documentación del proyecto |
+
+Las carpetas restantes conservan la estructura prevista para siguientes etapas.
+
+## Funciones pendientes
+
+- Catálogo editable.
+- Fotografía inicial y fotografía del retorno.
+- Recuperación del servicio por identificador.
+- Autenticación propia y permisos por rol.
+- Análisis visual con IA y revisión de Cocina.
+- Histórico e indicadores.
+- Recomendaciones y decisiones de Administración.
+- Integración con AWS S3.
+- Validaciones operativas y técnicas del piloto.
 
 ## Trabajo en equipo
 
-Eduardo trabaja en la rama `eduardo-pruebas-documentacion` sobre `apps/captura/tests.py` y este README. La comprobación final depende del modelo de Isaac, el formulario y las vistas de Lino, y las plantillas y estilos de Jean. César revisa los Pull Requests y coordina la integración en `main`.
+- César: base del proyecto, pantallas e integración.
+- Isaac: modelo `Servicio` y migración inicial.
+- Lino: formulario, vistas y rutas.
+- Eduardo: pruebas y documentación.
 
-Cada entrega debe indicar qué se comprobó realmente y qué dependencias siguen pendientes. No subas `.venv/`, `.env`, `db.sqlite3`, cachés ni credenciales. Los cambios de configuración o dependencias deben coordinarse con César.
+Cada integrante trabaja en su rama y entrega sus cambios mediante un Pull Request. Las partes se reúnen en `integracion-captura` y se comprueban antes de incorporarlas a `main`.
+
+## Archivos locales
+
+No subir al repositorio:
+
+- `.venv/`
+- `.env`
+- `db.sqlite3`
+- Cachés de Python.
+- Credenciales o archivos personales.
+
+Las migraciones sí se incluyen en Git.
+
+Esta versión está preparada para desarrollo local con datos de demostración. La configuración de despliegue y el control de acceso del producto siguen pendientes.

@@ -1,0 +1,62 @@
+{% load static %}
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}EVA{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/eva.css' %}" />
+  </head>
+  <body>
+    <div class="app-layout">
+      <aside class="sidebar">
+        <div class="sidebar-brand">
+          <span class="brand">EVA</span>
+          <span class="brand-caption">FOOD WASTE AI</span>
+        </div>
+
+        <nav class="sidebar-nav" aria-label="Navegación principal">
+          <a class="nav-link active" href="{% url 'captura:nueva_bandeja' %}">
+            Nueva bandeja
+          </a>
+
+          <span class="nav-link unavailable">
+            Registrar retorno
+            <small>Pendiente</small>
+          </span>
+
+          <span class="nav-link unavailable">
+            Historial
+            <small>Pendiente</small>
+          </span>
+        </nav>
+
+        <p class="sidebar-note">
+          Prototipo académico<br />
+          Registro básico de servicios
+        </p>
+      </aside>
+
+        <div class="workspace">
+            <header class="page-header">
+                <span class="eyebrow">REGISTRO / EVA</span>
+
+                <h1>
+                    {% block heading %}Nueva bandeja{% endblock %}
+                </h1>
+
+                <p>
+                    {% block subtitle %}
+                    Crea un ID y registra el plato del servicio.
+                    {% endblock %}
+                </p>
+            </header>
+
+            <main class="page-content">
+                {% block content %}
+                {% endblock %}
+            </main>
+        </div>
+    </div>
+</body>
+</html>

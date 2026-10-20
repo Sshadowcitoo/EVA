@@ -1,0 +1,42 @@
+{% extends "base.html" %} {% block title %}Registro creado | EVA{% endblock %}
+{% block heading %}Registro creado{% endblock %} {% block subtitle %}Los datos
+de la bandeja quedaron guardados.{% endblock %} {% block content %}
+<section class="panel confirmation-panel" aria-labelledby="resumen-registro">
+  <span class="success-label">Guardado correctamente</span>
+  <h2 id="resumen-registro">Datos del servicio</h2>
+
+  <dl class="record-details">
+    <div>
+      <dt>ID de bandeja</dt>
+      <dd class="record-id">{{ servicio.id }}</dd>
+    </div>
+
+    <div>
+      <dt>Plato</dt>
+      <dd>{{ servicio.get_plato_display }}</dd>
+    </div>
+
+    <div>
+      <dt>Tipo de porción</dt>
+      <dd>{{ servicio.get_tipo_porcion_display }}</dd>
+    </div>
+
+    <div>
+      <dt>Fecha y hora</dt>
+      <dd>{{ servicio.fecha_creacion|date:"d/m/Y H:i" }}</dd>
+    </div>
+  </dl>
+
+  <div class="info-box">
+    <h3>Primer paso completado</h3>
+    <p>
+      El servicio ya tiene un identificador. La captura de fotografías y el
+      retorno siguen pendientes de implementación.
+    </p>
+  </div>
+
+  <a class="button primary-button" href="{% url 'captura:nueva_bandeja' %}">
+    Crear otro registro
+  </a>
+</section>
+{% endblock %}

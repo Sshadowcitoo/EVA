@@ -94,6 +94,14 @@ Para pruebas de CSRF usar `Client(enforce_csrf_checks=True)`: el cliente de prue
 
 ## Organización de las pruebas
 
+### Preparación contra la entrega de Isaac
+
+Se revisó en modo lectura `origin/isaac-catalogo-datos`, commit `80f90d6`, sin incorporarlo a esta rama. Publica `Plato`, `Componente`, `PlatoComponente`, `TipoPorcion`, `Servicio.registrar`, `ServicioComponente`, migraciones y `cargar_catalogo_demo`. Isaac ya incluye pruebas en `apps/catalogo/test_models.py`: se conservarán y no se duplicará esa cobertura.
+
+Se prepararon cinco pruebas complementarias en `apps/catalogo/tests.py`: usuario creador, rollback de un alta con escritura parcial de composición, etiqueta histórica de porción, relación desactivada conservada solo en la instantánea anterior y carga repetida que preserva datos personalizados. **No ejecutadas**: requieren los archivos de Isaac y la aplicación registrada. Los imports fallarán en la base anterior si se intenta ejecutar esta suite antes de integrar esas dependencias; no se oculta ese bloqueo mediante pruebas omitidas.
+
+Estas pruebas cubren el servicio de dominio y el comando, no demuestran permisos HTTP, sesiones, migración de datos antiguos ni cumplimiento visual. Esas comprobaciones siguen pendientes. No se modificaron todavía las siete pruebas anteriores de captura.
+
 - `apps/catalogo/tests.py`: catálogo, carga inicial, sesiones y permisos asociados a sus rutas, conforme a la estructura acordada.
 - `apps/captura/tests.py`: alta, confirmación, permisos de captura e historial. Adaptar las siete pruebas previas cuando cambie el contrato, conservando sus garantías.
 - Pruebas de migración: coordinar su ubicación y preparación con Isaac y César. Nunca experimentar sobre la única base local o compartida con datos útiles.

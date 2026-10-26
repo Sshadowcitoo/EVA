@@ -38,7 +38,13 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     "apps.captura.apps.CapturaConfig",
+    "apps.catalogo.apps.CatalogoConfig",
 ]
+
+# Contrato del bloque inicial; las vistas de sesión las implementa Lino.
+LOGIN_URL = "/cuentas/login/"
+LOGIN_REDIRECT_URL = "captura:nueva_bandeja"
+LOGOUT_REDIRECT_URL = LOGIN_URL
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

@@ -16,7 +16,7 @@ Base de partida: `a0c192c`, obtenida de `origin/main`. Eduardo ejecutó y compar
 | `manage.py check` | Sin problemas detectados |
 | `manage.py test apps.captura` | 7 pruebas aprobadas; base temporal creada y eliminada |
 
-Estos resultados corresponden al registro anterior. No certifican las funciones nuevas. Los casos siguientes están **planificados y no ejecutados**.
+Estos resultados corresponden al registro anterior. No certifican las funciones nuevas. La matriz siguiente describe la cobertura prevista; la ejecución parcial de catálogo se registra más abajo y no equivale a validar el bloque integrado.
 
 ## Dependencias y decisiones pendientes
 
@@ -98,7 +98,7 @@ Para pruebas de CSRF usar `Client(enforce_csrf_checks=True)`: el cliente de prue
 
 Se revisó en modo lectura `origin/isaac-catalogo-datos`, commit `80f90d6`, sin incorporarlo a esta rama. Publica `Plato`, `Componente`, `PlatoComponente`, `TipoPorcion`, `Servicio.registrar`, `ServicioComponente`, migraciones y `cargar_catalogo_demo`. Isaac ya incluye pruebas en `apps/catalogo/test_models.py`: se conservarán y no se duplicará esa cobertura.
 
-Se prepararon cinco pruebas complementarias en `apps/catalogo/tests.py`: usuario creador, rollback de un alta con escritura parcial de composición, etiqueta histórica de porción, relación desactivada conservada solo en la instantánea anterior y carga repetida que preserva datos personalizados. **No ejecutadas**: requieren los archivos de Isaac y la aplicación registrada. Los imports fallarán en la base anterior si se intenta ejecutar esta suite antes de integrar esas dependencias; no se oculta ese bloqueo mediante pruebas omitidas.
+Se prepararon cinco pruebas complementarias en `apps/catalogo/tests.py`: usuario creador, rollback de un alta con escritura parcial de composición, etiqueta histórica de porción, relación desactivada conservada solo en la instantánea anterior y carga repetida que preserva datos personalizados. **Aprobadas en revisión aislada**, junto con las trece pruebas de Isaac, según la salida compartida por Eduardo. En esta rama todavía requieren los archivos de Isaac y la aplicación registrada; los imports fallarán sobre la base anterior sin esas dependencias. No se oculta ese bloqueo mediante pruebas omitidas.
 
 Estas pruebas cubren el servicio de dominio y el comando, no demuestran permisos HTTP, sesiones, migración de datos antiguos ni cumplimiento visual. Esas comprobaciones siguen pendientes. No se modificaron todavía las siete pruebas anteriores de captura.
 
@@ -109,6 +109,28 @@ Estas pruebas cubren el servicio de dominio y el comando, no demuestran permisos
 Usar `TestCase`, `Client` y `reverse` de Django. No instalar pytest ni crear otra colección duplicada. Si las pruebas de migraciones requieren herramientas o estructura distintas, coordinar su elección antes de implementarlas.
 
 ## Verificación y evidencias
+
+### Ejecución aislada de catálogo — 26 de octubre de 2026
+
+Eduardo creó el worktree local `.revision-catalogo` en el commit `80f90d6` de Isaac, con HEAD separado, y copió allí `apps/catalogo/tests.py` de su entrega `e32aed2`. No se mezclaron ramas ni se modificó la base de datos de uso local. Desde esa copia ejecutó:
+
+```powershell
+..\.venv\Scripts\python.exe manage.py test apps.catalogo --verbosity 2
+```
+
+| Comprobación | Resultado observado en la salida compartida |
+|---|---|
+| Descubrimiento | 18 pruebas: 13 de Isaac y 5 complementarias de Eduardo |
+| Base de pruebas | SQLite temporal en memoria, creada y eliminada por Django |
+| Migraciones | Aplicadas correctamente, incluidas catalogo.0001 y captura.0001/0002/0003 |
+| Configuración | Sin problemas detectados |
+| Ejecución | `Ran 18 tests in 1.632s` y `OK`, sin fallos |
+
+Resultado: las cinco pruebas complementarias ya tienen evidencia de ejecución favorable contra ese commit de Isaac. Esta ejecución no incluye la suite de vistas de captura ni acredita permisos, sesiones, migración sobre datos antiguos o revisión visual. Tampoco certifica futuras versiones de las ramas ni el bloque final integrado.
+
+La carpeta `.revision-catalogo/` es un entorno local de revisión y no forma parte de la entrega. No añadirla al commit. La integración y la ejecución conjunta siguen a cargo del flujo coordinado por César.
+
+### Verificación integrada pendiente
 
 Tras integrar las dependencias, ejecutar desde la raíz del proyecto:
 

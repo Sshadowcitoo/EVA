@@ -150,6 +150,22 @@ El README deberá explicar migraciones, comandos definitivos de catálogo y role
 
 ## Criterio de entrega
 
+### Ampliación autónoma del 26 de octubre
+
+Se restauró el README desde su versión guardada en Git porque el fallo previo por disco lleno lo había dejado vacío; después se añadió documentación del bloque sin sustituir las instrucciones anteriores. No se modificó código de producción ni se hizo merge.
+
+Se añadió `MigracionHistoricaTests` con `TransactionTestCase` y `MigrationExecutor`: crea tres servicios en `captura.0001_initial` y migra a `0003_etiquetas_historicas`, comprobando UUID, fechas, códigos, etiquetas, referencias nulas y ausencia de composición inventada. Restaura el esquema al terminar. En copia aislada de Isaac: **19 pruebas aprobadas en 2.733 s** y `makemigrations --check --dry-run`: `No changes detected`.
+
+La consulta remota posterior encontró la base de César `26238db` (`cesar-base-catalogo-permisos`): helpers, roles y contrato de login publicados; rutas y vistas de sesión/catálogo aún pendientes. Para comprobar ambos contratos sin merge se copiaron al worktree de Isaac estos archivos de César: `permissions.py`, `test_permissions.py`, `management/commands/configurar_roles.py` y `config/settings.py`. Se copiaron también los tests actuales de Eduardo. La configuración de César solo añade los destinos de login/logout respecto a la de Isaac.
+
+Se prepararon siete pruebas en `SesionesPermisosContratoTests`: login válido e inválido, rechazo de redirección externa, logout con POST/CSRF, anónimos GET/POST, matriz por rol sin acceso implícito de staff y combinación explícita de grupos. Usan LoginView/LogoutView de Django, plantilla en memoria y endpoints exclusivos de prueba con los helpers reales de César. **No son pruebas de rutas o plantillas de Lino**; no confundirlas con aceptación del producto.
+
+Primera ejecución combinada: 36 pruebas, un fallo en una prueba de César porque faltaba copiar su `LOGIN_URL` (la configuración de Isaac usaba el valor predeterminado `/accounts/login/`). Se incorporó su configuración a la copia aislada, sin alterar la prueba ni el código de producción. Segunda ejecución: `..\.venv\Scripts\python.exe -B manage.py test apps.catalogo --verbosity 1`: **36 pruebas aprobadas en 11.990 s**, configuración sin problemas y base temporal eliminada. Desglose: 13 de Isaac, 10 de César y 13 de Eduardo (6 de catálogo/migración y 7 del contrato aislado de sesiones/permisos).
+
+Pendiente para aceptación: rutas reales de Lino, altas/edición/desactivación HTTP, adaptación del formulario de captura a catálogo, filtrado de objetos por política definitiva, navegación por rol y evidencias visuales de Jean. La matriz inicial es propuesta: el contrato de César confirma excepción técnica para superusuario activo y nombres de grupos; la consulta por UUID sigue sin política definitiva. El README explica los comandos reales publicados, roles, cuentas locales y límites.
+
+No se ha probado el recorrido integrado con sesiones ni se ha certificado main. Las carpetas `.revision-catalogo/` y `tmp_pdf_reader/` son locales y no deben subirse.
+
 Otro integrante puede reproducir el bloque siguiendo el README; las pruebas y evidencias cubren las funciones realmente entregadas. Declarar pendientes y dependencias en el Pull Request. No cerrar historias completas que todavía requieran fotografías, QR o análisis.
 
 Cada integrante sube su rama y abre su Pull Request. César revisa e integra: Eduardo no realiza merge ni fuerza pushes. Las imágenes quedan a cargo de César según su mensaje al equipo.

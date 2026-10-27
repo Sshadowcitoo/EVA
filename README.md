@@ -183,7 +183,35 @@ Las carpetas restantes conservan la estructura prevista para siguientes etapas.
 
 Cada integrante trabaja en su rama y entrega sus cambios mediante un Pull Request. Para este avance, las partes se reunieron en `integracion-captura`, se comprobaron conjuntamente y después se incorporaron a `main`.
 
-## Archivos locales
+## Bloque inicial: preparación de catálogo, sesiones y permisos
+
+El primer avance descrito arriba sigue siendo la base de esta rama. El bloque nuevo no está integrado aquí: las pruebas nuevas requieren modelos/migraciones de Isaac y los helpers/configuración de César. El [plan y evidencias](docs/pruebas_bloque_inicial.md) distingue comprobaciones aisladas de la validación final pendiente.
+
+Catálogo propuesto: encebollado (yuca/pescado), seco de pollo (arroz/pollo/maduro) y arroz con menestra y carne (arroz/menestra/carne/ensalada); ocho componentes compartidos y porción estándar. Los platos anteriores se conservan como históricos sin remapearlos por semejanza.
+
+Después de integrar las dependencias, desde la raíz del proyecto:
+
+```powershell
+.\.venv\Scripts\python.exe manage.py migrate
+.\.venv\Scripts\python.exe manage.py cargar_catalogo_demo
+.\.venv\Scripts\python.exe manage.py configurar_roles
+.\.venv\Scripts\python.exe manage.py test apps.catalogo apps.captura
+.\.venv\Scripts\python.exe manage.py makemigrations --check --dry-run
+```
+
+Estos comandos de catálogo/roles existen en las entregas de Isaac/César, no en la base anterior por sí sola. La carga demo normal conserva ediciones; `--restablecer` modifica explícitamente nombres, estados y relaciones de demostración. Revisar sus efectos antes de usarlo sobre un catálogo personalizado. No borrar bases ni reescribir migraciones compartidas.
+
+`configurar_roles` crea/sincroniza grupos `Registro`, `Cocina` y `Administración`; no crea usuarios ni asigna membresías. Ejecutarlo después de migrar los modelos; reporta permisos aún inexistentes. Conserva membresías y permisos ajenos a captura/catálogo, pero retira permisos extra de esas dos aplicaciones en los grupos gestionados.
+
+Para usuarios locales, usar la administración autorizada de Django: crear un superusuario con `manage.py createsuperuser`, entrar a `/admin/` y crear usuarios de prueba asignando expresamente sus grupos. Introducir contraseñas de forma interactiva; nunca guardarlas en Git. Los usuarios de Registro/Cocina/Administración no necesitan ser staff. El superusuario es una cuenta técnica extraordinaria y no sirve para demostrar restricciones por rol.
+
+Los grupos no se heredan: Administración gestiona catálogo, Registro crea servicios y Cocina no administra catálogo. `is_staff` no concede permisos del producto. El helper permite superusuarios activos y deniega usuarios inactivos. La política de consulta de servicios concretos sigue pendiente de ratificación.
+
+Contrato de sesión publicado: `/cuentas/login/`, destino de Registro `captura:nueva_bandeja` y logout de vuelta al login. Las rutas y pantallas reales de sesiones aún dependen de Lino; no afirmar que están disponibles. Falta acordar el destino de los otros roles. El cierre de sesión deberá usar POST con CSRF.
+
+Las pruebas nuevas incluyen migración histórica, atomicidad e instantáneas, y pruebas aisladas de autenticación estándar de Django y helpers por rol. Las rutas de prueba están definidas solo en el módulo de tests: no validan las vistas reales pendientes. Consultar el documento de evidencias para resultados y alcance. Fotografías, QR, IA y S3 no se completan en este bloque.
+
+## Archivos locales y revisión aislada
 
 No subir al repositorio:
 

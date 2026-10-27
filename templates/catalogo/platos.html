@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+
+{% block title %}Catálogo | EVA{% endblock %}
+
+{% block eyebrow %}ADMINISTRACIÓN / EVA{% endblock %}
+
+{% block heading %}Catálogo y administración{% endblock %}
+
+{% block subtitle %}Mantén los platos disponibles para el registro.{% endblock %}
+
+{% block navigation %}
+    {% url 'catalogo:platos' as platos_url %}
+
+<span class="nav-link unavailable">
+    Indicadores
+    <small>Pendiente</small>
+</span>
+
+    <span class="nav-link unavailable">
+    Historial
+    <small>Pendiente</small>
+    </span>
+
+    <span class="nav-link unavailable">
+    Recomendación
+    <small>Pendiente</small>
+    </span>
+
+    <a class="nav-link active" href="{{ platos_url }}" aria-current="page">
+    Catálogo
+    </a>
+{% endblock %}
+
+{% block content %}
+    {% url 'catalogo:plato_crear' as crear_url %}
+
+    <section class="panel catalog-header" aria-labelledby="titulo-catalogo">
+    <div>
+        <h2 id="titulo-catalogo">Platos del catálogo</h2>
+        <p class="muted">
+        Gestiona las opciones que el personal puede seleccionar al crear un
+        registro.
+        </p>
+    </div>
+
+    {% if crear_url %}
+        <a class="button primary-button" href="{{ crear_url }}">Agregar plato</a>
+    {% endif %}
+</section>
+
+<section class="panel" aria-labelledby="platos-disponibles">
+    <h2 id="platos-disponibles">Platos disponibles</h2>
+
+    <table class="data-table">
+    <thead>
+        <tr>
+        <th scope="col">Plato</th>
+        <th scope="col">Estado</th>
+        <th scope="col">Actualización</th>
+        <th scope="col">Acción</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for plato in platos %}
+        {% url 'catalogo:plato_editar' plato.pk as editar_url %}
+        <tr>
+            <td data-label="Plato">
+            <div>
+                <strong>{{ plato.nombre }}</strong>
+                <small>{{ plato.codigo }}</small>
+            </div>
+            </td>
+            <td data-label="Estado">
+            {% if plato.activo %}Activo{% else %}Inactivo{% endif %}
+            </td>
+            <td data-label="Actualización">
+            {{ plato.actualizado|date:"d/m/Y"|default:"—" }}
+            </td>
+            <td data-label="Acción">
+            {% if editar_url %}
+                <a href="{{ editar_url }}">Editar →</a>
+            {% else %}
+                —
+            {% endif %}
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td class="empty-row" colspan="4">
+            Aún no hay platos en el catálogo.
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+    </table>
+</section>
+{% endblock %}

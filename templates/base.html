@@ -16,6 +16,7 @@
         </div>
 
         <nav class="sidebar-nav" aria-label="Navegación principal">
+          {% block navigation %}
           <a class="nav-link active" href="{% url 'captura:nueva_bandeja' %}">
             Nueva bandeja
           </a>
@@ -29,8 +30,28 @@
             Historial
             <small>Pendiente</small>
           </span>
+          {% endblock %}
         </nav>
 
+                  {% if user.is_authenticated %}
+          {% url 'cuentas:logout' as logout_url %}
+          <div class="sidebar-session">
+            <p class="sidebar-user">
+              <span>Sesión iniciada</span>
+              <strong>{{ user.get_full_name|default:user.get_username }}</strong>
+            </p>
+
+            {% if logout_url %}
+              <form method="post" action="{{ logout_url }}">
+                {% csrf_token %}
+                <button type="submit" class="nav-link nav-button">
+                  Cerrar sesión
+                </button>
+              </form>
+            {% endif %}
+          </div>
+        {% endif %}
+        
         <p class="sidebar-note">
           Prototipo académico<br />
           Registro básico de servicios
@@ -39,7 +60,7 @@
 
         <div class="workspace">
             <header class="page-header">
-                <span class="eyebrow">REGISTRO / EVA</span>
+                <span class="eyebrow">{% block eyebrow %}REGISTRO / EVA{% endblock %}</span>
 
                 <h1>
                     {% block heading %}Nueva bandeja{% endblock %}

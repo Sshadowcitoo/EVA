@@ -611,3 +611,338 @@ dd {
         min-height: 0;
     }
 }
+
+/* Pantalla de acceso: referencia Figma */
+
+.login-page {
+  min-width: 320px;
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f3f4f6;
+}
+
+.login-layout {
+  display: grid;
+  grid-template-columns: minmax(420px, 650px) minmax(520px, 790px);
+  min-height: 100vh;
+}
+
+.login-presentation {
+  display: flex;
+  min-height: 900px;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 62px 64px 160px;
+  color: #ffffff;
+  background: #123b63;
+}
+
+.login-brand {
+  font-size: 32px;
+  font-weight: 700;
+}
+
+.login-presentation h1 {
+  margin: 0 0 32px;
+  color: #ffffff;
+  font-size: 44px;
+  line-height: 1.12;
+}
+
+.login-presentation p {
+  max-width: 520px;
+  margin: 0;
+  font-size: 18px;
+  line-height: 1.35;
+}
+
+.login-access {
+  display: grid;
+  min-height: 900px;
+  place-items: center;
+  padding: 32px;
+  background: #f3f4f6;
+}
+
+.login-card {
+  width: min(566px, 100%);
+  padding: 28px 32px;
+  background: #ffffff;
+  border-radius: 18px;
+  box-shadow:
+    0 2px 4px -1px rgb(15 23 42 / 3%),
+    0 4px 6px -1px rgb(15 23 42 / 5%);
+}
+
+.login-card h2 {
+  margin: 0 0 8px;
+  color: #0f172a;
+  font-size: 20px;
+}
+
+.login-card > p {
+  margin: 0 0 28px;
+  color: #475569;
+  font-size: 14px;
+}
+
+.login-card .form-field {
+  margin-bottom: 16px;
+  padding: 11px 15px;
+  border: 1px solid #d1d5db;
+  border-radius: 12px;
+}
+
+.login-card .form-field label {
+  display: block;
+  margin-bottom: 4px;
+  color: #475569;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.login-card .form-field input {
+  width: 100%;
+  min-height: 28px;
+  padding: 0;
+  color: #0f172a;
+  background: transparent;
+  border: 0;
+  font: inherit;
+  font-size: 16px;
+}
+
+.login-card .form-field input:focus {
+  outline: 0;
+}
+
+.login-card .form-field:focus-within {
+  outline: 2px solid #2f80c8;
+  outline-offset: 2px;
+}
+
+.login-card .primary-button {
+  width: 100%;
+  margin-top: 12px;
+  background: #2f80c8;
+  border-radius: 12px;
+}
+
+@media (max-width: 800px) {
+  .login-layout {
+    display: block;
+  }
+
+  .login-presentation {
+    min-height: auto;
+    padding: 40px 28px 48px;
+  }
+
+  .login-presentation h1 {
+    margin-top: 96px;
+    font-size: 34px;
+  }
+
+  .login-presentation p {
+    font-size: 16px;
+  }
+
+  .login-access {
+    min-height: auto;
+    padding: 28px 20px;
+  }
+
+  .login-card {
+    padding: 24px 20px;
+  }
+}
+
+/* Sesión: usuario y cierre de sesión */
+
+.sidebar-session {
+  display: grid;
+  gap: 8px;
+  margin-top: auto;
+  padding-top: 32px;
+}
+
+.sidebar-user {
+  margin: 0 14px;
+  color: #66758a;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.sidebar-user strong {
+  display: block;
+  color: #1f2a44;
+  font-size: 14px;
+}
+
+.nav-button {
+  width: 100%;
+  border: 0;
+  background: transparent;
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.nav-button:hover {
+  background: #f1f5f9;
+}
+
+.sidebar-session + .sidebar-note {
+  margin-top: 0;
+  padding-top: 16px;
+}
+
+@media (max-width: 640px) {
+  .sidebar-session {
+    padding-top: 16px;
+  }
+
+  .sidebar-user {
+    margin: 0 8px;
+  }
+}
+/* Catálogo y administración */
+
+.catalog-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+.catalog-header h2 {
+  margin: 0 0 6px;
+}
+
+.catalog-header p {
+  margin: 0;
+}
+
+.catalog-header .button {
+  margin-top: 0;
+  white-space: nowrap;
+}
+
+.data-table {
+  width: 100%;
+  margin-top: 16px;
+  border-collapse: collapse;
+}
+
+.data-table th {
+  padding: 10px 12px;
+  color: #66758a;
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  text-align: left;
+  text-transform: uppercase;
+}
+
+.data-table td {
+  padding: 16px 12px;
+  border-top: 1px solid #e8edf3;
+  color: #1f2a44;
+  font-size: 14px;
+  vertical-align: middle;
+}
+
+.data-table td small {
+  display: block;
+  margin-top: 2px;
+  color: #66758a;
+  font-size: 12px;
+}
+
+.data-table a {
+  color: #1768b0;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.data-table a:hover {
+  text-decoration: underline;
+}
+
+.data-table a:focus-visible {
+  outline: 2px solid #1768b0;
+  outline-offset: 2px;
+}
+
+.empty-row {
+  color: #66758a;
+  text-align: center;
+}
+
+@media (max-width: 640px) {
+  .catalog-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .data-table thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+  }
+
+  .data-table,
+  .data-table tbody,
+  .data-table tr,
+  .data-table td {
+    display: block;
+  }
+
+  .data-table tr {
+    padding: 12px 0;
+    border-top: 1px solid #e8edf3;
+  }
+
+  .data-table td {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 6px 0;
+    border: 0;
+  }
+
+  .data-table td > div {
+    text-align: right;
+  }
+
+  .data-table td::before {
+    content: attr(data-label);
+    color: #66758a;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+}
+
+/* Mascota en el acceso */
+
+.login-mascot {
+  display: block;
+  width: auto;
+  height: clamp(220px, 38vh, 340px);
+  margin: 0 auto;
+}
+
+@media (max-width: 800px) {
+  .login-mascot {
+    height: 120px;
+    margin: 20px auto 0;
+  }
+
+  .login-presentation h1 {
+    margin-top: 12px;
+  }
+}

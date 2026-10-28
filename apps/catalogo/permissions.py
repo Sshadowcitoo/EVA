@@ -39,6 +39,10 @@ PERMISOS_POR_ROL = {
         f"catalogo.{accion}_{modelo}"
         for modelo in ("plato", "componente", "platocomponente", "tipoporcion", "contexto")
         for accion in ("view", "add", "change")
+    ) + (
+        # Acciones de negocio aprobadas; Isaac declara los permisos al migrar.
+        "captura.anular_servicio",
+        "captura.reemplazar_etiquetabandeja",
     ),
 }
 

@@ -141,3 +141,66 @@ class RolesTests(TestCase):
             CatalogoView.as_view()(request)
         self.asignar(ADMINISTRACION)
         self.assertEqual(CatalogoView.as_view()(request).status_code, 200)
+
+class PermisosCapturaBloque2Tests(TestCase):
+    """El contrato se activa al integrar modelos, sin inventarlos en producción."""
+
+    permisos = {
+        'bandeja': ('view',),
+        'etiquetabandeja': ('view',),
+        'asignacionbandeja': ('view',),
+        'fotografiaservicio': ('add', 'view'),
+    }
+
+    def crear_permisos_futuros(self):
+        for modelo in self.permisos:
+            content_type, _ = ContentType.objects.get_or_create(
+                app_label='captura', model=modelo,
+            )
+            for accion in ('add', 'view', 'change', 'delete'):
+                Permission.objects.get_or_create(
+                    content_type=content_type,
+                    codename=f'{accion}_{modelo}',
+                    defaults={'name': f'Puede {accion} {modelo}'},
+                )
+
+    def test_modelos_ausentes_no_se_crean_y_permisos_quedan_pendientes(self):
+        salida = StringIO()
+        call_command('configurar_roles', stdout=salida)
+        self.assertIn('captura.add_fotografiaservicio', salida.getvalue())
+        self.assertFalse(ContentType.objects.filter(
+            app_label='captura', model__in=self.permisos,
+        ).exists())
+
+    def test_tras_migrar_solo_registro_recibe_captura_sin_borrado_ni_edicion(self):
+        self.crear_permisos_futuros()
+        call_command('configurar_roles', stdout=StringIO())
+        grupo = Group.objects.get(name=REGISTRO)
+        # Corregir también una asignación indebida preexistente al repetir.
+        grupo.permissions.add(Permission.objects.get(
+            content_type__app_label='captura', codename='delete_fotografiaservicio',
+        ))
+        call_command('configurar_roles', stdout=StringIO())
+        for rol in ROLES:
+            asignados = set(Group.objects.get(name=rol).permissions.filter(
+                content_type__app_label='captura', content_type__model__in=self.permisos,
+            ).values_list('codename', flat=True))
+            esperados = {
+                f'{accion}_{modelo}'
+                for modelo, acciones in self.permisos.items() for accion in acciones
+            } if rol == REGISTRO else set()
+            self.assertEqual(asignados, esperados, rol)
+
+    def test_dos_operadores_tienen_el_rol_sin_asignar_otros_usuarios(self):
+        call_command('configurar_roles', stdout=StringIO())
+        User = get_user_model()
+        primero = User.objects.create_user(username='operador_inicial')
+        segundo = User.objects.create_user(username='operador_retorno')
+        tercero = User.objects.create_user(username='sin_rol')
+        grupo = Group.objects.get(name=REGISTRO)
+        primero.groups.add(grupo)
+        segundo.groups.add(grupo)
+        call_command('configurar_roles', stdout=StringIO())
+        self.assertTrue(tiene_rol(primero, REGISTRO))
+        self.assertTrue(tiene_rol(segundo, REGISTRO))
+        self.assertFalse(tiene_rol(tercero, REGISTRO))

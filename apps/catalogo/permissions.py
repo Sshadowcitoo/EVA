@@ -19,6 +19,12 @@ PERMISOS_POR_ROL = {
     REGISTRO: (
         "captura.add_servicio",
         "captura.view_servicio",
+        # Bloque 2: configurar_roles los asigna cuando existan las migraciones.
+        "captura.view_bandeja",
+        "captura.view_etiquetabandeja",
+        "captura.view_asignacionbandeja",
+        "captura.add_fotografiaservicio",
+        "captura.view_fotografiaservicio",
         "catalogo.view_plato",
         "catalogo.view_componente",
         "catalogo.view_platocomponente",

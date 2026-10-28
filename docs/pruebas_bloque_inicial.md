@@ -1,5 +1,23 @@
 # Plan de pruebas del bloque inicial
 
+## Estado vigente — 28 de octubre de 2026
+
+El bloque inicial ya está integrado en `main`, commit `8f685bf` (PR #13).
+Se repitió la verificación sobre ese commit: check sin problemas, **56 pruebas
+aprobadas en 29.464 s** y migraciones sin cambios. La adaptación de captura,
+sesiones y permisos de vistas reales ya está implementada y probada; los pendientes
+de esas funciones descritos más abajo son antecedentes del 26 de octubre.
+
+La confirmación existente pertenece solo al creador con Registro. El nuevo contrato
+del bloque 2 permite a otro Registro capturar retorno mediante endpoints nuevos,
+sin ampliar la confirmación antigua. No confundir esas políticas.
+
+La evidencia actual y la lista visual aún pendiente están en
+[cierre del bloque inicial](cierre_bloque_inicial_28_octubre.md). El siguiente plan
+está en [pruebas del bloque 2](pruebas_bloque_2.md). El resto del documento se
+conserva como historial de preparación y ejecuciones anteriores, no como estado
+funcional vigente.
+
 ## Actualización de integración - 27 de octubre de 2026
 
 En la rama `integracion-bloque-inicial` se reunieron los cinco aportes y se

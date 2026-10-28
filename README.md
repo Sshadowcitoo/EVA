@@ -6,8 +6,9 @@ Proyecto de Construcción de Software, Ingeniería de Software, UNEMI.
 
 Integra los aportes del bloque inicial de Isaac (modelos), César (roles y configuración),
 Lino (funciones), Jean (pantallas) y Eduardo (pruebas), y corrige sus puntos de conexión.
-No equivale al sistema completo. Mientras este cambio no esté integrado, `main`
-conserva el avance anterior: seleccionar la rama `integracion-bloque-inicial` para revisarlo.
+El bloque inicial quedó integrado en `main` mediante el PR #13, commit `8f685bf`.
+No equivale al sistema completo. Esta rama prepara su cierre documental y el plan
+de pruebas del bloque 2; todavía no implementa fotografías, bandejas ni QR.
 
 Funciones disponibles:
 
@@ -47,7 +48,7 @@ No ejecutar otra vez `startproject` ni `startapp captura`.
 ```powershell
 git clone https://github.com/Sshadowcitoo/EVA.git
 cd EVA
-git switch integracion-bloque-inicial
+git switch main
 py -m venv .venv
 .\.venv\Scripts\python.exe -m pip install -r requirements.txt
 ```
@@ -108,6 +109,17 @@ Comprobación de la integración el 27 de octubre de 2026, con Django 5.2.17:
 - 56 pruebas aprobadas en una base temporal, incluidas migraciones históricas.
 - `makemigrations --check --dry-run`: sin cambios detectados.
 
+Revisión repetida el 28 de octubre sobre `8f685bf`, en un worktree aislado:
+`check` sin problemas, **56 pruebas aprobadas en 29.464 s** y
+`makemigrations --check --dry-run` sin cambios. No se alteró la base local del usuario.
+La aceptación visual móvil/escritorio sigue pendiente; véase el
+[registro de cierre](docs/cierre_bloque_inicial_28_octubre.md).
+
+El siguiente trabajo de Eduardo se organiza en el
+[plan de pruebas del bloque 2](docs/pruebas_bloque_2.md). Los contratos de César
+para bloques 2 y 3 están publicados en ramas separadas; no deben confundirse con
+funciones integradas en `main` ni con uso real de AWS.
+
 La suite incluye modelos y carga demo de Isaac, helpers de permisos de César,
 pruebas complementarias de Eduardo y recorridos reales de integración: sesiones,
 redirecciones, acceso por rol, CSRF, catálogo, captura y privacidad de confirmaciones.
@@ -131,8 +143,9 @@ operativo. S3 será almacenamiento de archivos, no el servidor Django ni la IA.
 ## Trabajo en equipo
 
 Cada integrante entrega en su rama mediante Pull Request. César revisa e integra;
-los compañeros no hacen merge. La rama de integración reúne y corrige los aportes
-sin fusionarlos todavía con `main`. Las imágenes quedan a cargo de César.
+los compañeros no hacen merge. El bloque inicial ya se integró en `main`.
+Los bloques nuevos se entregan en ramas nuevas desde esa base.
+Las imágenes quedan a cargo de César.
 
 No subir `.venv/`, `.env`, `db.sqlite3`, cachés, imágenes del piloto ni credenciales.
 Las migraciones sí se versionan. Los recursos gráficos propios de la interfaz

@@ -1,0 +1,19 @@
+{% comment %}
+  Pestañas del catálogo. Uso: {% include "catalogo/_secciones.html" with seccion="platos" %}
+  Solo muestra las secciones cuya ruta ya existe; si no hay más de una, no se muestra.
+{% endcomment %}
+{% url 'catalogo:platos' as platos_url %}
+{% url 'catalogo:componentes' as componentes_url %}
+{% url 'catalogo:porciones' as porciones_url %}
+
+{% if componentes_url or porciones_url %}
+  <nav class="catalog-tabs" aria-label="Secciones del catálogo">
+    <a href="{{ platos_url }}"{% if seccion == "platos" %} aria-current="page"{% endif %}>Platos</a>
+    {% if componentes_url %}
+      <a href="{{ componentes_url }}"{% if seccion == "componentes" %} aria-current="page"{% endif %}>Componentes</a>
+    {% endif %}
+    {% if porciones_url %}
+      <a href="{{ porciones_url }}"{% if seccion == "porciones" %} aria-current="page"{% endif %}>Porciones</a>
+    {% endif %}
+  </nav>
+{% endif %}

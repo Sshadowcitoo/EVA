@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block title %}Acceso no permitido | EVA{% endblock %}
+
+{% block eyebrow %}PERMISOS / EVA{% endblock %}
+
+{% block heading %}Acceso no permitido{% endblock %}
+
+{% block subtitle %}Tu cuenta no tiene permiso para ver esta pantalla.{% endblock %}
+
+{% block navigation %}
+  <a class="nav-link" href="{% url 'captura:nueva_bandeja' %}">Nueva bandeja</a>
+
+  <span class="nav-link unavailable">
+    Registrar retorno
+    <small>Pendiente</small>
+  </span>
+
+  <span class="nav-link unavailable">
+    Historial
+    <small>Pendiente</small>
+  </span>
+{% endblock %}
+
+{% block content %}
+  <section class="panel denied-panel" aria-labelledby="titulo-denegado">
+    <h2 id="titulo-denegado">No puedes abrir esta pantalla</h2>
+    <p>
+      Tu sesión sigue iniciada, pero tu rol no incluye este permiso. No se
+      guardó ni cambió ningún dato.
+    </p>
+    <p class="muted">
+      Usa el menú lateral para ir a una pantalla permitida. Si necesitas
+      acceso, pídeselo a la persona responsable de administración.
+    </p>
+  </section>
+{% endblock %}

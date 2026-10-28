@@ -1,0 +1,48 @@
+{% extends "catalogo/base_catalogo.html" %}
+
+{% block title %}{% if object %}Editar plato{% else %}Agregar plato{% endif %} | EVA{% endblock %}
+
+{% block catalog_content %}
+  {% url 'catalogo:platos' as platos_url %}
+
+  <section class="panel catalog-header" aria-labelledby="titulo-formulario">
+    <div>
+      <h2 id="titulo-formulario">
+        {% if object %}Editar plato{% else %}Agregar plato{% endif %}
+      </h2>
+      <p class="muted">
+        {% if object %}
+          Actualiza los datos del plato. Si ya no se usa, desactívalo: el
+          historial se conserva.
+        {% else %}
+          Registra un plato para que el personal pueda seleccionarlo al crear
+          un registro.
+        {% endif %}
+      </p>
+    </div>
+
+    <a class="button secondary-button" href="{{ platos_url }}">← Volver al catálogo</a>
+  </section>
+
+  <form method="post" class="catalog-form">
+    {% csrf_token %}
+
+    {% if form.errors %}
+      <div class="error-summary" role="alert">
+        <p>Revisa los campos indicados antes de continuar.</p>
+        {{ form.non_field_errors }}
+      </div>
+    {% endif %}
+
+    <section class="panel" aria-labelledby="datos-plato">
+      <h2 id="datos-plato">Datos del plato</h2>
+
+      {% include "catalogo/_campos_formulario.html" %}
+    </section>
+
+    <div class="form-actions">
+      <button type="submit" class="button primary-button">Guardar plato</button>
+      <a class="button secondary-button" href="{{ platos_url }}">Cancelar</a>
+    </div>
+  </form>
+{% endblock %}

@@ -1,0 +1,52 @@
+{% extends "catalogo/base_catalogo.html" %}
+
+{% block title %}Porciones | EVA{% endblock %}
+
+{% block catalog_content %}
+  {% include "catalogo/_secciones.html" with seccion="porciones" %}
+
+  <section class="panel catalog-header" aria-labelledby="titulo-porciones">
+    <div>
+      <h2 id="titulo-porciones">Tipos de porción</h2>
+      <p class="muted">
+        Opciones de porción que el personal puede seleccionar al crear un
+        registro.
+      </p>
+    </div>
+  </section>
+
+  <h2 class="section-title" id="porciones-disponibles">Porciones disponibles</h2>
+
+  <section class="panel" aria-labelledby="porciones-disponibles">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th scope="col">Tipo de porción</th>
+          <th scope="col">Estado</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        {% for porcion in porciones %}
+          <tr>
+            <td data-label="Tipo de porción">
+              <div>
+                <strong>{{ porcion.nombre }}</strong>
+                <small>{{ porcion.codigo }}</small>
+              </div>
+            </td>
+            <td data-label="Estado">
+              {% if porcion.activo %}Activo{% else %}Inactivo{% endif %}
+            </td>
+          </tr>
+        {% empty %}
+          <tr>
+            <td class="empty-row" colspan="2">
+              Aún no hay tipos de porción en el catálogo.
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </section>
+{% endblock %}

@@ -1,6 +1,6 @@
 :root {
   color-scheme: light;
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: "DM Sans", Arial, Helvetica, sans-serif;
   color: #18243b;
   background: #f3f4f6;
   font-synthesis: none;
@@ -617,7 +617,7 @@ dd {
 .login-page {
   min-width: 320px;
   margin: 0;
-  font-family: Arial, sans-serif;
+  font-family: "DM Sans", Arial, sans-serif;
   background: #f3f4f6;
 }
 
@@ -830,19 +830,32 @@ dd {
   white-space: nowrap;
 }
 
+.section-title {
+  margin: 8px 0 14px;
+  font-size: 20px;
+}
+
 .data-table {
   width: 100%;
-  margin-top: 16px;
   border-collapse: collapse;
 }
 
 .data-table th {
   padding: 10px 12px;
   color: #66758a;
+  background: #f6f7f9;
   font-size: 11px;
   letter-spacing: 0.04em;
   text-align: left;
   text-transform: uppercase;
+}
+
+.data-table th:first-child {
+  border-radius: 8px 0 0 8px;
+}
+
+.data-table th:last-child {
+  border-radius: 0 8px 8px 0;
 }
 
 .data-table td {
@@ -945,4 +958,195 @@ dd {
   .login-presentation h1 {
     margin-top: 12px;
   }
+}
+
+/* Catálogo: formularios */
+
+.catalog-form {
+  max-width: 720px;
+}
+
+.form-field input[type="text"],
+.form-field input[type="number"],
+.form-field input[type="search"],
+.form-field textarea {
+  width: 100%;
+  min-height: 30px;
+  padding: 4px 0;
+  color: #18243b;
+  background: transparent;
+  border: 0;
+  border-radius: 4px;
+  font: inherit;
+  font-size: 14px;
+}
+
+.form-field input:focus-visible,
+.form-field textarea:focus-visible {
+  outline: none;
+}
+
+.form-field:has([aria-invalid="true"]) {
+  border-color: #a12626;
+}
+
+.form-field .errorlist {
+  margin: 6px 0 4px;
+}
+
+.field-help {
+  margin: 4px 0 4px;
+  color: #66758a;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.form-field-check .check-label,
+.form-field-group label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  color: #18243b;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.form-field-group label {
+  padding: 6px 0;
+  font-weight: 400;
+}
+
+.form-field-check input,
+.form-field-group input {
+  width: 20px;
+  height: 20px;
+  margin: 0;
+  accent-color: #1768b0;
+}
+
+.form-field-group {
+  min-width: 0;
+  margin-right: 0;
+  margin-left: 0;
+}
+
+.form-field-group legend {
+  float: left;
+  width: 100%;
+  padding: 0;
+  margin-bottom: 6px;
+  color: #41516a;
+  font-size: 10px;
+}
+
+.form-field-group legend + * {
+  clear: both;
+}
+
+.form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.form-actions .button {
+  margin-top: 0;
+}
+
+.secondary-button {
+  color: #1768b0;
+  background: #fff;
+  border: 1px solid #2c80c7;
+}
+
+.secondary-button:hover {
+  color: #124f87;
+  background: #eaf3fb;
+}
+
+@media (max-width: 640px) {
+  .form-actions .button {
+    flex: 1 1 100%;
+    min-width: 0;
+  }
+}
+
+/* Catálogo: secciones */
+
+.catalog-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.catalog-tabs a {
+  padding: 8px 16px;
+  color: #1768b0;
+  background: #fff;
+  border: 1px solid #cbd5e1;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.catalog-tabs a:hover {
+  background: #eaf3fb;
+}
+
+.catalog-tabs a[aria-current="page"] {
+  color: #fff;
+  background: #1768b0;
+  border-color: #1768b0;
+}
+
+.catalog-tabs a:focus-visible {
+  outline: 3px solid #a66100;
+  outline-offset: 3px;
+}
+
+@media (max-width: 640px) {
+  .data-table tbody tr:first-child {
+    border-top: 0;
+  }
+}
+
+/* Acceso no permitido (403) */
+
+.denied-panel {
+  max-width: 720px;
+  border-left: 4px solid #a12626;
+}
+
+.denied-panel p {
+  margin: 0 0 12px;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.denied-panel .muted {
+  margin-bottom: 0;
+}
+
+/* Tipografía de Figma: DM Sans (licencia SIL OFL), archivos propios en static/fonts */
+
+@font-face {
+  font-family: "DM Sans";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("../fonts/dm-sans-latin-400-normal.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "DM Sans";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("../fonts/dm-sans-latin-700-normal.woff2") format("woff2");
 }

@@ -1,98 +1,70 @@
-{% extends "base.html" %}
+{% extends "catalogo/base_catalogo.html" %}
 
 {% block title %}Catálogo | EVA{% endblock %}
 
-{% block eyebrow %}ADMINISTRACIÓN / EVA{% endblock %}
+{% block catalog_content %}
+  {% include "catalogo/_secciones.html" with seccion="platos" %}
+  {% url 'catalogo:plato_crear' as crear_url %}
 
-{% block heading %}Catálogo y administración{% endblock %}
-
-{% block subtitle %}Mantén los platos disponibles para el registro.{% endblock %}
-
-{% block navigation %}
-    {% url 'catalogo:platos' as platos_url %}
-
-<span class="nav-link unavailable">
-    Indicadores
-    <small>Pendiente</small>
-</span>
-
-    <span class="nav-link unavailable">
-    Historial
-    <small>Pendiente</small>
-    </span>
-
-    <span class="nav-link unavailable">
-    Recomendación
-    <small>Pendiente</small>
-    </span>
-
-    <a class="nav-link active" href="{{ platos_url }}" aria-current="page">
-    Catálogo
-    </a>
-{% endblock %}
-
-{% block content %}
-    {% url 'catalogo:plato_crear' as crear_url %}
-
-    <section class="panel catalog-header" aria-labelledby="titulo-catalogo">
+  <section class="panel catalog-header" aria-labelledby="titulo-catalogo">
     <div>
-        <h2 id="titulo-catalogo">Platos del catálogo</h2>
-        <p class="muted">
+      <h2 id="titulo-catalogo">Platos del catálogo</h2>
+      <p class="muted">
         Gestiona las opciones que el personal puede seleccionar al crear un
         registro.
-        </p>
+      </p>
     </div>
 
     {% if crear_url %}
-        <a class="button primary-button" href="{{ crear_url }}">Agregar plato</a>
+      <a class="button primary-button" href="{{ crear_url }}">Agregar plato</a>
     {% endif %}
-</section>
+  </section>
 
-<section class="panel" aria-labelledby="platos-disponibles">
-    <h2 id="platos-disponibles">Platos disponibles</h2>
+  <h2 class="section-title" id="platos-disponibles">Platos disponibles</h2>
 
+  <section class="panel" aria-labelledby="platos-disponibles">
     <table class="data-table">
-    <thead>
+      <thead>
         <tr>
-        <th scope="col">Plato</th>
-        <th scope="col">Estado</th>
-        <th scope="col">Actualización</th>
-        <th scope="col">Acción</th>
+          <th scope="col">Plato</th>
+          <th scope="col">Estado</th>
+          <th scope="col">Actualización</th>
+          <th scope="col">Acción</th>
         </tr>
-    </thead>
+      </thead>
 
-    <tbody>
+      <tbody>
         {% for plato in platos %}
-        {% url 'catalogo:plato_editar' plato.pk as editar_url %}
-        <tr>
+          {% url 'catalogo:plato_editar' plato.pk as editar_url %}
+          <tr>
             <td data-label="Plato">
-            <div>
+              <div>
                 <strong>{{ plato.nombre }}</strong>
                 <small>{{ plato.codigo }}</small>
-            </div>
+              </div>
             </td>
             <td data-label="Estado">
-            {% if plato.activo %}Activo{% else %}Inactivo{% endif %}
+              {% if plato.activo %}Activo{% else %}Inactivo{% endif %}
             </td>
             <td data-label="Actualización">
-            {{ plato.actualizado|date:"d/m/Y"|default:"—" }}
+              {{ plato.actualizado|date:"d/m/Y"|default:"—" }}
             </td>
             <td data-label="Acción">
-            {% if editar_url %}
+              {% if editar_url %}
                 <a href="{{ editar_url }}">Editar →</a>
-            {% else %}
+              {% else %}
                 —
-            {% endif %}
+              {% endif %}
             </td>
-        </tr>
+          </tr>
         {% empty %}
-        <tr>
+          <tr>
             <td class="empty-row" colspan="4">
-            Aún no hay platos en el catálogo.
+              Aún no hay platos en el catálogo.
             </td>
-        </tr>
+          </tr>
         {% endfor %}
-    </tbody>
+      </tbody>
     </table>
-</section>
+  </section>
 {% endblock %}

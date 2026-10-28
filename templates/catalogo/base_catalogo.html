@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block eyebrow %}ADMINISTRACIÓN / EVA{% endblock %}
+
+{% block heading %}Catálogo y administración{% endblock %}
+
+{% block subtitle %}Mantén los platos disponibles para el registro.{% endblock %}
+
+{% block navigation %}
+  {% url 'catalogo:platos' as platos_url %}
+
+  <span class="nav-link unavailable">
+    Indicadores
+    <small>Pendiente</small>
+  </span>
+
+  <span class="nav-link unavailable">
+    Historial
+    <small>Pendiente</small>
+  </span>
+
+  <span class="nav-link unavailable">
+    Recomendación
+    <small>Pendiente</small>
+  </span>
+
+  <a class="nav-link active" href="{{ platos_url }}" aria-current="page">
+    Catálogo
+  </a>
+{% endblock %}
+
+{% block content %}
+  {% block catalog_content %}{% endblock %}
+{% endblock %}

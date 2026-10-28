@@ -10,6 +10,9 @@
   <body>
     <div class="app-layout">
       <aside class="sidebar">
+        <button type="button" class="mobile-menu-toggle" aria-expanded="false" aria-label="Mostrar u ocultar navegación">
+          EVA <span>Menú ☰</span>
+        </button>
         <div class="sidebar-brand">
           <span class="brand">EVA</span>
           <span class="brand-caption">FOOD WASTE AI</span>
@@ -89,5 +92,12 @@
             </main>
         </div>
     </div>
+<script>
+  const menuToggle = document.querySelector('.mobile-menu-toggle');
+  menuToggle.addEventListener('click', () => {
+    const expanded = menuToggle.getAttribute('aria-expanded') === 'true';
+    menuToggle.setAttribute('aria-expanded', String(!expanded));
+  });
+</script>
 </body>
 </html>

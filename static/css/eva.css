@@ -6,6 +6,10 @@
   font-synthesis: none;
 }
 
+.mobile-menu-toggle {
+  display: none;
+}
+
 * {
   box-sizing: border-box;
 }
@@ -1149,4 +1153,60 @@ dd {
   font-weight: 700;
   font-display: swap;
   src: url("../fonts/dm-sans-latin-700-normal.woff2") format("woff2");
+}
+
+/* En móvil, prioriza el formulario y conserva la navegación desplegable. */
+@media (max-width: 640px) {
+  .sidebar {
+    padding: 12px 20px;
+    background: #153e63;
+    border: 0;
+  }
+
+  .mobile-menu-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 8px 0;
+    border: 0;
+    background: transparent;
+    color: #fff;
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  .mobile-menu-toggle span {
+    font-size: 13px;
+  }
+
+  .sidebar > :not(.mobile-menu-toggle) {
+    display: none;
+  }
+
+  .sidebar:has(.mobile-menu-toggle[aria-expanded="true"]) {
+    background: #fff;
+  }
+
+  .sidebar:has(.mobile-menu-toggle[aria-expanded="true"]) .mobile-menu-toggle {
+    color: #153e63;
+  }
+
+  .sidebar:has(.mobile-menu-toggle[aria-expanded="true"]) .sidebar-nav,
+  .sidebar:has(.mobile-menu-toggle[aria-expanded="true"]) .sidebar-session {
+    display: grid;
+  }
+
+  .page-header {
+    background: #153e63;
+    color: #fff;
+    border: 0;
+    padding-top: 16px;
+  }
+
+  .page-header .eyebrow,
+  .page-header p {
+    color: #e1edf7;
+  }
 }

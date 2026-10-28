@@ -1,0 +1,27 @@
+{% extends "catalogo/base_catalogo.html" %}
+
+{% block title %}{{ titulo }} | EVA{% endblock %}
+
+{% block catalog_content %}
+  <section class="panel catalog-header" aria-labelledby="titulo-formulario">
+    <h2 id="titulo-formulario">{{ titulo }}</h2>
+    <a class="button secondary-button" href="{% url ruta_lista %}">Volver al catálogo</a>
+  </section>
+
+  <form method="post" class="catalog-form">
+    {% csrf_token %}
+    {% if form.errors %}
+      <div class="error-summary" role="alert">
+        <p>Revisa los campos indicados antes de continuar.</p>
+        {{ form.non_field_errors }}
+      </div>
+    {% endif %}
+    <section class="panel">
+      {% include "catalogo/_campos_formulario.html" %}
+    </section>
+    <div class="form-actions">
+      <button type="submit" class="button primary-button">Guardar</button>
+      <a class="button secondary-button" href="{% url ruta_lista %}">Cancelar</a>
+    </div>
+  </form>
+{% endblock %}

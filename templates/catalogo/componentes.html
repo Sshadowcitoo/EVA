@@ -1,0 +1,63 @@
+{% extends "catalogo/base_catalogo.html" %}
+
+{% block title %}Componentes | EVA{% endblock %}
+
+{% block catalog_content %}
+  {% include "catalogo/_secciones.html" with seccion="componentes" %}
+
+  <section class="panel catalog-header" aria-labelledby="titulo-componentes">
+    <div>
+      <h2 id="titulo-componentes">Componentes del catálogo</h2>
+      <p class="muted">
+        Elementos que forman un plato. Un componente puede compartirse entre
+        varios platos.
+      </p>
+    </div>
+    <a class="button primary-button" href="{% url 'catalogo:componente_crear' %}">Agregar componente</a>
+  </section>
+
+  <h2 class="section-title" id="componentes-disponibles">Componentes disponibles</h2>
+
+  <section class="panel" aria-labelledby="componentes-disponibles">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th scope="col">Componente</th>
+          <th scope="col">Estado</th>
+          <th scope="col">Acción</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        {% for componente in componentes %}
+          <tr>
+            <td data-label="Componente">
+              <div>
+                <strong>{{ componente.nombre }}</strong>
+                <small>{{ componente.codigo }}</small>
+              </div>
+            </td>
+            <td data-label="Estado">
+              {% if componente.activo %}Activo{% else %}Inactivo{% endif %}
+            </td>
+            <td data-label="Acción">
+              <a href="{% url 'catalogo:componente_editar' componente.pk %}">Editar</a>
+              <form method="post" action="{% url 'catalogo:componente_estado' componente.pk %}">
+                {% csrf_token %}
+                <button type="submit" class="button secondary-button">
+                  {% if componente.activo %}Desactivar{% else %}Activar{% endif %}
+                </button>
+              </form>
+            </td>
+          </tr>
+        {% empty %}
+          <tr>
+            <td class="empty-row" colspan="3">
+              Aún no hay componentes en el catálogo.
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </section>
+{% endblock %}

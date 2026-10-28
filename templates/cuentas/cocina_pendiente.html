@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block title %}Cocina | EVA{% endblock %}
+{% block eyebrow %}COCINA / EVA{% endblock %}
+{% block heading %}Cocina{% endblock %}
+{% block subtitle %}Tu sesión está iniciada correctamente.{% endblock %}
+{% block content %}
+  <section class="panel">
+    <h2>Funciones de Cocina pendientes</h2>
+    <p>El análisis y la revisión de fotografías se incorporarán en el siguiente bloque.</p>
+    <form method="post" action="{% url 'cuentas:logout' %}">
+      {% csrf_token %}
+      <button type="submit" class="button secondary-button">Cerrar sesión</button>
+    </form>
+  </section>
+{% endblock %}

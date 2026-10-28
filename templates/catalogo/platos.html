@@ -1,0 +1,76 @@
+{% extends "catalogo/base_catalogo.html" %}
+
+{% block title %}Catálogo | EVA{% endblock %}
+
+{% block catalog_content %}
+  {% include "catalogo/_secciones.html" with seccion="platos" %}
+  {% url 'catalogo:plato_crear' as crear_url %}
+
+  <section class="panel catalog-header" aria-labelledby="titulo-catalogo">
+    <div>
+      <h2 id="titulo-catalogo">Platos del catálogo</h2>
+      <p class="muted">
+        Gestiona las opciones que el personal puede seleccionar al crear un
+        registro.
+      </p>
+    </div>
+
+    {% if crear_url %}
+      <a class="button primary-button" href="{{ crear_url }}">Agregar plato</a>
+    {% endif %}
+  </section>
+
+  <h2 class="section-title" id="platos-disponibles">Platos disponibles</h2>
+
+  <section class="panel" aria-labelledby="platos-disponibles">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th scope="col">Plato</th>
+          <th scope="col">Estado</th>
+          <th scope="col">Actualización</th>
+          <th scope="col">Acción</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        {% for plato in platos %}
+          {% url 'catalogo:plato_editar' plato.pk as editar_url %}
+          <tr>
+            <td data-label="Plato">
+              <div>
+                <strong>{{ plato.nombre }}</strong>
+                <small>{{ plato.codigo }}</small>
+              </div>
+            </td>
+            <td data-label="Estado">
+              {% if plato.activo %}Activo{% else %}Inactivo{% endif %}
+            </td>
+            <td data-label="Actualización">
+              {{ plato.actualizado|date:"d/m/Y"|default:"—" }}
+            </td>
+            <td data-label="Acción">
+              {% if editar_url %}
+                <a href="{{ editar_url }}">Editar →</a>
+              {% else %}
+                —
+              {% endif %}
+              <form method="post" action="{% url 'catalogo:plato_estado' plato.pk %}">
+                {% csrf_token %}
+                <button type="submit" class="button secondary-button">
+                  {% if plato.activo %}Desactivar{% else %}Activar{% endif %}
+                </button>
+              </form>
+            </td>
+          </tr>
+        {% empty %}
+          <tr>
+            <td class="empty-row" colspan="4">
+              Aún no hay platos en el catálogo.
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </section>
+{% endblock %}

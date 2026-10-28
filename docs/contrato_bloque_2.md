@@ -68,9 +68,14 @@ No confundir `PAR_COMPLETO` con análisis o revisión de Cocina.
 
 Aceptar retorno o anular libera la asignación; un error no libera. Reutilizar la
 bandeja crea otra asignación y servicio sin tocar fotos o composición anteriores.
-La anulación y reemplazo de etiqueta son operaciones privilegiadas: antes de
-exponer sus endpoints, César y el equipo deben ratificar quién las opera. Esta
-entrega no concede permisos de borrar, cambiar fotos o administrar bandejas.
+Decisión aprobada el 28/10/2026: solo Administración puede anular servicios y
+reemplazar etiquetas. Exigir motivo, responsable y fecha, con POST y CSRF.
+Registro no recibe estas acciones. Usar los permisos personalizados
+`captura.anular_servicio` y `captura.reemplazar_etiquetabandeja`; Isaac los declara
+en Meta.permissions y migraciones de Servicio y EtiquetaBandeja, respectivamente.
+El comando de grupos los asigna cuando existan, sin crearlos artificialmente.
+No conceder borrado genérico ni edición de fotos. Reemplazar una etiqueta
+conserva bandeja, asignación y servicio; revoca el código anterior sin perder historial.
 
 Proteger exclusividad con restricciones y actualizaciones condicionales dentro
 de transacciones. `select_for_update` por sí solo no garantiza exclusión en SQLite.
@@ -157,11 +162,16 @@ Jean usa W06/W07 y M02-M06 de Figma como referencias; comprueba marcos concretos
 La selección de archivo es alternativa; no prometer cámara/escaneo en vivo en
 cualquier teléfono. HTTPS y la vinculación temporal se resuelven en bloque 3.
 
-## Dependencias pendientes, sin instalaciones en esta entrega
+## Herramientas y límites aprobados el 28/10/2026
 
-La base no declara una librería QR ni de decodificación de imágenes. Elegir y
-autorizar esos paquetes/versiones antes de implementar escaneo/generación y
-validación. No invocar servicios externos para generar QR con datos operativos.
+Selección aprobada: `qrcode` para generar QR, `jsQR` para leerlos en el navegador
+y `Pillow` para validar/decodificar imágenes en Django. Se mantienen JPEG/PNG,
+10 MiB y 20 megapíxeles; ofrecer ingreso manual del número si falla el escaneo.
+La selección no instala paquetes ni implementa funciones. Al integrarlas, fijar
+versiones compatibles y conservar licencia de jsQR como recurso estático local,
+sin CDN ni servicios externos para generar QR con datos operativos.
+Pillow no sustituye la IA: comprobar bytes, formato real y dimensiones antes de
+aceptar; corregir orientación y tratar archivos corruptos y límites de descompresión.
 César prepara las imágenes del piloto por separado; probar el flujo con archivos
 pequeños de prueba no requiere tener entrenado el modelo IA.
 

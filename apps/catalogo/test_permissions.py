@@ -204,3 +204,22 @@ class PermisosCapturaBloque2Tests(TestCase):
         self.assertTrue(tiene_rol(primero, REGISTRO))
         self.assertTrue(tiene_rol(segundo, REGISTRO))
         self.assertFalse(tiene_rol(tercero, REGISTRO))
+
+    def test_acciones_privilegiadas_solo_para_administracion(self):
+        for modelo, codigo in (
+            ('servicio', 'anular_servicio'),
+            ('etiquetabandeja', 'reemplazar_etiquetabandeja'),
+        ):
+            content_type, _ = ContentType.objects.get_or_create(
+                app_label='captura', model=modelo,
+            )
+            permiso, _ = Permission.objects.get_or_create(
+                content_type=content_type, codename=codigo,
+                defaults={'name': codigo},
+            )
+            call_command('configurar_roles', stdout=StringIO())
+            for rol in ROLES:
+                self.assertEqual(
+                    Group.objects.get(name=rol).permissions.filter(pk=permiso.pk).exists(),
+                    rol == ADMINISTRACION,
+                )

@@ -1,6 +1,8 @@
 # Plan de pruebas del bloque 2: bandejas, QR y captura
 
 Responsable: Eduardo. Rama: `eduardo-pruebas-bloque-2`. Fecha: 28/10/2026.
+
+Revisión de guías: se leyeron las ocho páginas de `EVA_Guia_equipo_bloque_2.pdf` y las ocho de `EVA_Guia_equipo_bloque_3.pdf` (27/10). Se mantiene esta rama ya publicada; `eduardo-b2-pruebas` es el nombre propuesto en la guía, no una segunda entrega que deba duplicarse. La consulta remota del 28/10 encontró el contrato de César actualizado en `d375ba2`, sin ramas publicadas `isaac-b2-bandejas-fotos` o `lino-b2-flujos-captura` y con main aún en `8f685bf`.
 Base: `main` integrado en `8f685bf`. Referencia leída: `docs/contrato_bloque_2.md` de `origin/cesar-b2-contratos-permisos`; el contrato del bloque 3 se consultó para delimitar dependencias futuras. No se incorporaron esas ramas.
 
 **Estado: planificación, no implementación ni pruebas ejecutadas del bloque 2.** La base inicial pasó 56 pruebas, según `cierre_bloque_inicial_28_octubre.md`.
@@ -44,6 +46,37 @@ Todos los casos siguientes están pendientes. Verificar estado HTTP/errores, fil
 | B2-23 | Acceder a confirmación antigua desde otro Registro | Conserva 404 aunque el nuevo flujo operativo permita retorno por otro operador |
 | B2-24 | Reemplazo de etiqueta/anulación | Historial y exclusividad preservados; endpoints pendientes de ratificar operador autorizado |
 
+### Ajustes al contrato vigente y cobertura adicional
+
+En B2-24 la autoridad ya está ratificada: **solo Administración**, con motivo, autor y fecha, POST y CSRF. Registro/Cocina no reciben esas acciones. Los permisos personalizados son `captura.anular_servicio` y `captura.reemplazar_etiquetabandeja`, declarados por Isaac mediante modelos/migraciones; no crearlos artificialmente en la base operativa. El reemplazo conserva bandeja, asignación y servicio, revocando el código anterior.
+
+| ID | Situación adicional de guía/contrato | Resultado esperado |
+|---|---|---|
+| B2-25 | Anulación con motivo vacío o usuario sin Administración | Error/denegación sin liberar asignación ni cambiar estado |
+| B2-26 | Administración anula correctamente | ANULADO terminal, motivo/autor/fecha; libera bandeja y conserva historia |
+| B2-27 | Administración reemplaza etiqueta | Una etiqueta vigente; anterior revocada, mismo servicio y asignación |
+| B2-28 | Repetir cargar_bandejas_demo | Lote demo acordado (propuesta: 10), sin duplicar ni sustituir etiquetas/datos operativos |
+| B2-29 | PNG/JPEG vacío o con orientación EXIF | Vacío rechazado; orientación corregida según contrato, dimensiones coherentes |
+| B2-30 | Subida interrumpida o archivo rechazado para etapa ocupada | Sin éxito falso ni eliminación/sobrescritura de la foto aceptada |
+
+Límites de tamaño: el contrato concreto usa **10 MiB = 10.485.760 bytes**, frente al texto genérico de 10 MB de la guía. Probar el valor exacto del setting, uno menos y uno más; tamaño en bytes y máximo de píxeles son restricciones independientes. Probar tipo real incluso cuando el nombre/extensión y MIME del navegador sean engañosos; el resultado de aceptar/rechazar un archivo válido mal etiquetado debe quedar fijado por la política del validador, sin confiar en el dato del navegador.
+
+## Archivos de prueba y preparación de datos
+
+La guía propone separar dentro de Django, sin otra herramienta ni suite duplicada:
+
+| Archivo | Cobertura a implementar | Dependencia concreta |
+|---|---|---|
+| `apps/captura/test_bandejas.py` | Exclusividad, etiquetas, carga repetible, estados/liberación, históricos y concurrencia | Modelos, migraciones y firmas services de Isaac |
+| `apps/captura/test_fotografias.py` | JPEG/PNG, bytes/píxeles, orientación, privacidad y compensación | Validador, excepciones y almacenamiento de Lino |
+| `apps/captura/test_integration_captura.py` | Dos operadores, permisos GET/POST/CSRF, búsqueda y par servido/retorno | Rutas/vistas reales, datos de Isaac y plantillas de Jean |
+
+No se crearán archivos con imports de modelos inexistentes ni pruebas vacías que aparezcan aprobadas. Preparar usuarios Registro A, Registro B, Cocina, Administración y sin rol; un usuario mixto adicional comprueba permisos explícitos. Crear los archivos sintéticos solo en la base/raíz temporal de pruebas; las fotos de César para IA no son un prerrequisito.
+
+Para fallos de almacenamiento, provocar error de escritura/lectura y fallo de BD después de guardar, verificando filas, bytes y estado. Para concurrencia, barreras coordinadas y conexiones independientes; distinguir conflicto de negocio de bloqueo SQLite, sin aceptar un error técnico genérico como prueba de exclusión correcta. El motor final debe repetir los casos.
+
+Manual pendiente: 390×844 y 1440×900, cámara denegada, selección de archivo alternativa, pérdida de red, previsualización/repetición antes de guardar, datos de servicio/bandeja correctos y éxito únicamente tras respuesta real. Guardar referencia de Figma y capturas sin credenciales. Un retorno vacío puede ser una fotografía válida; no confundirlo con un archivo vacío ni inferir porcentaje de sobrante.
+
 ## Dependencias y organización
 
 Isaac publica modelos, migraciones, servicios atómicos y carga repetible de bandejas. Lino fija paths/parámetros y consume esos servicios, además de storage privado. Jean conecta las pantallas reales. No crear endpoints ficticios para que reverse pase ni importar modelos aún inexistentes en la suite funcional actual.
@@ -58,12 +91,32 @@ Almacenamiento: directorio temporal exclusivo, override de settings y dobles con
 - Formato estable de errores e identificador de idempotencia.
 - Retorno de `storage.guardar` y excepciones de guardar/abrir/eliminar.
 - Política de lectura de fotos históricas o servicios cerrados por otro operador.
-- Autoridad para anular servicio o reemplazar etiquetas.
-- Paquetes/versiones autorizados para QR y decodificación de imágenes.
+- Paths concretos de anulación/reemplazo; la autoridad Administración ya está aprobada.
+- Versiones compatibles de los paquetes aprobados: qrcode, Pillow y jsQR local con licencia. La aprobación no implica que estén instalados; no instalar por iniciativa de esta suite.
 
 Estos puntos no impiden preparar escenarios; sí impiden escribir aserciones definitivas contra interfaces inventadas.
 
 ## Cierre y siguiente bloque
+
+### Primer código ejecutable de Eduardo — 28/10/2026
+
+Se añadió `apps/captura/test_permisos_bloque_2.py` con tres pruebas complementarias a las de César. No importa modelos futuros ni inventa endpoints. Los ContentTypes/permisos que representan migraciones futuras se crean solo en la BD temporal de Django:
+
+- La sincronización repetida retira privilegios indebidos en Registro, Cocina y Administración, conservando únicamente captura o acciones privilegiadas según su matriz.
+- Conserva contraseña, grupos ajenos y permisos directos del usuario; el comando no puede usarse para retirar permisos directos extraordinarios que no gestiona.
+- Retirar la membresía Registro elimina el permiso efectivo de captura, consultando una instancia nueva para evitar caché de has_perm.
+
+Ejecución en `.revision-b2`, worktree aislado sobre la base de César `d375ba2`, copiando únicamente el archivo de pruebas nuevo:
+
+```powershell
+..\.venv\Scripts\python.exe -B manage.py test apps.captura.test_permisos_bloque_2 --verbosity 2
+```
+
+**Resultado real: 3 pruebas aprobadas en 0.139 s**, configuración sin problemas y BD temporal creada/eliminada. Esta evidencia no demuestra endpoints, restricciones reales de modelos futuros, flujo servido/retorno o AWS. En main sin la nueva matriz de César no se espera aprobar el caso de asignación de permisos futuros; debe declararse esa dependencia en el PR.
+
+Se amplió luego a `manage.py test apps.catalogo apps.captura --verbosity 1` en esa misma copia: **63 pruebas aprobadas en 26.100 s** (56 integradas anteriores, 4 de César para bloque 2 y 3 complementarias de Eduardo). `makemigrations --check --dry-run`: `No changes detected`. No equivale a 63 escenarios completos del bloque 2: la mayoría corresponde al bloque inicial y a contratos de permisos.
+
+No se crearon archivos vacíos `test_bandejas.py` o `test_fotografias.py` para simular progreso. Su implementación empieza al publicarse contratos ejecutables de Isaac/Lino. No se instalaron paquetes ni se hizo merge.
 
 Tras integrar dependencias: check, suite de catálogo/captura, migraciones sin cambios; recorrido de dos operadores, servido/retorno privado, liberación/reutilización e historia anterior conservada. Registrar commit, comandos, resultados, fallos y evidencias en 390×844 y 1440×900 con referencias Figma.
 

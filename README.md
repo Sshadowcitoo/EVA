@@ -120,6 +120,13 @@ El siguiente trabajo de Eduardo se organiza en el
 para bloques 2 y 3 están publicados en ramas separadas; no deben confundirse con
 funciones integradas en `main` ni con uso real de AWS.
 
+La rama de Eduardo añade `apps/captura/test_permisos_bloque_2.py`, que requiere
+la matriz nueva de César (`d375ba2`). Sus tres casos se aprobaron en copia aislada
+con esa dependencia. Simulan permisos futuros solo en la BD temporal: no acreditan
+modelos de bandejas, fotos ni endpoints que todavía no estén implementados.
+No ejecutar esta rama como una entrega integrada antes de incorporar la base de
+César; el caso de permisos nuevos detectará correctamente su ausencia.
+
 La suite incluye modelos y carga demo de Isaac, helpers de permisos de César,
 pruebas complementarias de Eduardo y recorridos reales de integración: sesiones,
 redirecciones, acceso por rol, CSRF, catálogo, captura y privacidad de confirmaciones.

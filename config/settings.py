@@ -136,6 +136,15 @@ EVA_CAPTURE_MAX_BYTES = 10 * 1024 * 1024
 EVA_CAPTURE_MAX_PIXELS = 20_000_000
 EVA_CAPTURE_ALLOWED_TYPES = ("image/jpeg", "image/png")
 
+# Bloque 3: selección explícita; el adaptador S3 lo implementa Lino.
+# No hay fallback silencioso a disco si se solicita S3.
+EVA_STORAGE_BACKEND = os.environ.get("EVA_STORAGE_BACKEND", "local")
+EVA_S3_BUCKET = os.environ.get("EVA_S3_BUCKET", "")
+EVA_S3_REGION = os.environ.get("EVA_S3_REGION", "")
+EVA_S3_PREFIX = os.environ.get("EVA_S3_PREFIX", "eva/capturas/")
+EVA_CAPTURE_BASE_URL = os.environ.get("EVA_CAPTURE_BASE_URL", "")
+EVA_CAPTURE_LINK_TTL_SECONDS = 300
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 

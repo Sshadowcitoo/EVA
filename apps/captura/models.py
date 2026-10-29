@@ -268,6 +268,7 @@ class FotografiaServicio(models.Model):
         Servicio, on_delete=models.PROTECT, related_name="fotografias"
     )
     etapa = models.CharField(max_length=10, choices=Etapa.choices)
+    backend = models.CharField(max_length=20, default="local")
     clave_archivo = models.CharField(max_length=255)
     tipo_contenido = models.CharField(max_length=50)
     tamano_bytes = models.PositiveIntegerField()

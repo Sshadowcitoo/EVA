@@ -1,0 +1,9 @@
+.capture-link-panel { text-align: center; }
+.capture-qr { display: block; width: min(240px, 100%); height: auto; margin: 24px auto; border: 12px solid white; background: white; }
+[data-link-status] { padding: 18px; border-radius: 12px; background: #eaf4fe; color: #174976; line-height: 1.6; overflow-wrap: anywhere; }
+[data-capture-link][data-state="COMPLETADA"] [data-link-status] { background: #e6f5eb; color: #19613a; }
+[data-capture-link][data-state="EXPIRADA"] [data-link-status],
+[data-capture-link][data-state="CANCELADA"] [data-link-status] { background: #fff3dc; color: #765000; }
+[data-link-qr][hidden], [data-link-retry][hidden], [data-link-result][hidden], [data-link-cancel][hidden] { display: none; }
+.capture-link-panel time { overflow-wrap: anywhere; }
+.capture-link-panel button { margin: 12px 0; }

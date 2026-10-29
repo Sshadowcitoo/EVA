@@ -1,0 +1,18 @@
+{% extends "captura/base_operacion.html" %}
+{% block title %}Estado de captura | EVA{% endblock %}
+{% block heading %}Estado del servicio{% endblock %}
+{% block subtitle %}Bandeja {{ bandeja.numero }} · {{ plato_nombre }}{% endblock %}
+{% block captura_content %}
+<section class="panel" role="status">
+  {% if estado == 'EN_ESPERA_RETORNO' %}
+  <h2>Servido registrado</h2><p>La fotografía inicial está guardada. Al regresar, escanea la misma bandeja para registrar el retorno.</p>
+  {% elif estado == 'PAR_COMPLETO' %}
+  <h2>Par de fotografías completo</h2><p>Se guardaron servido y retorno. El análisis y la revisión de Cocina son etapas posteriores.</p>
+  {% elif estado == 'ANULADO' %}
+  <h2>Servicio anulado</h2><p>Este servicio ya no acepta capturas.</p>
+  {% else %}
+  <h2>Fotografía pendiente</h2><p>Aún no hay confirmación de guardado para esta etapa.</p>
+  {% endif %}
+  {% if continuar_url %}<a class="button primary-button" href="{{ continuar_url }}">Continuar</a>{% endif %}
+</section>
+{% endblock %}

@@ -1,0 +1,36 @@
+<div class="capture-grid">
+  <section class="panel">
+    <h2>Datos del servicio</h2>
+    <p class="muted">Confirma que la bandeja corresponde al mismo plato.</p>
+    <dl class="capture-details">
+      <dt>Bandeja</dt><dd>{{ bandeja.numero|default:"Sin identificar" }}</dd>
+      <dt>Plato</dt><dd>{{ plato_nombre|default:"Sin confirmar" }}</dd>
+      <dt>Porción</dt><dd>{{ porcion_nombre|default:"Sin confirmar" }}</dd>
+      <dt>Etapa</dt><dd>{{ etapa }}</dd>
+    </dl>
+    {% if foto_servido_url %}<h3>Foto del servido</h3><img class="capture-image" src="{{ foto_servido_url }}" alt="Fotografía inicial del mismo servicio">{% endif %}
+    <div class="info-box">
+      <h3>Antes de guardar</h3>
+      <p>Fotografía desde arriba, con el plato completo y luz estable. Mantén condiciones comparables al servido.</p>
+      <p>Si el caldo oculta yuca o pescado, no lo interpretes como ausencia de alimento.</p>
+    </div>
+  </section>
+  <section class="panel capture-photo-panel">
+    <h2>Foto de {{ etapa|lower }}</h2>
+    <form method="post" enctype="multipart/form-data" {% if guardar_url %}action="{{ guardar_url }}"{% endif %} data-photo-form
+          data-max-bytes="{{ max_bytes|default:'10485760' }}" data-max-pixels="{{ max_pixels|default:'20000000' }}">
+      {% csrf_token %}
+      {% if form %}
+      <div class="capture-fields">{{ form.as_p }}</div>
+      {% else %}<p class="muted">El formulario de captura aún no está conectado.</p>{% endif %}
+      <div data-photo-enhancement hidden>
+        <img data-photo-preview class="capture-image" alt="Vista previa de la fotografía seleccionada" hidden>
+        <button type="button" class="button secondary-button" data-photo-repeat>Elegir otra foto</button>
+      </div>
+      <div data-photo-empty class="capture-empty"><span aria-hidden="true">▧</span><p>Selecciona o toma una fotografía para revisarla aquí.</p></div>
+      <p class="muted">JPEG o PNG, hasta 10 MiB y 20 megapíxeles. Puedes seleccionar un archivo si no puedes usar la cámara.</p>
+      <p data-photo-status role="status" aria-live="polite"></p>
+      <button class="button primary-button" data-photo-submit {% if not operacion_habilitada or not guardar_url or not form %}disabled{% endif %}>Guardar fotografía</button>
+    </form>
+  </section>
+</div>

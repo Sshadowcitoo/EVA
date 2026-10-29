@@ -1,8 +1,11 @@
+import secrets
 import uuid
 
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models, transaction
+from django.db.models import Q
+from django.utils import timezone
 
 from apps.catalogo import models as catalogo
 
@@ -18,6 +21,12 @@ class Servicio(models.Model):
         PEQUENA = "pequena", "Pequeña"
         REGULAR = "regular", "Regular"
         GRANDE = "grande", "Grande"
+
+    class EstadoCaptura(models.TextChoices):
+        PENDIENTE_SERVIDO = "PENDIENTE_SERVIDO", "Pendiente de servido"
+        EN_ESPERA_RETORNO = "EN_ESPERA_RETORNO", "En espera de retorno"
+        PAR_COMPLETO = "PAR_COMPLETO", "Par completo"
+        ANULADO = "ANULADO", "Anulado"
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 
@@ -52,6 +61,24 @@ class Servicio(models.Model):
     )
     fecha_creacion = models.DateTimeField(auto_now_add=True)
 
+    # Estado de captura (fotos). Vacío en los servicios históricos, que no
+    # tienen captura. No indica análisis, revisión ni aprobación.
+    estado_captura = models.CharField(
+        max_length=20, choices=EstadoCaptura.choices, blank=True, default=""
+    )
+    anulado_motivo = models.TextField(blank=True, default="")
+    anulado_por = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        null=True,
+        blank=True,
+        on_delete=models.PROTECT,
+        related_name="servicios_anulados",
+    )
+    anulado_en = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        permissions = [("anular_servicio", "Puede anular servicios")]
+
     def __str__(self):
         return f"{self.id} - {self.get_plato_display()}"
 
@@ -62,8 +89,13 @@ class Servicio(models.Model):
         return self.porcion_nombre or self.tipo_porcion
 
     @classmethod
-    def registrar(cls, *, plato, porcion, usuario=None):
-        """Crea un servicio con su instantánea de catálogo en una sola transacción."""
+    def registrar(cls, *, plato, porcion, usuario=None, bandeja=None):
+        """Crea un servicio con su instantánea de catálogo en una sola transacción.
+
+        Sin bandeja se comporta como antes (servicio sin captura). Con bandeja
+        también la asigna y deja el servicio pendiente de servido; si algo falla
+        no queda ninguna fila.
+        """
         with transaction.atomic():
             try:
                 plato_actual = catalogo.Plato.objects.get(pk=plato.pk, activo=True)
@@ -86,6 +118,9 @@ class Servicio(models.Model):
                 plato_catalogo=plato_actual,
                 porcion_catalogo=porcion_actual,
                 creado_por=usuario,
+                estado_captura=(
+                    cls.EstadoCaptura.PENDIENTE_SERVIDO if bandeja is not None else ""
+                ),
             )
 
             relaciones = catalogo.PlatoComponente.objects.filter(
@@ -99,6 +134,10 @@ class Servicio(models.Model):
                 )
                 for rel in relaciones
             )
+            if bandeja is not None:
+                from apps.captura import services
+
+                services.asignar_bandeja(servicio=servicio, bandeja=bandeja)
             return servicio
 
 
@@ -122,3 +161,135 @@ class ServicioComponente(models.Model):
 
     def __str__(self):
         return f"{self.servicio_id} - {self.componente_nombre}"
+
+
+def generar_codigo_etiqueta():
+    return secrets.token_urlsafe(16)
+
+
+class Bandeja(models.Model):
+    """Soporte físico reutilizable. No representa una comida."""
+
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    numero = models.PositiveIntegerField(unique=True)
+    activo = models.BooleanField(default=True)
+
+    class Meta:
+        ordering = ["numero"]
+
+    def __str__(self):
+        return f"Bandeja {self.numero}"
+
+
+class EtiquetaBandeja(models.Model):
+    """Código del QR físico. Solo una vigente por bandeja; se revoca, no se borra."""
+
+    codigo = models.CharField(
+        max_length=32, unique=True, default=generar_codigo_etiqueta, editable=False
+    )
+    bandeja = models.ForeignKey(
+        Bandeja, on_delete=models.PROTECT, related_name="etiquetas"
+    )
+    emitida_en = models.DateTimeField(default=timezone.now)
+    revocada_en = models.DateTimeField(null=True, blank=True)
+    revocada_por = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        null=True,
+        blank=True,
+        on_delete=models.PROTECT,
+        related_name="etiquetas_revocadas",
+    )
+    motivo_revocacion = models.TextField(blank=True, default="")
+
+    class Meta:
+        ordering = ["-emitida_en"]
+        permissions = [
+            (
+                "reemplazar_etiquetabandeja",
+                "Puede reemplazar la etiqueta de una bandeja",
+            )
+        ]
+        constraints = [
+            models.UniqueConstraint(
+                fields=["bandeja"],
+                condition=Q(revocada_en__isnull=True),
+                name="etiqueta_vigente_unica_por_bandeja",
+            )
+        ]
+
+    @property
+    def vigente(self):
+        return self.revocada_en is None
+
+    def __str__(self):
+        return f"{self.bandeja} ({'vigente' if self.vigente else 'revocada'})"
+
+
+class AsignacionBandeja(models.Model):
+    """Uso de una bandeja por un servicio. Abierta mientras fin es nulo."""
+
+    servicio = models.ForeignKey(
+        Servicio, on_delete=models.PROTECT, related_name="asignaciones"
+    )
+    bandeja = models.ForeignKey(
+        Bandeja, on_delete=models.PROTECT, related_name="asignaciones"
+    )
+    inicio = models.DateTimeField(default=timezone.now)
+    fin = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        ordering = ["-inicio"]
+        constraints = [
+            models.UniqueConstraint(
+                fields=["bandeja"],
+                condition=Q(fin__isnull=True),
+                name="una_asignacion_abierta_por_bandeja",
+            ),
+            models.UniqueConstraint(
+                fields=["servicio"],
+                condition=Q(fin__isnull=True),
+                name="una_asignacion_abierta_por_servicio",
+            ),
+        ]
+
+    def __str__(self):
+        return f"{self.servicio_id} -> {self.bandeja}"
+
+
+class FotografiaServicio(models.Model):
+    """Fotografía aceptada de una etapa. Guarda metadatos; el archivo vive en storage."""
+
+    class Etapa(models.TextChoices):
+        SERVIDO = "SERVIDO", "Servido"
+        RETORNO = "RETORNO", "Retorno"
+
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    servicio = models.ForeignKey(
+        Servicio, on_delete=models.PROTECT, related_name="fotografias"
+    )
+    etapa = models.CharField(max_length=10, choices=Etapa.choices)
+    clave_archivo = models.CharField(max_length=255)
+    tipo_contenido = models.CharField(max_length=50)
+    tamano_bytes = models.PositiveIntegerField()
+    ancho = models.PositiveIntegerField()
+    alto = models.PositiveIntegerField()
+    autor = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.PROTECT,
+        related_name="fotografias_servicio",
+    )
+    fecha = models.DateTimeField(auto_now_add=True)
+    vigente = models.BooleanField(default=True)
+
+    class Meta:
+        ordering = ["fecha"]
+        constraints = [
+            models.UniqueConstraint(
+                fields=["servicio", "etapa"],
+                condition=Q(vigente=True),
+                name="fotografia_vigente_unica_por_servicio_etapa",
+            )
+        ]
+
+    def __str__(self):
+        return f"{self.servicio_id} - {self.etapa}"

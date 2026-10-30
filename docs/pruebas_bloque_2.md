@@ -7,6 +7,8 @@ Base: `main` integrado en `8f685bf`. Referencia leída: `docs/contrato_bloque_2.
 
 **Estado: planificación, no implementación ni pruebas ejecutadas del bloque 2.** La base inicial pasó 56 pruebas, según `cierre_bloque_inicial_28_octubre.md`.
 
+**Actualización 29/10:** ya hay implementación parcial de pruebas de dominio y almacenamiento. La [revisión actual](revision_bloques_29_octubre.md) sustituye el estado anterior para esta entrega: 96 pruebas combinadas, 94 aprobadas y dos fallos documentados. No declarar el bloque ni la suite completa aprobados. Los estados/ausencias indicados más abajo corresponden a la preparación inicial salvo actualización explícita.
+
 ## Accesos: dos políticas distintas
 
 - Confirmación anterior: solo Registro creador. Conservar el 404 para servicios ajenos o históricos sin creador.

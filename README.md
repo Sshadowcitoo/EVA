@@ -127,6 +127,12 @@ modelos de bandejas, fotos ni endpoints que todavía no estén implementados.
 No ejecutar esta rama como una entrega integrada antes de incorporar la base de
 César; el caso de permisos nuevos detectará correctamente su ausencia.
 
+Actualización del 29 de octubre: se añadieron `test_bandejas.py` y
+`test_fotografias.py` contra servicios Isaac y storage Lino, en copia aislada.
+La suite combinada ejecutó 96 pruebas: **94 aprobadas y 2 fallos**. No es un
+bloque terminado. Consultar [fallos y evidencia](docs/revision_bloques_29_octubre.md)
+para las dependencias, reproducción y funciones que todavía faltan.
+
 La suite incluye modelos y carga demo de Isaac, helpers de permisos de César,
 pruebas complementarias de Eduardo y recorridos reales de integración: sesiones,
 redirecciones, acceso por rol, CSRF, catálogo, captura y privacidad de confirmaciones.

@@ -1,0 +1,52 @@
+{% extends "captura/base_operacion.html" %}
+{% load static %}
+{% block title %}Localizar bandeja | EVA{% endblock %}
+{% block heading %}{% if es_retorno %}Registrar retorno{% else %}Identificar bandeja{% endif %}{% endblock %}
+{% block subtitle %}Escanea la etiqueta o escribe el número visible de la bandeja.{% endblock %}
+{% block captura_content %}
+<section class="capture-lookup">
+  <form method="get" {% if buscar_url %}action="{{ buscar_url }}"{% endif %} data-lookup>
+    <div class="capture-search-field">
+    <label for="numero-bandeja">Número de bandeja</label>
+    <input id="numero-bandeja" name="numero" type="text" maxlength="64" autocomplete="off" placeholder="Ejemplo: 001">
+    </div>
+    <button class="button primary-button" {% if not operacion_habilitada or not buscar_url %}disabled{% endif %}>Buscar registro</button>
+    {% if lector_habilitado %}
+    <div class="capture-scanner" data-qr-reader>
+      <details><summary>Escanear etiqueta QR</summary>
+        <label for="codigo-etiqueta">Código de etiqueta</label>
+        <input id="codigo-etiqueta" name="etiqueta" type="text" maxlength="2048" autocomplete="off" data-qr-value>
+        <button type="button" class="button secondary-button" data-qr-start>Activar cámara</button>
+        <button type="button" class="button secondary-button" data-qr-stop hidden>Detener cámara</button>
+        <video class="capture-image" data-qr-video autoplay playsinline muted hidden aria-label="Cámara para escanear la etiqueta"></video>
+        <canvas data-qr-canvas hidden></canvas>
+        <p role="status" data-qr-status aria-live="polite">El permiso de cámara se solicita al activarla.</p>
+      </details>
+    </div>
+    {% endif %}
+  </form>
+  {% if not bandeja %}
+  <div class="info-box capture-search-help">
+    <h2>Busca una bandeja pendiente</h2>
+    <p>Introduce el número visible o escanea su etiqueta. Solo tras encontrarla se muestran plato, porción y foto inicial para confirmar la correspondencia.</p>
+    <p>El código identifica la bandeja; debes tener una sesión con rol Registro.</p>
+  </div>
+  {% endif %}
+</section>
+{% if bandeja %}
+<section class="panel capture-operation">
+  <h2>Bandeja {{ bandeja.numero }}</h2>
+  {% if servicio %}<p>{{ plato_nombre }} · {{ porcion_nombre }}</p>{% endif %}
+  {% if form and confirmar_url and operacion_habilitada %}
+  <form method="post" action="{{ confirmar_url }}">
+    {% csrf_token %}{{ form.as_p }}
+    <button class="button primary-button">Confirmar bandeja y continuar</button>
+  </form>
+  {% endif %}
+</section>
+{% endif %}
+{% endblock %}
+{% block captura_scripts %}{% if lector_habilitado %}
+<script src="{% static 'vendor/jsqr/jsQR.js' %}" defer></script>
+<script src="{% static 'js/qr_reader.js' %}" defer></script>
+{% endif %}{% endblock %}

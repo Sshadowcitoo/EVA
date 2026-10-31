@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% load static %}
+{% block navigation %}
+{% if puede_registrar %}
+<a class="nav-link {% if not es_retorno %}active{% endif %}" href="{% url 'captura:nueva_bandeja' %}">Nueva bandeja</a>
+{% if retorno_url %}<a class="nav-link {% if es_retorno %}active{% endif %}" href="{{ retorno_url }}">Registrar retorno</a>{% else %}<span class="nav-link unavailable">Registrar retorno<small>Pendiente de conexión</small></span>{% endif %}
+{% endif %}
+{% if puede_administrar_catalogo %}<a class="nav-link" href="{% url 'catalogo:platos' %}">Catálogo</a>{% endif %}
+{% if puede_cocina %}<a class="nav-link" href="{% url 'cuentas:cocina_pendiente' %}">Cocina</a>{% endif %}
+{% endblock %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/captura.css' %}">
+{% if error %}<div class="error-summary" role="alert">{{ error }}</div>{% endif %}
+{% if not operacion_habilitada %}
+<p class="info-box" role="status">Esta operación aún no está disponible. No se ha guardado ninguna fotografía.</p>
+{% endif %}
+{% block captura_content %}{% endblock %}
+<section class="process-panel" aria-label="Etapas del servicio">
+  <ol class="process-steps">
+    <li><span>01</span> Registro</li>
+    <li {% if etapa == 'SERVIDO' %}class="current" aria-current="step"{% endif %}><span>02</span> Foto servido</li>
+    <li {% if estado == 'EN_ESPERA_RETORNO' %}class="current" aria-current="step"{% endif %}><span>03</span> En espera</li>
+    <li {% if etapa == 'RETORNO' %}class="current" aria-current="step"{% endif %}><span>04</span> Foto retorno</li>
+    <li><span>05</span> Análisis y revisión</li>
+  </ol>
+</section>
+<script src="{% static 'js/captura.js' %}" defer></script>
+{% block captura_scripts %}{% endblock %}
+{% endblock %}

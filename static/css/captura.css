@@ -1,0 +1,34 @@
+.capture-operation { margin-bottom: 24px; max-width: 760px; }
+.capture-lookup form { display: flex; align-items: center; flex-wrap: wrap; gap: 16px; }
+.capture-search-field { display: grid; gap: 8px; width: min(580px, 100%); padding: 14px; border: 1px solid #cbd5e1; border-radius: 12px; background: white; }
+.capture-search-field label { font-size: 12px; text-transform: uppercase; color: #41516a; font-weight: 700; }
+.capture-search-field input { border: 0; padding: 4px 0; font: inherit; width: 100%; min-width: 0; }
+.capture-search-help { margin: 32px 0; padding: 24px; min-height: 170px; }
+.capture-scanner { width: 100%; max-width: 580px; }
+.capture-scanner summary { cursor: pointer; padding: 12px 0; color: #1768b0; }
+.capture-scanner input { width: 100%; padding: 12px; font: inherit; }
+.capture-photo-panel { background: #f0f5fa; border-color: #c5d3e3; }
+.capture-empty { padding: 24px 12px; text-align: center; color: #52647d; }
+.capture-empty > span { font-size: 42px; color: #2479c9; }
+.capture-empty[hidden], [data-qr-video][hidden] { display: none; }
+.capture-operation form, .capture-fields p { display: grid; gap: 10px; }
+.capture-operation input, .capture-fields input, .capture-fields select {
+  width: 100%; min-width: 0; max-width: 100%; padding: 12px;
+  border: 1px solid #cbd5e1; border-radius: 8px; font: inherit;
+}
+.capture-image { display: block; width: 100%; max-height: 360px; object-fit: contain; border-radius: 12px; background: #f3f4f6; margin: 16px 0; }
+.capture-image[hidden], [data-photo-enhancement][hidden] { display: none; }
+.capture-details { display: grid; grid-template-columns: auto 1fr; gap: 12px 20px; overflow-wrap: anywhere; }
+.capture-details dt { color: #52647d; }
+.capture-details dd { margin: 0; font-weight: 700; }
+.capture-fields .errorlist, [data-photo-status][data-error="true"] { color: #a91c30; }
+.capture-fields .helptext { color: #52647d; font-size: 13px; }
+.capture-operation button, [data-photo-form] button { margin: 8px 8px 8px 0; }
+.button:disabled { opacity: .55; cursor: not-allowed; }
+.button:focus-visible, input:focus-visible, select:focus-visible, a:focus-visible { outline: 3px solid #2479c9; outline-offset: 3px; }
+@media (max-width: 600px) {
+  .capture-lookup form { align-items: stretch; flex-direction: column; }
+  .capture-details { grid-template-columns: 1fr; gap: 6px; }
+  .capture-details dd { margin-bottom: 12px; }
+  [data-photo-form] button { width: 100%; margin-right: 0; }
+}

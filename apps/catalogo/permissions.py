@@ -25,6 +25,9 @@ PERMISOS_POR_ROL = {
         "captura.view_asignacionbandeja",
         "captura.add_fotografiaservicio",
         "captura.view_fotografiaservicio",
+        # Bloque 3: solicitudes temporales; no concede edición/borrado genéricos.
+        "captura.add_sesioncaptura",
+        "captura.view_sesioncaptura",
         "catalogo.view_plato",
         "catalogo.view_componente",
         "catalogo.view_platocomponente",

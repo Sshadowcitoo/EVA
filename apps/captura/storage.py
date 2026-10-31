@@ -1,6 +1,6 @@
 
 import uuid
-from pathlib import Path
+from pathlib import Path, PureWindowsPath
 
 from django.conf import settings
 
@@ -19,6 +19,9 @@ def generar_clave(servicio_id, etapa, extension):
 
 
 def _ruta(clave):
+    # La clave debe ser relativa. PureWindowsPath detecta "/x", "\\x" y "C:\\x".
+    if not clave or PureWindowsPath(clave).anchor:
+        raise ErrorAlmacenamiento("Clave de almacenamiento no válida.")
     raiz = Path(settings.EVA_CAPTURE_PRIVATE_ROOT).resolve()
     ruta = (raiz / clave).resolve()
     # Impide claves como "../../config/settings.py" que escapen de la carpeta.

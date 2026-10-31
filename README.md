@@ -1,5 +1,25 @@
 # EVA: sistema de análisis visual de sobrantes alimentarios
 
+## Preparación de Eduardo: bloque 3
+
+Esta rama parte de `cesar-b3-aws-configuracion` (`7121e21`), no de una integración
+final del bloque 3 en main. Añade el [plan de pruebas](docs/pruebas_bloque_3.md)
+y `apps/captura/test_configuracion_bloque3.py`. Las instrucciones históricas de
+integración que siguen no significan que S3 o captura vinculada ya funcionen.
+
+Se ejecutaron las seis comprobaciones de configuración de César y tres nuevas:
+**9 pruebas aprobadas**, sin acceso AWS. Se pueden repetir con:
+
+```powershell
+.\.venv\Scripts\python.exe manage.py test apps.captura.test_configuration apps.captura.test_configuracion_bloque3
+```
+
+Faltan servicios de SesionCaptura, endpoints/adaptador S3 y conservación; no hay
+instrucciones de operación real hasta que se integren. No activar backend s3
+solo para probar settings, crear recursos de pago ni copiar credenciales a Git.
+El ensayo de nube requerirá autorización AWS/prefijo y HTTPS en dos dispositivos.
+El plan distingue pruebas con dobles de la evidencia real todavía pendiente.
+
 Proyecto de Construcción de Software, Ingeniería de Software, UNEMI.
 
 ## Estado de esta rama

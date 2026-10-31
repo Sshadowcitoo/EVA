@@ -10,6 +10,7 @@ import hashlib
 import secrets
 from datetime import timedelta
 
+from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import IntegrityError, transaction
 from django.utils import timezone
@@ -188,7 +189,7 @@ def reemplazar_etiqueta(*, bandeja, motivo, usuario):
 
 # --- Sesión de captura temporal (bloque 3) ---------------------------------
 
-MINUTOS_SESION_CAPTURA = 5  # cambiarlo exige modificar el contrato y las pruebas
+MINUTOS_SESION_CAPTURA = 5  # Referencia del piloto; el plazo usa EVA_CAPTURE_LINK_TTL_SECONDS.
 Sesion = SesionCaptura.Estado
 _ESTADO_REQUERIDO = {
     Etapa.SERVIDO: Estado.PENDIENTE_SERVIDO,
@@ -225,7 +226,7 @@ def crear_sesion_captura(*, servicio, etapa, usuario):
                     creado_por=usuario,
                     token_digest=_digest(token),
                     creada_en=ahora,
-                    expira_en=ahora + timedelta(minutes=MINUTOS_SESION_CAPTURA),
+                    expira_en=ahora + timedelta(seconds=settings.EVA_CAPTURE_LINK_TTL_SECONDS),
                 )
         except IntegrityError:
             raise ValidationError("Ya se está creando otra solicitud; inténtalo de nuevo.")
@@ -290,7 +291,9 @@ def consumir_sesion(
             hash_sha256=hash_sha256,
             version_id=version_id,
         )
-        filas = SesionCaptura.objects.filter(pk=sesion.pk, estado=Sesion.PENDIENTE).update(
+        filas = SesionCaptura.objects.filter(
+            pk=sesion.pk, estado=Sesion.PENDIENTE, expira_en__gt=timezone.now()
+        ).update(
             estado=Sesion.COMPLETADA, completada_en=timezone.now(), fotografia=foto
         )
         if filas != 1:

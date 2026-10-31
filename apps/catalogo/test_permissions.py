@@ -52,7 +52,11 @@ class RolesTests(TestCase):
         self.assertTrue(self.user.has_perm("captura.add_servicio"))
         self.assertFalse(self.user.has_perm("captura.change_servicio"))
         admin = Group.objects.get(name=ADMINISTRACION)
-        self.assertFalse(admin.permissions.filter(content_type__app_label="captura").exists())
+        self.assertSetEqual(set(admin.permissions.filter(
+            content_type__app_label="captura",
+        ).values_list("codename", flat=True)), {
+            "anular_servicio", "reemplazar_etiquetabandeja",
+        })
 
     def test_modelos_pendientes_se_informan_sin_inventar_permisos(self):
         codigo = "catalogo.view_modelo_pendiente_de_prueba"
@@ -165,6 +169,9 @@ class PermisosCapturaBloque2Tests(TestCase):
                 )
 
     def test_modelos_ausentes_no_se_crean_y_permisos_quedan_pendientes(self):
+        # Simular el estado previo a las migraciones únicamente en la BD temporal
+        # de TestCase: los modelos ya existen en la aplicación integrada.
+        ContentType.objects.filter(app_label='captura', model__in=self.permisos).delete()
         salida = StringIO()
         call_command('configurar_roles', stdout=salida)
         self.assertIn('captura.add_fotografiaservicio', salida.getvalue())
@@ -189,6 +196,8 @@ class PermisosCapturaBloque2Tests(TestCase):
                 f'{accion}_{modelo}'
                 for modelo, acciones in self.permisos.items() for accion in acciones
             } if rol == REGISTRO else set()
+            if rol == ADMINISTRACION:
+                esperados = {'reemplazar_etiquetabandeja'}
             self.assertEqual(asignados, esperados, rol)
 
     def test_dos_operadores_tienen_el_rol_sin_asignar_otros_usuarios(self):

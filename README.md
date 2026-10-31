@@ -1,47 +1,32 @@
 # EVA: sistema de análisis visual de sobrantes alimentarios
 
-## Preparación de Eduardo: bloque 3
-
-Esta rama parte de `cesar-b3-aws-configuracion` (`7121e21`), no de una integración
-final del bloque 3 en main. Añade el [plan de pruebas](docs/pruebas_bloque_3.md)
-y `apps/captura/test_configuracion_bloque3.py`. Las instrucciones históricas de
-integración que siguen no significan que S3 o captura vinculada ya funcionen.
-
-Se ejecutaron las seis comprobaciones de configuración de César y tres nuevas:
-**9 pruebas aprobadas**, sin acceso AWS. Se pueden repetir con:
-
-```powershell
-.\.venv\Scripts\python.exe manage.py test apps.captura.test_configuration apps.captura.test_configuracion_bloque3
-```
-
-Faltan servicios de SesionCaptura, endpoints/adaptador S3 y conservación; no hay
-instrucciones de operación real hasta que se integren. No activar backend s3
-solo para probar settings, crear recursos de pago ni copiar credenciales a Git.
-El ensayo de nube requerirá autorización AWS/prefijo y HTTPS en dos dispositivos.
-El plan distingue pruebas con dobles de la evidencia real todavía pendiente.
-
 Proyecto de Construcción de Software, Ingeniería de Software, UNEMI.
 
-## Estado de esta rama
+## Estado integrado al 31 de octubre de 2026
 
-Integra los aportes del bloque inicial de Isaac (modelos), César (roles y configuración),
-Lino (funciones), Jean (pantallas) y Eduardo (pruebas), y corrige sus puntos de conexión.
-El bloque inicial quedó integrado en `main` mediante el PR #13, commit `8f685bf`.
-No equivale al sistema completo. Esta rama prepara su cierre documental y el plan
-de pruebas del bloque 2; todavía no implementa fotografías, bandejas ni QR.
+Integra las entregas de los bloques 2 y 3 de César, Isaac, Lino, Jean y Eduardo.
+El alcance comprobado y los pendientes están en
+[la revisión de integración](docs/integracion_31_octubre_2026.md).
 
-Funciones disponibles:
+Disponible sobre almacenamiento local privado:
 
-- Login y logout por POST, con destino por rol.
-- Roles independientes Registro, Cocina y Administración; `is_staff` no concede un rol.
-- Catálogo editable de platos, componentes y porciones; activar/desactivar sin borrar.
-- Registro con opciones activas, usuario creador y composición histórica.
-- Confirmación accesible solo al usuario de Registro que creó el servicio.
-- Pantallas conectadas al servidor, tomando como base los componentes de Figma.
+- Login, roles independientes y catálogo editable del bloque inicial.
+- Bandejas, etiquetas revocables, asignaciones y fotografías por etapa.
+- Búsqueda por número o etiqueta, alta de servicio y captura servido/retorno.
+- Vista previa y lector QR local, con alternativa manual.
+- Retorno por otro operador de Registro, autoría por foto y liberación de bandeja.
+- Lectura privada de imágenes y preservación de la confirmación histórica del creador.
+- Re-codificación JPEG/PNG sin EXIF, límites compartidos y compensación de archivos.
 
-Cocina puede iniciar sesión y ve una página de funciones pendientes. No dispone aún
-de análisis ni revisión de fotografías. Administración no hereda Registro: asignar
-ambos grupos expresamente si una persona debe cumplir ambas funciones.
+Del bloque 3 se integran configuración, sesiones temporales de captura, servicios
+de dominio, metadatos y plantillas/JavaScript. **Todavía faltan el adaptador S3 y
+los endpoints de vinculación**: no se acredita captura real PC→teléfono→S3.
+Seleccionar S3 sin su adaptador rechaza la carga; no escribe silenciosamente en local.
+
+Cocina ve su pantalla pendiente: no dispone aún de análisis ni revisión de fotos.
+Administración no hereda Registro ni recibe borrado genérico: conserva únicamente
+las acciones aprobadas de anulación y reemplazo de etiqueta, además del catálogo.
+Sus pantallas específicas de esas acciones todavía están pendientes.
 
 ## Catálogo inicial del escenario ficticio
 
@@ -123,55 +108,34 @@ sin rol no inicia sesión en EVA. La raíz `/` aún puede responder 404.
 .\.venv\Scripts\python.exe manage.py makemigrations --check --dry-run
 ```
 
-Comprobación de la integración el 27 de octubre de 2026, con Django 5.2.17:
+Comprobación integrada del 31 de octubre de 2026:
 
-- `check`: sin problemas.
-- 56 pruebas aprobadas en una base temporal, incluidas migraciones históricas.
-- `makemigrations --check --dry-run`: sin cambios detectados.
+- `check`: sin incidencias.
+- **142 pruebas Django aprobadas**, sobre base temporal y archivos temporales.
+- **7 pruebas JavaScript aprobadas**: `node --test tests/frontend/*.test.cjs`.
+- `makemigrations --check --dry-run`: sin cambios.
+- `git diff --check`: correcto.
 
-Revisión repetida el 28 de octubre sobre `8f685bf`, en un worktree aislado:
-`check` sin problemas, **56 pruebas aprobadas en 29.464 s** y
-`makemigrations --check --dry-run` sin cambios. No se alteró la base local del usuario.
-La aceptación visual móvil/escritorio sigue pendiente; véase el
-[registro de cierre](docs/cierre_bloque_inicial_28_octubre.md).
-
-El siguiente trabajo de Eduardo se organiza en el
-[plan de pruebas del bloque 2](docs/pruebas_bloque_2.md). Los contratos de César
-para bloques 2 y 3 están publicados en ramas separadas; no deben confundirse con
-funciones integradas en `main` ni con uso real de AWS.
-
-La rama de Eduardo añade `apps/captura/test_permisos_bloque_2.py`, que requiere
-la matriz nueva de César (`d375ba2`). Sus tres casos se aprobaron en copia aislada
-con esa dependencia. Simulan permisos futuros solo en la BD temporal: no acreditan
-modelos de bandejas, fotos ni endpoints que todavía no estén implementados.
-No ejecutar esta rama como una entrega integrada antes de incorporar la base de
-César; el caso de permisos nuevos detectará correctamente su ausencia.
-
-Actualización del 29 de octubre: se añadieron `test_bandejas.py` y
-`test_fotografias.py` contra servicios Isaac y storage Lino, en copia aislada.
-La suite combinada ejecutó 96 pruebas: **94 aprobadas y 2 fallos**. No es un
-bloque terminado. Consultar [fallos y evidencia](docs/revision_bloques_29_octubre.md)
-para las dependencias, reproducción y funciones que todavía faltan.
-
-La suite incluye modelos y carga demo de Isaac, helpers de permisos de César,
-pruebas complementarias de Eduardo y recorridos reales de integración: sesiones,
-redirecciones, acceso por rol, CSRF, catálogo, captura y privacidad de confirmaciones.
-Las siete pruebas del avance se adaptaron al contrato de catálogo y sesión.
-La integración final de las pantallas con móvil/escritorio debe revisarse también
-visualmente; las pruebas HTTP no certifican una coincidencia exacta con Figma.
+La suite incluye un recorrido HTTP completo servido/retorno con dos operadores,
+roles/CSRF, lectura privada, rechazo de duplicados y compensación ante fallos.
+No mide precisión de IA ni acredita S3, cámara física o concurrencia simultánea real.
+Las revisiones del 28 y 29 de octubre se conservan como evidencia histórica;
+sus fallos y pendientes no sustituyen este estado integrado.
 
 ## Pendiente del proyecto
 
-- Identificación física de bandejas y QR; vinculación de captura entre dispositivos.
-- Fotografías inicial/retorno, protocolo y controles de calidad.
+- Impresión/ensayo de etiquetas físicas y endpoints de vinculación entre dispositivos.
+- Versionar protocolo/checklist y probar montaje/cámara física; el guardado local servido/retorno ya está integrado.
 - Microservicio visual, conjunto de imágenes anotadas y evaluación independiente.
 - Revisión de Cocina, histórico analítico y percepción del comensal.
 - Recomendaciones, decisiones y seguimiento de pruebas controladas.
-- AWS S3 privado, política de conservación de imágenes/máscaras y despliegue.
+- Adaptador S3, conservación de imágenes/máscaras y publicación versionada del despliegue.
 - Contexto/horario y demás decisiones de datos aún no ratificadas.
 
-La configuración actual usa SQLite y ajustes de desarrollo; no es un despliegue
-operativo. S3 será almacenamiento de archivos, no el servidor Django ni la IA.
+La configuración predeterminada del repositorio usa SQLite y ajustes de desarrollo.
+Integrar Git no actualiza automáticamente el servidor público. Los ajustes operativos
+que existen en ese servidor requieren su publicación y revisión separadas. S3 es
+almacenamiento de archivos, no el servidor Django ni la IA.
 
 ## Trabajo en equipo
 

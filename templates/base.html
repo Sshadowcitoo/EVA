@@ -25,10 +25,8 @@
             Nueva bandeja
           </a>
 
-          <span class="nav-link unavailable">
-            Registrar retorno
-            <small>Pendiente</small>
-          </span>
+          <a class="nav-link" href="{% url 'captura:resolver_bandeja' %}">Capturar con bandeja</a>
+          <a class="nav-link" href="{% url 'captura:buscar_retorno' %}">Registrar retorno</a>
           {% endif %}
 
           {% if puede_administrar_catalogo %}

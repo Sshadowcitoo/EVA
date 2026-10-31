@@ -2,7 +2,7 @@
 {% load static %}
 {% block navigation %}
 {% if puede_registrar %}
-<a class="nav-link {% if not es_retorno %}active{% endif %}" href="{% url 'captura:nueva_bandeja' %}">Nueva bandeja</a>
+<a class="nav-link {% if not es_retorno %}active{% endif %}" href="{% url 'captura:resolver_bandeja' %}">Nueva bandeja</a>
 {% if retorno_url %}<a class="nav-link {% if es_retorno %}active{% endif %}" href="{{ retorno_url }}">Registrar retorno</a>{% else %}<span class="nav-link unavailable">Registrar retorno<small>Pendiente de conexión</small></span>{% endif %}
 {% endif %}
 {% if puede_administrar_catalogo %}<a class="nav-link" href="{% url 'catalogo:platos' %}">Catálogo</a>{% endif %}

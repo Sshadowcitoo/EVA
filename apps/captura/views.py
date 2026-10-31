@@ -1,3 +1,5 @@
+import logging
+
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.http import FileResponse, Http404
@@ -53,6 +55,7 @@ def confirmacion(request, pk):
 
 Estado = Servicio.EstadoCaptura
 Etapa = FotografiaServicio.Etapa
+logger = logging.getLogger(__name__)
 
 
 def _contexto_base(**extra):
@@ -239,7 +242,9 @@ def _capturar(request, pk, etapa, estado_esperado):
                 try:
                     storage.eliminar(clave)
                 except storage.ErrorAlmacenamiento:
-                    pass  # Queda para limpieza posterior; no hay foto aceptada.
+                    # Registro operativo para reintentar la limpieza; sin token ni
+                    # nombre de archivo del cliente. Nunca mostrar éxito al fallar.
+                    logger.error("EVA_CAPTURE_ORPHAN backend=local clave=%s", clave)
                 if not isinstance(exc, ValidationError):
                     raise
                 servicio.refresh_from_db()
@@ -276,6 +281,8 @@ def foto_retorno(request, pk):
 def imagen(request, pk):
     """Entrega los bytes de una foto solo a usuarios con rol Registro."""
     foto = get_object_or_404(FotografiaServicio, pk=pk)
+    if foto.backend != "local":
+        raise Http404("El almacenamiento de esta fotografía todavía no está disponible.")
     try:
         archivo = storage.abrir(foto.clave_archivo)
     except storage.ArchivoNoEncontrado:

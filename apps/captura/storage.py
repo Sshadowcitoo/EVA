@@ -1,8 +1,11 @@
 
+import logging
 import uuid
 from pathlib import Path, PureWindowsPath
 
 from django.conf import settings
+
+logger = logging.getLogger(__name__)
 
 
 class ErrorAlmacenamiento(Exception):
@@ -19,6 +22,8 @@ def generar_clave(servicio_id, etapa, extension):
 
 
 def _ruta(clave):
+    if settings.EVA_STORAGE_BACKEND != "local":
+        raise ErrorAlmacenamiento("El adaptador solicitado todavía no está disponible.")
     # La clave debe ser relativa. PureWindowsPath detecta "/x", "\\x" y "C:\\x".
     if not clave or PureWindowsPath(clave).anchor:
         raise ErrorAlmacenamiento("Clave de almacenamiento no válida.")
@@ -40,7 +45,10 @@ def guardar(contenido, clave):
     except FileExistsError as error:
         raise ErrorAlmacenamiento("Ya existe un archivo con esa clave.") from error
     except OSError as error:
-        ruta.unlink(missing_ok=True)
+        try:
+            ruta.unlink(missing_ok=True)
+        except OSError:
+            logger.error("EVA_CAPTURE_ORPHAN backend=local clave=%s", clave)
         raise ErrorAlmacenamiento("No se pudo guardar el archivo.") from error
 
 

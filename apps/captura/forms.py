@@ -2,6 +2,7 @@ from dataclasses import dataclass
 from io import BytesIO
 
 from django import forms
+from django.conf import settings
 from PIL import Image, ImageOps, UnidentifiedImageError
 
 from apps.catalogo.models import Plato, TipoPorcion
@@ -21,8 +22,6 @@ class ServicioForm(forms.Form):
 
 #--------- Validación de fotografías ----------
 
-MAX_BYTES = 10 * 1024 * 1024
-MAX_PIXELES = 20_000_000
 FORMATOS = {"JPEG": ("image/jpeg", "jpg"), "PNG": ("image/png", "png")}
 
 
@@ -43,8 +42,8 @@ def procesar_imagen(archivo):
     """Valida el contenido real y devuelve una copia sin metadatos."""
     if archivo.size == 0:
         raise forms.ValidationError("El archivo está vacío.", code="vacio")
-    if archivo.size > MAX_BYTES:
-        raise forms.ValidationError("La foto supera el máximo de 10 MiB.", code="tamano")
+    if archivo.size > settings.EVA_CAPTURE_MAX_BYTES:
+        raise forms.ValidationError("La foto supera el tamaño permitido.", code="tamano")
 
     try:
         # Primera lectura: identificar formato y tamaño SIN decodificar los píxeles.
@@ -52,9 +51,9 @@ def procesar_imagen(archivo):
         with Image.open(archivo) as imagen:
             formato = imagen.format
             ancho, alto = imagen.size
-            if formato not in FORMATOS:
+            if formato not in FORMATOS or FORMATOS[formato][0] not in settings.EVA_CAPTURE_ALLOWED_TYPES:
                 raise forms.ValidationError("Solo se aceptan fotos JPEG o PNG.", code="formato")
-            if ancho * alto > MAX_PIXELES:
+            if ancho * alto > settings.EVA_CAPTURE_MAX_PIXELS:
                 raise forms.ValidationError(
                     "La foto supera los 20 millones de píxeles.", code="pixeles"
                 )
@@ -65,14 +64,18 @@ def procesar_imagen(archivo):
         with Image.open(archivo) as imagen:
             imagen.load()
             imagen = ImageOps.exif_transpose(imagen)
+            # PNG puede volver a guardar EXIF desde image.info aunque no se pase
+            # exif= a save(). Copiar solo píxeles elimina también metadatos privados.
+            modo = "RGBA" if "A" in imagen.getbands() or "transparency" in imagen.info else "RGB"
+            pixeles = imagen.convert(modo)
+            limpia = Image.new(modo, pixeles.size)
+            limpia.paste(pixeles)
             salida = BytesIO()
             if formato == "JPEG":
-                if imagen.mode not in ("RGB", "L"):
-                    imagen = imagen.convert("RGB")
-                imagen.save(salida, "JPEG", quality=95, subsampling=0)
+                limpia.convert("RGB").save(salida, "JPEG", quality=95, subsampling=0)
             else:
-                imagen.save(salida, "PNG", optimize=True)
-            ancho, alto = imagen.size
+                limpia.save(salida, "PNG", optimize=True)
+            ancho, alto = limpia.size
     except forms.ValidationError:
         raise
     except (UnidentifiedImageError, OSError, SyntaxError, Image.DecompressionBombError) as error:
@@ -81,6 +84,8 @@ def procesar_imagen(archivo):
         ) from error
 
     tipo, extension = FORMATOS[formato]
+    if salida.tell() > settings.EVA_CAPTURE_MAX_BYTES:
+        raise forms.ValidationError("La imagen procesada supera el tamaño permitido.", code="tamano")
     return ImagenProcesada(salida.getvalue(), tipo, extension, ancho, alto)
 
 
@@ -91,3 +96,10 @@ class FotoForm(forms.Form):
         # Al validar, el campo deja de ser el archivo subido
         # y pasa a ser la imagen ya procesada y limpia.
         return procesar_imagen(self.cleaned_data["foto"])
+
+
+class ConfirmarRetornoForm(forms.Form):
+    confirmar = forms.BooleanField(
+        label="Confirmo que la bandeja y el plato corresponden al servicio mostrado.",
+        required=True,
+    )

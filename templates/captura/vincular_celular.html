@@ -1,0 +1,53 @@
+{% extends "captura/base_operacion.html" %}
+{% load static %}
+{% block title %}Capturar con celular | EVA{% endblock %}
+{% block heading %}Capturar con celular{% endblock %}
+{% block subtitle %}Confirma el servicio y escanea el QR temporal desde el teléfono.{% endblock %}
+{% block captura_content %}
+<link rel="stylesheet" href="{% static 'css/vinculacion.css' %}">
+<div class="capture-grid">
+  <section class="panel">
+    <h2>Datos del servicio</h2>
+    <dl class="capture-details">
+      <dt>Bandeja</dt><dd>{{ bandeja.numero }}</dd>
+      <dt>Plato</dt><dd>{{ plato_nombre }}</dd>
+      <dt>Porción</dt><dd>{{ porcion_nombre }}</dd>
+      <dt>Etapa</dt><dd>{{ etapa }}</dd>
+    </dl>
+    <div class="info-box"><h3>Dos códigos diferentes</h3><p>El QR de la bandeja identifica el soporte físico. Este QR temporal permite abrir la captura de este servicio y etapa. Debes iniciar sesión con rol Registro en el teléfono.</p></div>
+    <form method="post" {% if crear_url %}action="{{ crear_url }}"{% endif %}>
+      {% csrf_token %}
+      {% if crear_form %}{{ crear_form.as_p }}{% endif %}
+      <button class="button primary-button" {% if not operacion_habilitada or not crear_url %}disabled{% endif %}>{% if estado %}Generar otro enlace{% else %}Crear enlace de captura{% endif %}</button>
+    </form>
+  </section>
+  <section class="panel capture-link-panel" data-capture-link data-state="{{ estado }}" data-state-url="{{ estado_url }}" data-expires-at="{{ caduca_en }}">
+    <h2>Vinculación con el teléfono</h2>
+    {% if estado == 'PENDIENTE' and qr_url %}
+    <div data-link-qr>
+      <img class="capture-qr" src="{{ qr_url }}" alt="QR temporal para abrir la captura en el celular" referrerpolicy="same-origin">
+      <p class="muted">Vigente hasta <time datetime="{{ caduca_en }}">{{ caduca_en }}</time>.</p>
+      {% if captura_url %}<a href="{{ captura_url }}" class="button secondary-button" data-link-open rel="noreferrer">Abrir captura en este dispositivo</a>{% endif %}
+    </div>
+    {% endif %}
+    <div role="status" aria-live="polite" data-link-status>
+      {% if estado == 'COMPLETADA' %}La fotografía fue guardada. Puedes continuar con el servicio.
+      {% elif estado == 'EXPIRADA' %}El enlace caducó. Genera otro desde esta pantalla.
+      {% elif estado == 'CANCELADA' %}El enlace fue cancelado y ya no permite capturar.
+      {% elif estado == 'PENDIENTE' %}Esperando fotografía. Escanear el QR no confirma el guardado.
+      {% else %}Crea un enlace para comenzar.{% endif %}
+    </div>
+    <img class="capture-image" data-link-photo alt="Fotografía confirmada por el servidor" hidden>
+    <p class="muted" data-link-countdown></p>
+    <button class="button secondary-button" type="button" data-link-retry hidden>Volver a consultar</button>
+    {% if resultado_url %}<a href="{{ resultado_url }}" class="button primary-button" data-link-result {% if estado != 'COMPLETADA' %}hidden{% endif %}>Ver servicio</a>{% endif %}
+    {% if estado == 'PENDIENTE' %}
+    <form method="post" {% if cancelar_url %}action="{{ cancelar_url }}"{% endif %} data-link-cancel>
+      {% csrf_token %}{% if cancelar_form %}{{ cancelar_form.as_p }}{% endif %}
+      <button class="button secondary-button" {% if not operacion_habilitada or not cancelar_url %}disabled{% endif %}>Cancelar enlace</button>
+    </form>
+    {% endif %}
+  </section>
+</div>
+{% endblock %}
+{% block captura_scripts %}<script src="{% static 'js/vinculacion.js' %}" defer></script>{% endblock %}

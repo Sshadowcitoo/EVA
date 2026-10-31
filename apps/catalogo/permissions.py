@@ -19,6 +19,15 @@ PERMISOS_POR_ROL = {
     REGISTRO: (
         "captura.add_servicio",
         "captura.view_servicio",
+        # Bloque 2: configurar_roles los asigna cuando existan las migraciones.
+        "captura.view_bandeja",
+        "captura.view_etiquetabandeja",
+        "captura.view_asignacionbandeja",
+        "captura.add_fotografiaservicio",
+        "captura.view_fotografiaservicio",
+        # Bloque 3: solicitudes temporales; no concede edición/borrado genéricos.
+        "captura.add_sesioncaptura",
+        "captura.view_sesioncaptura",
         "catalogo.view_plato",
         "catalogo.view_componente",
         "catalogo.view_platocomponente",
@@ -30,6 +39,10 @@ PERMISOS_POR_ROL = {
         f"catalogo.{accion}_{modelo}"
         for modelo in ("plato", "componente", "platocomponente", "tipoporcion", "contexto")
         for accion in ("view", "add", "change")
+    ) + (
+        # Acciones de negocio aprobadas; Isaac declara los permisos al migrar.
+        "captura.anular_servicio",
+        "captura.reemplazar_etiquetabandeja",
     ),
 }
 

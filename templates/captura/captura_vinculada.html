@@ -1,0 +1,18 @@
+{% extends "captura/base_operacion.html" %}
+{% block title %}Captura vinculada | EVA{% endblock %}
+{% block heading %}Captura desde el celular{% endblock %}
+{% block subtitle %}Verifica la bandeja, el plato y la etapa antes de guardar.{% endblock %}
+{% block captura_content %}
+{% if vinculo_vigente and operacion_habilitada %}
+  <p class="info-box">Esta captura corresponde al servicio indicado. El enlace no reemplaza tu sesión ni tus permisos.</p>
+  {% include "captura/_fotografia.html" %}
+{% else %}
+  <section class="panel" role="status">
+    {% if estado == 'COMPLETADA' %}<h2>Captura ya completada</h2><p>La fotografía aceptada no puede sobrescribirse desde este enlace.</p>
+    {% elif estado == 'EXPIRADA' %}<h2>Enlace caducado</h2><p>Vuelve a la computadora para generar un nuevo enlace.</p>
+    {% elif estado == 'CANCELADA' %}<h2>Enlace cancelado</h2><p>Solicita un enlace nuevo para continuar.</p>
+    {% else %}<h2>Captura no disponible</h2><p>Comprueba tu sesión con rol Registro y solicita un enlace vigente.</p>{% endif %}
+    {% if continuar_url %}<a class="button secondary-button" href="{{ continuar_url }}">Volver al servicio</a>{% endif %}
+  </section>
+{% endif %}
+{% endblock %}

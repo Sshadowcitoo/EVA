@@ -2,25 +2,31 @@
 
 Proyecto de Construcción de Software, Ingeniería de Software, UNEMI.
 
-## Estado de esta rama
+## Estado integrado al 31 de octubre de 2026
 
-Integra los aportes del bloque inicial de Isaac (modelos), César (roles y configuración),
-Lino (funciones), Jean (pantallas) y Eduardo (pruebas), y corrige sus puntos de conexión.
-No equivale al sistema completo. Mientras este cambio no esté integrado, `main`
-conserva el avance anterior: seleccionar la rama `integracion-bloque-inicial` para revisarlo.
+Integra las entregas de los bloques 2 y 3 de César, Isaac, Lino, Jean y Eduardo.
+El alcance comprobado y los pendientes están en
+[la revisión de integración](docs/integracion_31_octubre_2026.md).
 
-Funciones disponibles:
+Disponible sobre almacenamiento local privado:
 
-- Login y logout por POST, con destino por rol.
-- Roles independientes Registro, Cocina y Administración; `is_staff` no concede un rol.
-- Catálogo editable de platos, componentes y porciones; activar/desactivar sin borrar.
-- Registro con opciones activas, usuario creador y composición histórica.
-- Confirmación accesible solo al usuario de Registro que creó el servicio.
-- Pantallas conectadas al servidor, tomando como base los componentes de Figma.
+- Login, roles independientes y catálogo editable del bloque inicial.
+- Bandejas, etiquetas revocables, asignaciones y fotografías por etapa.
+- Búsqueda por número o etiqueta, alta de servicio y captura servido/retorno.
+- Vista previa y lector QR local, con alternativa manual.
+- Retorno por otro operador de Registro, autoría por foto y liberación de bandeja.
+- Lectura privada de imágenes y preservación de la confirmación histórica del creador.
+- Re-codificación JPEG/PNG sin EXIF, límites compartidos y compensación de archivos.
 
-Cocina puede iniciar sesión y ve una página de funciones pendientes. No dispone aún
-de análisis ni revisión de fotografías. Administración no hereda Registro: asignar
-ambos grupos expresamente si una persona debe cumplir ambas funciones.
+Del bloque 3 se integran configuración, sesiones temporales de captura, servicios
+de dominio, metadatos y plantillas/JavaScript. **Todavía faltan el adaptador S3 y
+los endpoints de vinculación**: no se acredita captura real PC→teléfono→S3.
+Seleccionar S3 sin su adaptador rechaza la carga; no escribe silenciosamente en local.
+
+Cocina ve su pantalla pendiente: no dispone aún de análisis ni revisión de fotos.
+Administración no hereda Registro ni recibe borrado genérico: conserva únicamente
+las acciones aprobadas de anulación y reemplazo de etiqueta, además del catálogo.
+Sus pantallas específicas de esas acciones todavía están pendientes.
 
 ## Catálogo inicial del escenario ficticio
 
@@ -47,7 +53,7 @@ No ejecutar otra vez `startproject` ni `startapp captura`.
 ```powershell
 git clone https://github.com/Sshadowcitoo/EVA.git
 cd EVA
-git switch integracion-bloque-inicial
+git switch main
 py -m venv .venv
 .\.venv\Scripts\python.exe -m pip install -r requirements.txt
 ```
@@ -102,37 +108,41 @@ sin rol no inicia sesión en EVA. La raíz `/` aún puede responder 404.
 .\.venv\Scripts\python.exe manage.py makemigrations --check --dry-run
 ```
 
-Comprobación de la integración el 27 de octubre de 2026, con Django 5.2.17:
+Comprobación integrada del 31 de octubre de 2026:
 
-- `check`: sin problemas.
-- 56 pruebas aprobadas en una base temporal, incluidas migraciones históricas.
-- `makemigrations --check --dry-run`: sin cambios detectados.
+- `check`: sin incidencias.
+- **142 pruebas Django aprobadas**, sobre base temporal y archivos temporales.
+- **7 pruebas JavaScript aprobadas**: `node --test tests/frontend/*.test.cjs`.
+- `makemigrations --check --dry-run`: sin cambios.
+- `git diff --check`: correcto.
 
-La suite incluye modelos y carga demo de Isaac, helpers de permisos de César,
-pruebas complementarias de Eduardo y recorridos reales de integración: sesiones,
-redirecciones, acceso por rol, CSRF, catálogo, captura y privacidad de confirmaciones.
-Las siete pruebas del avance se adaptaron al contrato de catálogo y sesión.
-La integración final de las pantallas con móvil/escritorio debe revisarse también
-visualmente; las pruebas HTTP no certifican una coincidencia exacta con Figma.
+La suite incluye un recorrido HTTP completo servido/retorno con dos operadores,
+roles/CSRF, lectura privada, rechazo de duplicados y compensación ante fallos.
+No mide precisión de IA ni acredita S3, cámara física o concurrencia simultánea real.
+Las revisiones del 28 y 29 de octubre se conservan como evidencia histórica;
+sus fallos y pendientes no sustituyen este estado integrado.
 
 ## Pendiente del proyecto
 
-- Identificación física de bandejas y QR; vinculación de captura entre dispositivos.
-- Fotografías inicial/retorno, protocolo y controles de calidad.
+- Impresión/ensayo de etiquetas físicas y endpoints de vinculación entre dispositivos.
+- Versionar protocolo/checklist y probar montaje/cámara física; el guardado local servido/retorno ya está integrado.
 - Microservicio visual, conjunto de imágenes anotadas y evaluación independiente.
 - Revisión de Cocina, histórico analítico y percepción del comensal.
 - Recomendaciones, decisiones y seguimiento de pruebas controladas.
-- AWS S3 privado, política de conservación de imágenes/máscaras y despliegue.
+- Adaptador S3, conservación de imágenes/máscaras y publicación versionada del despliegue.
 - Contexto/horario y demás decisiones de datos aún no ratificadas.
 
-La configuración actual usa SQLite y ajustes de desarrollo; no es un despliegue
-operativo. S3 será almacenamiento de archivos, no el servidor Django ni la IA.
+La configuración predeterminada del repositorio usa SQLite y ajustes de desarrollo.
+Integrar Git no actualiza automáticamente el servidor público. Los ajustes operativos
+que existen en ese servidor requieren su publicación y revisión separadas. S3 es
+almacenamiento de archivos, no el servidor Django ni la IA.
 
 ## Trabajo en equipo
 
 Cada integrante entrega en su rama mediante Pull Request. César revisa e integra;
-los compañeros no hacen merge. La rama de integración reúne y corrige los aportes
-sin fusionarlos todavía con `main`. Las imágenes quedan a cargo de César.
+los compañeros no hacen merge. El bloque inicial ya se integró en `main`.
+Los bloques nuevos se entregan en ramas nuevas desde esa base.
+Las imágenes quedan a cargo de César.
 
 No subir `.venv/`, `.env`, `db.sqlite3`, cachés, imágenes del piloto ni credenciales.
 Las migraciones sí se versionan. Los recursos gráficos propios de la interfaz

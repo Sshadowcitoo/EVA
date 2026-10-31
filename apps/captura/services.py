@@ -6,6 +6,10 @@ transiciones de estado usan actualizaciones condicionales y restricciones
 únicas (no select_for_update), para que funcionen igual con SQLite.
 """
 
+import hashlib
+import secrets
+from datetime import timedelta
+
 from django.core.exceptions import ValidationError
 from django.db import IntegrityError, transaction
 from django.utils import timezone
@@ -16,6 +20,7 @@ from apps.captura.models import (
     EtiquetaBandeja,
     FotografiaServicio,
     Servicio,
+    SesionCaptura,
 )
 
 Estado = Servicio.EstadoCaptura
@@ -71,6 +76,9 @@ def registrar_captura(
     ancho,
     alto,
     autor,
+    backend="local",
+    hash_sha256="",
+    version_id="",
 ):
     """Guarda los metadatos de una fotografía ya almacenada y avanza el estado.
 
@@ -86,6 +94,9 @@ def registrar_captura(
     datos = dict(
         servicio=servicio,
         etapa=etapa,
+        backend=backend,
+        hash_sha256=hash_sha256,
+        version_id=version_id,
         clave_archivo=clave_archivo,
         tipo_contenido=tipo_contenido,
         tamano_bytes=tamano_bytes,
@@ -173,3 +184,115 @@ def reemplazar_etiqueta(*, bandeja, motivo, usuario):
             motivo_revocacion=motivo,
         )
         return emitir_etiqueta(bandeja=bandeja)
+
+
+# --- Sesión de captura temporal (bloque 3) ---------------------------------
+
+MINUTOS_SESION_CAPTURA = 5  # cambiarlo exige modificar el contrato y las pruebas
+Sesion = SesionCaptura.Estado
+_ESTADO_REQUERIDO = {
+    Etapa.SERVIDO: Estado.PENDIENTE_SERVIDO,
+    Etapa.RETORNO: Estado.EN_ESPERA_RETORNO,
+}
+
+
+def _digest(token):
+    return hashlib.sha256(token.encode()).hexdigest()
+
+
+def crear_sesion_captura(*, servicio, etapa, usuario):
+    """Crea una solicitud temporal; devuelve (sesion, token). El token no se guarda.
+
+    Invalida (cancela) la pendiente anterior del mismo servicio y etapa.
+    """
+    if etapa not in Etapa.values:
+        raise ValidationError("Etapa de captura no válida.")
+    with transaction.atomic():
+        if not Servicio.objects.filter(
+            pk=servicio.pk, estado_captura=_ESTADO_REQUERIDO[etapa]
+        ).exists():
+            raise ValidationError("El servicio no admite captura en esa etapa.")
+        SesionCaptura.objects.filter(
+            servicio=servicio, etapa=etapa, estado=Sesion.PENDIENTE
+        ).update(estado=Sesion.CANCELADA)
+        token = secrets.token_urlsafe(32)  # 256 bits
+        ahora = timezone.now()
+        try:
+            with transaction.atomic():
+                sesion = SesionCaptura.objects.create(
+                    servicio=servicio,
+                    etapa=etapa,
+                    creado_por=usuario,
+                    token_digest=_digest(token),
+                    creada_en=ahora,
+                    expira_en=ahora + timedelta(minutes=MINUTOS_SESION_CAPTURA),
+                )
+        except IntegrityError:
+            raise ValidationError("Ya se está creando otra solicitud; inténtalo de nuevo.")
+        return sesion, token
+
+
+def obtener_sesion(*, token):
+    """Busca la sesión por token y marca EXPIRADA si venció (comprobado en servidor)."""
+    try:
+        sesion = SesionCaptura.objects.select_related("servicio").get(
+            token_digest=_digest(token or "")
+        )
+    except SesionCaptura.DoesNotExist:
+        raise ValidationError("El vínculo de captura no es válido.")
+    SesionCaptura.objects.filter(
+        pk=sesion.pk, estado=Sesion.PENDIENTE, expira_en__lte=timezone.now()
+    ).update(estado=Sesion.EXPIRADA)
+    sesion.refresh_from_db()
+    return sesion
+
+
+def cancelar_sesion(*, sesion):
+    filas = SesionCaptura.objects.filter(pk=sesion.pk, estado=Sesion.PENDIENTE).update(
+        estado=Sesion.CANCELADA
+    )
+    if filas != 1:
+        raise ValidationError("La solicitud ya no está pendiente.")
+
+
+def consumir_sesion(
+    *,
+    token,
+    autor,
+    clave_archivo,
+    tipo_contenido,
+    tamano_bytes,
+    ancho,
+    alto,
+    backend="local",
+    hash_sha256="",
+    version_id="",
+):
+    """Registra la foto y marca la sesión COMPLETADA en una sola transacción.
+
+    El archivo ya debe estar guardado en storage. Si algo falla no se consume
+    el token ni avanza el estado.
+    """
+    sesion = obtener_sesion(token=token)  # fuera de la transacción: persiste EXPIRADA
+    if sesion.estado != Sesion.PENDIENTE:
+        raise ValidationError(f"La solicitud está {sesion.get_estado_display().lower()}.")
+    with transaction.atomic():
+        foto = registrar_captura(
+            servicio=sesion.servicio,
+            etapa=sesion.etapa,
+            clave_archivo=clave_archivo,
+            tipo_contenido=tipo_contenido,
+            tamano_bytes=tamano_bytes,
+            ancho=ancho,
+            alto=alto,
+            autor=autor,
+            backend=backend,
+            hash_sha256=hash_sha256,
+            version_id=version_id,
+        )
+        filas = SesionCaptura.objects.filter(pk=sesion.pk, estado=Sesion.PENDIENTE).update(
+            estado=Sesion.COMPLETADA, completada_en=timezone.now(), fotografia=foto
+        )
+        if filas != 1:
+            raise ValidationError("La solicitud ya no está pendiente.")
+        return foto

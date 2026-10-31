@@ -272,6 +272,8 @@ class FotografiaServicio(models.Model):
     clave_archivo = models.CharField(max_length=255)
     tipo_contenido = models.CharField(max_length=50)
     tamano_bytes = models.PositiveIntegerField()
+    hash_sha256 = models.CharField(max_length=64, blank=True, default="")
+    version_id = models.CharField(max_length=255, blank=True, default="")
     ancho = models.PositiveIntegerField()
     alto = models.PositiveIntegerField()
     autor = models.ForeignKey(
@@ -294,3 +296,54 @@ class FotografiaServicio(models.Model):
 
     def __str__(self):
         return f"{self.servicio_id} - {self.etapa}"
+
+
+class SesionCaptura(models.Model):
+    """Solicitud temporal para capturar desde otro dispositivo (QR temporal).
+
+    Solo se guarda el digest del token; el token en claro se entrega una vez.
+    """
+
+    class Estado(models.TextChoices):
+        PENDIENTE = "PENDIENTE", "Pendiente"
+        COMPLETADA = "COMPLETADA", "Completada"
+        CANCELADA = "CANCELADA", "Cancelada"
+        EXPIRADA = "EXPIRADA", "Expirada"
+
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    servicio = models.ForeignKey(
+        Servicio, on_delete=models.PROTECT, related_name="sesiones_captura"
+    )
+    etapa = models.CharField(max_length=10, choices=FotografiaServicio.Etapa.choices)
+    creado_por = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.PROTECT,
+        related_name="sesiones_captura",
+    )
+    token_digest = models.CharField(max_length=64, unique=True, editable=False)
+    estado = models.CharField(
+        max_length=12, choices=Estado.choices, default=Estado.PENDIENTE
+    )
+    creada_en = models.DateTimeField(default=timezone.now)
+    expira_en = models.DateTimeField()
+    completada_en = models.DateTimeField(null=True, blank=True)
+    fotografia = models.ForeignKey(
+        FotografiaServicio,
+        null=True,
+        blank=True,
+        on_delete=models.PROTECT,
+        related_name="sesion_captura",
+    )
+
+    class Meta:
+        ordering = ["-creada_en"]
+        constraints = [
+            models.UniqueConstraint(
+                fields=["servicio", "etapa"],
+                condition=Q(estado="PENDIENTE"),
+                name="una_sesion_pendiente_por_servicio_etapa",
+            )
+        ]
+
+    def __str__(self):
+        return f"{self.servicio_id} - {self.etapa} ({self.estado})"

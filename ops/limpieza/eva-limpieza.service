@@ -1,0 +1,20 @@
+[Unit]
+Description=EVA - retencion de fotografias y cargas incompletas
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=eva
+Group=www-data
+WorkingDirectory=/opt/eva/app
+EnvironmentFile=/etc/eva/eva.env
+Environment=DJANGO_SETTINGS_MODULE=config.production
+ExecStart=/opt/eva/venv/bin/python manage.py limpiar_fotografias --aplicar --limite 500
+UMask=0077
+TimeoutStartSec=30min
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectHome=true
+ProtectSystem=strict
+ReadWritePaths=/var/lib/eva

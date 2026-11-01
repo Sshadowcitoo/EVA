@@ -284,6 +284,9 @@ class FotografiaServicio(models.Model):
     fecha = models.DateTimeField(auto_now_add=True)
     protocolo_version = models.CharField(max_length=32, blank=True, default="")
     checklist = models.JSONField(default=dict, blank=True)
+    eliminada_en = models.DateTimeField(null=True, blank=True, editable=False)
+    limpieza_intentos = models.PositiveIntegerField(default=0, editable=False)
+    limpieza_error = models.CharField(max_length=255, blank=True, default="", editable=False)
     vigente = models.BooleanField(default=True)
 
     class Meta:
@@ -298,6 +301,24 @@ class FotografiaServicio(models.Model):
 
     def __str__(self):
         return f"{self.servicio_id} - {self.etapa}"
+
+    @property
+    def disponible(self):
+        from datetime import timedelta
+        return self.eliminada_en is None and self.fecha > timezone.now() - timedelta(days=90)
+
+
+class CargaFotografia(models.Model):
+    """Intención persistida ANTES de escribir; permite reconciliar caídas del proceso."""
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    backend = models.CharField(max_length=20)
+    clave_archivo = models.CharField(max_length=255, unique=True)
+    version_id = models.CharField(max_length=255, blank=True, default="")
+    creada_en = models.DateTimeField(auto_now_add=True, db_index=True)
+    resuelta_en = models.DateTimeField(null=True, blank=True, editable=False)
+    resultado = models.CharField(max_length=20, blank=True, default="", editable=False)
+    intentos = models.PositiveIntegerField(default=0, editable=False)
+    error = models.CharField(max_length=255, blank=True, default="", editable=False)
 
 
 class SesionCaptura(models.Model):

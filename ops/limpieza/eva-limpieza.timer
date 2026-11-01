@@ -1,0 +1,11 @@
+[Unit]
+Description=EVA - limpieza diaria a la 01:15 de Ecuador
+
+[Timer]
+OnCalendar=*-*-* 06:15:00 UTC
+RandomizedDelaySec=300
+Persistent=true
+Unit=eva-limpieza.service
+
+[Install]
+WantedBy=timers.target

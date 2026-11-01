@@ -10,7 +10,7 @@ from django.views.decorators.http import require_GET, require_http_methods
 
 from apps.catalogo.permissions import REGISTRO, roles_required
 
-from . import services, storage
+from . import limpieza, services, storage
 from .forms import ConfirmarRetornoForm, FotoForm, ServicioForm
 from .models import (
     AsignacionBandeja,
@@ -238,12 +238,21 @@ def _capturar(request, pk, etapa, estado_esperado, sesion=None, token=None):
 
         # 1) Guardar el archivo FUERA de cualquier transacción de base de datos.
         try:
+            carga = limpieza.registrar_carga(clave)
             guardado = storage.guardar(imagen.contenido, clave, tipo_contenido=imagen.tipo)
+        except storage.ArchivoExistente:
+            from django.utils import timezone
+            carga.resuelta_en = timezone.now()
+            carga.resultado = "colision"
+            carga.save(update_fields=["resuelta_en", "resultado"])
+            form.add_error(None, "No se pudo asignar el archivo. Inténtalo de nuevo.")
         except storage.ErrorAlmacenamiento:
             form.add_error(None, "No se pudo guardar la fotografía. Inténtalo de nuevo.")
         else:
             # 2) Registrar metadatos y avanzar el estado (transacción de Isaac).
             try:
+                carga.version_id = guardado.version_id
+                carga.save(update_fields=["version_id"])
                 registrar = services.registrar_captura if sesion is None else services.consumir_sesion
                 destino = {"servicio": servicio, "etapa": etapa} if sesion is None else {"token": token}
                 registrar(
@@ -282,9 +291,11 @@ def _capturar(request, pk, etapa, estado_esperado, sesion=None, token=None):
 
     if etapa == Etapa.RETORNO:
         foto_servido = _foto_vigente(servicio, Etapa.SERVIDO)
-        if foto_servido:
+        if foto_servido and foto_servido.disponible:
             contexto["foto_servido_url"] = reverse("captura:imagen", args=[foto_servido.pk])
             contexto["fecha_servido"] = foto_servido.fecha
+        elif foto_servido:
+            contexto["foto_servido_retenida"] = True
 
     contexto.update(form=form, guardar_url=reverse(nombre_vista, args=[servicio.pk]),
                     vincular_url=reverse("captura:vincular", args=[servicio.pk, etapa]))
@@ -312,6 +323,10 @@ def foto_retorno(request, pk):
 def imagen(request, pk):
     """Entrega los bytes de una foto solo a usuarios con rol Registro."""
     foto = get_object_or_404(FotografiaServicio, pk=pk)
+    if not foto.disponible:
+        respuesta = HttpResponse("Fotografía no disponible por retención de 90 días. El historial se conserva.", status=410)
+        respuesta["Cache-Control"] = "private, no-store"
+        return respuesta
     try:
         archivo = storage.abrir(foto.clave_archivo, backend=foto.backend, version_id=foto.version_id)
     except storage.ArchivoNoEncontrado:

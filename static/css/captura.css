@@ -23,6 +23,9 @@
 .capture-details dd { margin: 0; font-weight: 700; }
 .capture-fields .errorlist, [data-photo-status][data-error="true"] { color: #a91c30; }
 .capture-fields .helptext { color: #52647d; font-size: 13px; }
+.capture-fields input[type="checkbox"] { width: auto; min-height: auto; margin-right: 8px; }
+.capture-fields .capture-check { display: flex; align-items: flex-start; gap: 8px; text-transform: none; font-size: 14px; }
+.capture-fields .capture-check input { flex: 0 0 auto; margin: 3px 0 0; padding: 0; }
 .capture-operation button, [data-photo-form] button { margin: 8px 8px 8px 0; }
 .button:disabled { opacity: .55; cursor: not-allowed; }
 .button:focus-visible, input:focus-visible, select:focus-visible, a:focus-visible { outline: 3px solid #2479c9; outline-offset: 3px; }

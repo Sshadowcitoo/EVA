@@ -282,6 +282,8 @@ class FotografiaServicio(models.Model):
         related_name="fotografias_servicio",
     )
     fecha = models.DateTimeField(auto_now_add=True)
+    protocolo_version = models.CharField(max_length=32, blank=True, default="")
+    checklist = models.JSONField(default=dict, blank=True)
     vigente = models.BooleanField(default=True)
 
     class Meta:

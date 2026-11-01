@@ -1,10 +1,14 @@
 from django.urls import path
 
-from . import gestion_views, views
+from . import gestion_views, views, vinculacion_views
 
 app_name = "captura"
 
 urlpatterns = [
+    path("vinculada/", vinculacion_views.capturar, name="captura_vinculada"),
+    path("<uuid:pk>/vincular/<str:etapa>/", vinculacion_views.vincular, name="vincular"),
+    path("vinculacion/<uuid:pk>/estado/", vinculacion_views.estado, name="estado_vinculacion"),
+    path("vinculacion/<uuid:pk>/cancelar/", vinculacion_views.cancelar, name="cancelar_vinculacion"),
     path("gestion/", gestion_views.gestion, name="gestion"),
     path("gestion/servicio/<uuid:pk>/anular/", gestion_views.anular, name="anular_servicio"),
     path("gestion/bandeja/<uuid:pk>/reemplazar/", gestion_views.reemplazar, name="reemplazar_etiqueta"),

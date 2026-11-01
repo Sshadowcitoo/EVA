@@ -80,6 +80,7 @@ def registrar_captura(
     backend="local",
     hash_sha256="",
     version_id="",
+    checklist=None,
 ):
     """Guarda los metadatos de una fotografía ya almacenada y avanza el estado.
 
@@ -92,7 +93,14 @@ def registrar_captura(
     if min(tamano_bytes, ancho, alto) <= 0 or not clave_archivo:
         raise ValidationError("Los datos de la fotografía no son válidos.")
 
+    from .protocolo import CRITERIOS, VERSION
+    if checklist is not None and (
+        set(checklist) != set(CRITERIOS) or any(valor is not True for valor in checklist.values())
+    ):
+        raise ValidationError("Debes confirmar todos los criterios de captura.")
     datos = dict(
+        protocolo_version=VERSION if checklist is not None else "",
+        checklist=checklist or {},
         servicio=servicio,
         etapa=etapa,
         backend=backend,
@@ -276,6 +284,7 @@ def consumir_sesion(
     backend="local",
     hash_sha256="",
     version_id="",
+    checklist=None,
 ):
     """Registra la foto y marca la sesión COMPLETADA en una sola transacción.
 
@@ -287,6 +296,7 @@ def consumir_sesion(
         raise ValidationError(f"La solicitud está {sesion.get_estado_display().lower()}.")
     with transaction.atomic():
         foto = registrar_captura(
+            checklist=checklist,
             servicio=sesion.servicio,
             etapa=sesion.etapa,
             clave_archivo=clave_archivo,

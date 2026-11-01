@@ -144,6 +144,12 @@ EVA_S3_REGION = os.environ.get("EVA_S3_REGION", "")
 EVA_S3_PREFIX = os.environ.get("EVA_S3_PREFIX", "eva/capturas/")
 EVA_CAPTURE_BASE_URL = os.environ.get("EVA_CAPTURE_BASE_URL", "")
 EVA_CAPTURE_LINK_TTL_SECONDS = 300
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "filters": {"capture_token": {"()": "apps.captura.logging.OcultarTokenCaptura"}},
+    "loggers": {"django.server": {"filters": ["capture_token"]}},
+}
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field

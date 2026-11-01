@@ -40,7 +40,7 @@ class CapturaS3HTTPTests(dominio.BaseDominio):
 
     def test_post_persiste_backend_clave_hash_version_y_lectura_autorizada(self):
         self.put_response()
-        self.assertEqual(self.client.post(self.url, {'foto': foto()}).status_code, 302)
+        self.assertEqual(self.client.post(self.url, {'foto': foto(), 'plato_visible': True, 'vista_superior': True, 'luz_adecuada': True}).status_code, 302)
         accepted = self.servicio.fotografias.get()
         self.assertEqual((accepted.backend, accepted.version_id), ('s3', 'v1'))
         self.assertTrue(accepted.clave_archivo.startswith('eva/capturas/servicios/'))
@@ -62,7 +62,7 @@ class CapturaS3HTTPTests(dominio.BaseDominio):
         self.put_response()
         self.stub.add_response('delete_object', {}, {'Bucket': 'eva-pruebas', 'Key': ANY, 'VersionId': 'v1'})
         with patch('apps.captura.services.registrar_captura', side_effect=ValidationError('No aceptar')):
-            self.assertEqual(self.client.post(self.url, {'foto': foto()}).status_code, 200)
+            self.assertEqual(self.client.post(self.url, {'foto': foto(), 'plato_visible': True, 'vista_superior': True, 'luz_adecuada': True}).status_code, 200)
         self.assertFalse(self.servicio.fotografias.exists())
         self.servicio.refresh_from_db()
         self.assertEqual(self.servicio.estado_captura, 'PENDIENTE_SERVIDO')

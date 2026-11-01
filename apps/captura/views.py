@@ -132,8 +132,15 @@ def resolver_bandeja(request):
     if bandeja is None:
         return render(request, "captura/buscar_bandeja.html", contexto)
 
-    if _asignacion_abierta(bandeja):
-        contexto["error"] = "La bandeja está ocupada por otro servicio. Usa otra bandeja."
+    asignacion = _asignacion_abierta(bandeja)
+    if asignacion:
+        servicio = asignacion.servicio
+        if servicio.estado_captura == Estado.PENDIENTE_SERVIDO:
+            contexto["error"] = "Este servicio aún no tiene la fotografía del servido. Continúa su captura."
+            contexto["continuar_url"] = reverse("captura:foto_servido", args=[servicio.pk])
+            contexto["continuar_texto"] = "Continuar foto del servido"
+        else:
+            contexto["error"] = "La bandeja está ocupada por otro servicio. Usa otra bandeja."
         return render(request, "captura/buscar_bandeja.html", contexto)
 
     form = ServicioForm(request.POST or None)
@@ -172,8 +179,17 @@ def buscar_retorno(request):
         return render(request, "captura/buscar_bandeja.html", contexto)
 
     asignacion = _asignacion_abierta(bandeja)
-    if asignacion is None or asignacion.servicio.estado_captura != Estado.EN_ESPERA_RETORNO:
-        raise Http404("La bandeja no tiene un servicio esperando retorno.")
+    if asignacion is None:
+        contexto["error"] = "La bandeja no tiene un servicio esperando retorno. Puede estar libre o su servicio ya fue cerrado."
+        contexto["continuar_url"] = reverse("captura:resolver_bandeja")
+        contexto["continuar_texto"] = "Ir al registro de servido"
+        return render(request, "captura/buscar_bandeja.html", contexto)
+    if asignacion.servicio.estado_captura != Estado.EN_ESPERA_RETORNO:
+        contexto["error"] = "Primero debes guardar la fotografía del servido; todavía no se puede registrar el retorno."
+        if asignacion.servicio.estado_captura == Estado.PENDIENTE_SERVIDO:
+            contexto["continuar_url"] = reverse("captura:foto_servido", args=[asignacion.servicio_id])
+            contexto["continuar_texto"] = "Continuar foto del servido"
+        return render(request, "captura/buscar_bandeja.html", contexto)
     servicio = asignacion.servicio
 
     form = ConfirmarRetornoForm(request.POST or None)

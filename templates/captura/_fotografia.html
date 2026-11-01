@@ -11,6 +11,7 @@
     </dl>
     {% if foto_servido_url %}<h3>Foto del servido</h3><img class="capture-image" src="{{ foto_servido_url }}" alt="Fotografía inicial del mismo servicio">{% if fecha_servido %}<p class="muted">Servido: <time datetime="{{ fecha_servido|date:'c' }}">{{ fecha_servido|localtime|date:"d/m/Y H:i:s" }}</time> (hora de Ecuador).</p>{% endif %}{% endif %}
     <div class="info-box">
+      {% if foto_servido_retenida %}<p>La fotografía inicial ya no está disponible por retención. El historial del servicio se conserva.</p>{% endif %}
       <h3>Antes de guardar</h3>
       <p>Fotografía desde arriba, con el plato completo y luz estable. Mantén condiciones comparables al servido.</p>
       <p>Si el caldo oculta yuca o pescado, no lo interpretes como ausencia de alimento.</p>

@@ -22,6 +22,10 @@ class ArchivoNoEncontrado(ErrorAlmacenamiento):
     """La clave no corresponde a ningún archivo guardado."""
 
 
+class ArchivoExistente(ErrorAlmacenamiento):
+    """Una colisión nunca autoriza borrar el objeto que ya estaba almacenado."""
+
+
 @dataclass(frozen=True)
 class Guardado:
     backend: str
@@ -99,6 +103,8 @@ def guardar(contenido, clave, *, tipo_contenido="application/octet-stream", back
                 ChecksumSHA256=base64.b64encode(bytes.fromhex(digest)).decode(),
             )
         except (BotoCoreError, ClientError, OSError) as error:
+            if isinstance(error, ClientError) and error.response.get("Error", {}).get("Code") in ("PreconditionFailed", "412"):
+                raise ArchivoExistente("Ya existe un archivo con esa clave.") from error
             if not isinstance(error, ClientError):
                 # Un timeout puede ocurrir después de que S3 reciba los bytes.
                 # Registrar la clave propia para reconciliar, sin borrar a ciegas.
@@ -111,7 +117,7 @@ def guardar(contenido, clave, *, tipo_contenido="application/octet-stream", back
         with open(ruta, "xb") as destino:
             destino.write(contenido)
     except FileExistsError as error:
-        raise ErrorAlmacenamiento("Ya existe un archivo con esa clave.") from error
+        raise ArchivoExistente("Ya existe un archivo con esa clave.") from error
     except OSError as error:
         try:
             ruta.unlink(missing_ok=True)

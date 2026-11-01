@@ -18,6 +18,7 @@
   <dl class="capture-details">
     {% for fotografia in fotografias_registradas %}
     <dt>{{ fotografia.get_etapa_display }}</dt>
+    {% if not fotografia.disponible %}<dd>Fotografía no disponible por retención; historial conservado.</dd>{% endif %}
     <dd><time datetime="{{ fotografia.fecha|date:'c' }}">{{ fotografia.fecha|localtime|date:"d/m/Y H:i:s" }}</time> (hora de Ecuador)</dd>
     {% if fotografia.protocolo_version %}<dt>Protocolo</dt><dd>{{ fotografia.protocolo_version }} · Checklist confirmado por el operador.</dd>{% endif %}
     {% endfor %}

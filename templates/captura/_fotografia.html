@@ -33,6 +33,14 @@
         {% endfor %}
       </div>
       {% else %}<p class="muted">El formulario de captura aún no está conectado.</p>{% endif %}
+      <div data-photo-camera>
+        <button type="button" class="button secondary-button" data-camera-start>Usar cámara de este dispositivo</button>
+        <video class="capture-image" data-camera-video autoplay playsinline muted hidden aria-label="Vista de la cámara del dispositivo"></video>
+        <canvas data-camera-canvas hidden></canvas>
+        <button type="button" class="button primary-button" data-camera-take hidden>Tomar fotografía</button>
+        <button type="button" class="button secondary-button" data-camera-stop hidden>Cerrar cámara</button>
+        <p data-camera-status role="status" aria-live="polite">La cámara se activa solo al pulsar el botón. También puedes seleccionar un archivo.</p>
+      </div>
       <div data-photo-enhancement hidden>
         <img data-photo-preview class="capture-image" alt="Vista previa de la fotografía seleccionada" hidden>
         <button type="button" class="button secondary-button" data-photo-repeat>Elegir otra foto</button>
@@ -45,3 +53,5 @@
     </form>
   </section>
 </div>
+{% load static %}
+<script src="{% static 'js/camara_captura.js' %}" defer></script>

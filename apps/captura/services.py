@@ -155,6 +155,9 @@ def anular_servicio(*, servicio, motivo, usuario):
         if filas != 1:
             raise ValidationError("El servicio no se puede anular en su estado actual.")
         _cerrar_asignacion(servicio)
+        SesionCaptura.objects.filter(servicio=servicio, estado=SesionCaptura.Estado.PENDIENTE).update(
+            estado=SesionCaptura.Estado.CANCELADA,
+        )
 
 
 def emitir_etiqueta(*, bandeja):
@@ -167,7 +170,7 @@ def emitir_etiqueta(*, bandeja):
             raise ValidationError("La bandeja ya tiene una etiqueta vigente.")
 
 
-def reemplazar_etiqueta(*, bandeja, motivo, usuario):
+def reemplazar_etiqueta(*, bandeja, motivo, usuario, codigo_esperado=None):
     """Revoca la etiqueta vigente y emite una nueva para la misma bandeja.
 
     Exige motivo y responsable; la revocación guarda motivo, autor y fecha.
@@ -177,13 +180,18 @@ def reemplazar_etiqueta(*, bandeja, motivo, usuario):
     if not motivo:
         raise ValidationError("El reemplazo de etiqueta requiere un motivo.")
     with transaction.atomic():
-        EtiquetaBandeja.objects.filter(
+        etiquetas = EtiquetaBandeja.objects.filter(
             bandeja=bandeja, revocada_en__isnull=True
-        ).update(
+        )
+        if codigo_esperado is not None:
+            etiquetas = etiquetas.filter(codigo=codigo_esperado)
+        filas = etiquetas.update(
             revocada_en=timezone.now(),
             revocada_por=usuario,
             motivo_revocacion=motivo,
         )
+        if codigo_esperado is not None and filas != 1:
+            raise ValidationError("La etiqueta ya cambió. Revisa la etiqueta vigente antes de repetir.")
         return emitir_etiqueta(bandeja=bandeja)
 
 

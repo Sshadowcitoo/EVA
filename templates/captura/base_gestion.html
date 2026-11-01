@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% load static %}
+{% block eyebrow %}ADMINISTRACIÓN / EVA{% endblock %}
+{% block navigation %}
+<a class="nav-link" href="{% url 'catalogo:platos' %}">Catálogo</a>
+<a class="nav-link active" href="{% url 'captura:gestion' %}">Bandejas y servicios</a>
+{% if puede_registrar %}<a class="nav-link" href="{% url 'captura:resolver_bandeja' %}">Capturar con bandeja</a>{% endif %}
+{% endblock %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/captura.css' %}">
+<link rel="stylesheet" href="{% static 'css/gestion_captura.css' %}">
+{% for message in messages %}<p class="info-box" role="status">{{ message }}</p>{% endfor %}
+{% block gestion_content %}{% endblock %}
+{% endblock %}

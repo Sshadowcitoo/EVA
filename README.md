@@ -2,7 +2,7 @@
 
 Proyecto de Construcción de Software, Ingeniería de Software, UNEMI.
 
-## Estado integrado al 31 de octubre de 2026
+## Estado integrado: actualización del 1 de noviembre de 2026
 
 Integra las entregas de los bloques 2 y 3 de César, Isaac, Lino, Jean y Eduardo.
 El alcance comprobado y los pendientes están en
@@ -18,15 +18,17 @@ Disponible sobre almacenamiento local privado:
 - Lectura privada de imágenes y preservación de la confirmación histórica del creador.
 - Re-codificación JPEG/PNG sin EXIF, límites compartidos y compensación de archivos.
 
-Del bloque 3 se integran configuración, sesiones temporales de captura, servicios
-de dominio, metadatos y plantillas/JavaScript. **Todavía faltan el adaptador S3 y
-los endpoints de vinculación**: no se acredita captura real PC→teléfono→S3.
-Seleccionar S3 sin su adaptador rechaza la carga; no escribe silenciosamente en local.
+El adaptador S3 ya está conectado al guardado y lectura de fotografías, mediado por
+Django. Conserva el backend y las versiones de cada archivo; las fotos locales
+anteriores siguen accesibles. Un fallo S3 no cae a disco ni confirma el guardado.
+Faltan los endpoints de vinculación PC–celular: no se acredita ese recorrido completo.
+La configuración de desarrollo continúa local hasta activar el entorno autorizado.
 
 Cocina ve su pantalla pendiente: no dispone aún de análisis ni revisión de fotos.
 Administración no hereda Registro ni recibe borrado genérico: conserva únicamente
 las acciones aprobadas de anulación y reemplazo de etiqueta, además del catálogo.
-Sus pantallas específicas de esas acciones todavía están pendientes.
+Las pantallas de anulación y reemplazo están disponibles en Bandejas y servicios,
+con motivo/confirmación, auditoría y descarga del QR vigente.
 
 ## Catálogo inicial del escenario ficticio
 
@@ -108,10 +110,10 @@ sin rol no inicia sesión en EVA. La raíz `/` aún puede responder 404.
 .\.venv\Scripts\python.exe manage.py makemigrations --check --dry-run
 ```
 
-Comprobación integrada del 31 de octubre de 2026:
+Comprobación actualizada el 1 de noviembre de 2026:
 
 - `check`: sin incidencias.
-- **142 pruebas Django aprobadas**, sobre base temporal y archivos temporales.
+- **156 pruebas Django aprobadas**, sobre base temporal/archivos temporales y S3 simulado.
 - **7 pruebas JavaScript aprobadas**: `node --test tests/frontend/*.test.cjs`.
 - `makemigrations --check --dry-run`: sin cambios.
 - `git diff --check`: correcto.
@@ -129,7 +131,7 @@ sus fallos y pendientes no sustituyen este estado integrado.
 - Microservicio visual, conjunto de imágenes anotadas y evaluación independiente.
 - Revisión de Cocina, histórico analítico y percepción del comensal.
 - Recomendaciones, decisiones y seguimiento de pruebas controladas.
-- Adaptador S3, conservación de imágenes/máscaras y publicación versionada del despliegue.
+- Conservación de imágenes/máscaras y publicación versionada del despliegue.
 - Contexto/horario y demás decisiones de datos aún no ratificadas.
 
 La configuración predeterminada del repositorio usa SQLite y ajustes de desarrollo.
@@ -147,3 +149,8 @@ Las imágenes quedan a cargo de César.
 No subir `.venv/`, `.env`, `db.sqlite3`, cachés, imágenes del piloto ni credenciales.
 Las migraciones sí se versionan. Los recursos gráficos propios de la interfaz
 pueden incluirse explícitamente; no confundirlos con los datos fotográficos del piloto.
+
+## Administración y S3
+
+Ver [operación y permisos](docs/administracion_y_s3.md) para anulación, etiquetas,
+lectura mixta local/S3 y prueba explícita del bucket mediante el rol del servidor.

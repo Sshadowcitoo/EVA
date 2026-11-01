@@ -1,0 +1,8 @@
+.label-code { overflow-wrap: anywhere; }
+.label-qr { display: block; width: 220px; max-width: 100%; height: auto; background: white; margin: 20px 0; }
+.danger-button { background: #a12626; color: white; border: 1px solid #a12626; }
+.danger-button:hover { background: #7d1d1d; }
+.capture-operation textarea { font: inherit; width: 100%; max-width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 8px; }
+.capture-operation input[type="checkbox"] { width: auto; justify-self: start; }
+.capture-history { margin-top: 24px; }
+.capture-history article + article { border-top: 1px solid #e8edf3; margin-top: 16px; }

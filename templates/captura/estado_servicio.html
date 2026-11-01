@@ -1,4 +1,5 @@
 {% extends "captura/base_operacion.html" %}
+{% load tz %}
 {% block title %}Estado de captura | EVA{% endblock %}
 {% block heading %}Estado del servicio{% endblock %}
 {% block subtitle %}Bandeja {{ bandeja.numero }} · {{ plato_nombre }}{% endblock %}
@@ -12,6 +13,16 @@
   <h2>Servicio anulado</h2><p>Este servicio ya no acepta capturas.</p>
   {% else %}
   <h2>Fotografía pendiente</h2><p>Aún no hay confirmación de guardado para esta etapa.</p>
+  {% endif %}
+  {% if fotografias_registradas %}
+  <dl class="capture-details">
+    {% for fotografia in fotografias_registradas %}
+    <dt>{{ fotografia.get_etapa_display }}</dt>
+    <dd><time datetime="{{ fotografia.fecha|date:'c' }}">{{ fotografia.fecha|localtime|date:"d/m/Y H:i:s" }}</time> (hora de Ecuador)</dd>
+    {% if fotografia.protocolo_version %}<dt>Protocolo</dt><dd>{{ fotografia.protocolo_version }} · Checklist confirmado por el operador.</dd>{% endif %}
+    {% endfor %}
+  </dl>
+  <p class="muted">Fecha y hora registradas automáticamente al guardar cada fotografía.</p>
   {% endif %}
   {% if continuar_url %}<a class="button primary-button" href="{{ continuar_url }}">Continuar</a>{% endif %}
 </section>

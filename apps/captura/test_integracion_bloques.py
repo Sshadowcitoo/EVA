@@ -80,7 +80,7 @@ class RecorridoCapturaTests(TestCase):
         return Servicio.objects.get(estado_captura='PENDIENTE_SERVIDO')
 
     def servido(self, servicio):
-        return self.client.post(reverse('captura:foto_servido', args=[servicio.pk]), {'foto': foto()})
+        return self.client.post(reverse('captura:foto_servido', args=[servicio.pk]), {'foto': foto(), 'plato_visible': True, 'vista_superior': True, 'luz_adecuada': True})
 
     def test_recorrido_dos_operadores_con_lectura_privada_y_liberacion(self):
         servicio = self.crear()
@@ -90,7 +90,7 @@ class RecorridoCapturaTests(TestCase):
         response = self.client.get(search)
         self.assertContains(response, 'Seco de pollo')
         self.assertEqual(self.client.post(search, {'confirmar': True}).status_code, 302)
-        self.assertEqual(self.client.post(reverse('captura:foto_retorno', args=[servicio.pk]), {'foto': foto()}).status_code, 302)
+        self.assertEqual(self.client.post(reverse('captura:foto_retorno', args=[servicio.pk]), {'foto': foto(), 'plato_visible': True, 'vista_superior': True, 'luz_adecuada': True}).status_code, 302)
         servicio.refresh_from_db()
         self.assertEqual(servicio.estado_captura, 'PAR_COMPLETO')
         self.assertEqual(servicio.creado_por, self.operador)
@@ -110,7 +110,7 @@ class RecorridoCapturaTests(TestCase):
     def test_retorno_sin_servido_no_muestra_formulario_ni_acepta_foto(self):
         servicio = self.crear()
         url = reverse('captura:foto_retorno', args=[servicio.pk])
-        response = self.client.post(url, {'foto': foto()})
+        response = self.client.post(url, {'foto': foto(), 'plato_visible': True, 'vista_superior': True, 'luz_adecuada': True})
         self.assertContains(response, 'Primero debe registrarse')
         self.assertNotContains(response, 'type="file"')
         self.assertFalse(servicio.fotografias.exists())

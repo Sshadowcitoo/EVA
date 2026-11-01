@@ -190,7 +190,7 @@ def buscar_retorno(request):
     return render(request, "captura/buscar_bandeja.html", contexto)
 
 
-def _capturar(request, pk, etapa, estado_esperado):
+def _capturar(request, pk, etapa, estado_esperado, sesion=None, token=None):
     """Lógica común de foto_servido y foto_retorno."""
     servicio = get_object_or_404(Servicio, pk=pk)
     bandeja = _bandeja_del_servicio(servicio)
@@ -211,6 +211,7 @@ def _capturar(request, pk, etapa, estado_esperado):
         if etapa == Etapa.RETORNO and servicio.estado_captura == Estado.PENDIENTE_SERVIDO:
             contexto["error"] = "Primero debe registrarse la fotografía del servido."
         contexto["estado"] = servicio.estado_captura
+        contexto["fotografias_registradas"] = servicio.fotografias.filter(vigente=True)
         contexto["continuar_url"] = reverse("captura:resolver_bandeja")
         return render(request, "captura/estado_servicio.html", contexto)
 
@@ -227,9 +228,11 @@ def _capturar(request, pk, etapa, estado_esperado):
         else:
             # 2) Registrar metadatos y avanzar el estado (transacción de Isaac).
             try:
-                services.registrar_captura(
-                    servicio=servicio,
-                    etapa=etapa,
+                registrar = services.registrar_captura if sesion is None else services.consumir_sesion
+                destino = {"servicio": servicio, "etapa": etapa} if sesion is None else {"token": token}
+                registrar(
+                    **destino,
+                    checklist=form.confirmaciones(),
                     clave_archivo=guardado.clave,
                     tipo_contenido=imagen.tipo,
                     tamano_bytes=imagen.tamano,
@@ -257,14 +260,22 @@ def _capturar(request, pk, etapa, estado_esperado):
                     return redirect(nombre_vista, pk=servicio.pk)
                 form.add_error(None, exc)
             else:
+                if sesion is not None:
+                    return redirect(request.get_full_path())
                 return redirect(nombre_vista, pk=servicio.pk)
 
     if etapa == Etapa.RETORNO:
         foto_servido = _foto_vigente(servicio, Etapa.SERVIDO)
         if foto_servido:
             contexto["foto_servido_url"] = reverse("captura:imagen", args=[foto_servido.pk])
+            contexto["fecha_servido"] = foto_servido.fecha
 
-    contexto.update(form=form, guardar_url=reverse(nombre_vista, args=[servicio.pk]))
+    contexto.update(form=form, guardar_url=reverse(nombre_vista, args=[servicio.pk]),
+                    vincular_url=reverse("captura:vincular", args=[servicio.pk, etapa]))
+    if sesion is not None:
+        contexto.update(guardar_url=request.get_full_path(), vincular_url=None,
+                        vinculo_vigente=True, estado=sesion.estado)
+        return render(request, "captura/captura_vinculada.html", contexto)
     return render(request, "captura/fotografia.html", contexto)
 
 

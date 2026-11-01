@@ -91,6 +91,13 @@ def procesar_imagen(archivo):
 
 class FotoForm(forms.Form):
     foto = forms.FileField(label="Fotografía")
+    plato_visible = forms.BooleanField(label="El plato completo está dentro del encuadre.")
+    vista_superior = forms.BooleanField(label="La fotografía está tomada desde arriba.")
+    luz_adecuada = forms.BooleanField(label="Hay luz suficiente y la imagen se distingue con claridad.")
+
+    def confirmaciones(self):
+        from .protocolo import CRITERIOS
+        return {campo: self.cleaned_data[campo] for campo in CRITERIOS}
 
     def clean_foto(self):
         # Al validar, el campo deja de ser el archivo subido

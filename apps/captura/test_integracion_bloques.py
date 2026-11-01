@@ -157,10 +157,11 @@ class RecorridoCapturaTests(TestCase):
         self.assertEqual(self.client.post(url, {}).status_code, 403)
         self.assertFalse(Servicio.objects.exists())
 
-    def test_s3_sin_adaptador_no_escribe_en_local(self):
+    def test_fallo_s3_no_escribe_en_local(self):
         servicio = self.crear()
-        with override_settings(EVA_STORAGE_BACKEND='s3'):
-            response = self.servido(servicio)
+        with override_settings(EVA_STORAGE_BACKEND='s3', EVA_S3_BUCKET='bucket-prueba', EVA_S3_REGION='us-east-2'):
+            with patch('apps.captura.storage._cliente_s3', side_effect=storage.ErrorAlmacenamiento('S3 no disponible')):
+                response = self.servido(servicio)
         self.assertContains(response, 'No se pudo guardar')
         self.assertFalse(self.root.exists())
         self.assertFalse(servicio.fotografias.exists())

@@ -14,7 +14,8 @@ def check_capture_configuration(app_configs, **kwargs):
     if backend not in ("local", "s3"):
         errors.append(Error("EVA_STORAGE_BACKEND debe ser local o s3.", id="captura.E001"))
 
-    if backend == "local":
+    # También con S3 se conservan fotos antiguas locales: su raíz sigue privada.
+    if backend in ("local", "s3"):
         root = Path(settings.EVA_CAPTURE_PRIVATE_ROOT)
         public_roots = [settings.BASE_DIR, *settings.STATICFILES_DIRS]
         if settings.STATIC_ROOT:

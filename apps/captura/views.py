@@ -2,7 +2,7 @@ import logging
 
 from django.conf import settings
 from django.core.exceptions import ValidationError
-from django.http import FileResponse, Http404
+from django.http import FileResponse, Http404, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils.http import urlencode
@@ -221,7 +221,7 @@ def _capturar(request, pk, etapa, estado_esperado):
 
         # 1) Guardar el archivo FUERA de cualquier transacción de base de datos.
         try:
-            storage.guardar(imagen.contenido, clave)
+            guardado = storage.guardar(imagen.contenido, clave, tipo_contenido=imagen.tipo)
         except storage.ErrorAlmacenamiento:
             form.add_error(None, "No se pudo guardar la fotografía. Inténtalo de nuevo.")
         else:
@@ -230,21 +230,25 @@ def _capturar(request, pk, etapa, estado_esperado):
                 services.registrar_captura(
                     servicio=servicio,
                     etapa=etapa,
-                    clave_archivo=clave,
+                    clave_archivo=guardado.clave,
                     tipo_contenido=imagen.tipo,
                     tamano_bytes=imagen.tamano,
                     ancho=imagen.ancho,
                     alto=imagen.alto,
                     autor=request.user,
+                    backend=guardado.backend,
+                    hash_sha256=guardado.hash_sha256,
+                    version_id=guardado.version_id,
                 )
             except Exception as exc:
                 # 3) Compensación: la BD rechazó, se borra el archivo huérfano.
                 try:
-                    storage.eliminar(clave)
+                    storage.eliminar(guardado.clave, backend=guardado.backend, version_id=guardado.version_id)
                 except storage.ErrorAlmacenamiento:
                     # Registro operativo para reintentar la limpieza; sin token ni
                     # nombre de archivo del cliente. Nunca mostrar éxito al fallar.
-                    logger.error("EVA_CAPTURE_ORPHAN backend=local clave=%s", clave)
+                    logger.error("EVA_CAPTURE_ORPHAN backend=%s clave=%s version=%s",
+                                 guardado.backend, guardado.clave, guardado.version_id)
                 if not isinstance(exc, ValidationError):
                     raise
                 servicio.refresh_from_db()
@@ -281,12 +285,13 @@ def foto_retorno(request, pk):
 def imagen(request, pk):
     """Entrega los bytes de una foto solo a usuarios con rol Registro."""
     foto = get_object_or_404(FotografiaServicio, pk=pk)
-    if foto.backend != "local":
-        raise Http404("El almacenamiento de esta fotografía todavía no está disponible.")
     try:
-        archivo = storage.abrir(foto.clave_archivo)
+        archivo = storage.abrir(foto.clave_archivo, backend=foto.backend, version_id=foto.version_id)
     except storage.ArchivoNoEncontrado:
         raise Http404("Fotografía no disponible.")
+    except storage.ErrorAlmacenamiento:
+        return HttpResponse("No se pudo consultar la fotografía. Inténtalo de nuevo.", status=503)
     respuesta = FileResponse(archivo, content_type=foto.tipo_contenido)
     respuesta["Cache-Control"] = "private, no-store"
+    respuesta["Content-Length"] = foto.tamano_bytes
     return respuesta

@@ -103,3 +103,23 @@ class ConfirmarRetornoForm(forms.Form):
         label="Confirmo que la bandeja y el plato corresponden al servicio mostrado.",
         required=True,
     )
+
+
+class BuscarGestionForm(forms.Form):
+    numero = forms.IntegerField(label="Número de bandeja", min_value=1, required=False)
+    servicio = forms.UUIDField(label="ID del servicio", required=False)
+
+    def clean(self):
+        data = super().clean()
+        if bool(data.get("numero")) == bool(data.get("servicio")):
+            raise forms.ValidationError("Indica el número de bandeja o el ID del servicio, solo uno.")
+        return data
+
+
+class MotivoOperacionForm(forms.Form):
+    motivo = forms.CharField(label="Motivo", max_length=1000, widget=forms.Textarea(attrs={"rows": 3}))
+    confirmar = forms.BooleanField(label="Confirmo esta operación y sus efectos.")
+
+
+class ReemplazarEtiquetaForm(MotivoOperacionForm):
+    etiqueta_actual = forms.CharField(max_length=32, widget=forms.HiddenInput)

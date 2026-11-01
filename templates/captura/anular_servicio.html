@@ -1,0 +1,11 @@
+{% extends "captura/base_gestion.html" %}
+{% block title %}Anular servicio | EVA{% endblock %}
+{% block heading %}Anular servicio{% endblock %}
+{% block subtitle %}La anulación libera la bandeja y conserva las fotos y el historial.{% endblock %}
+{% block gestion_content %}
+<section class="panel capture-operation"><h2>{{ servicio.get_plato_display }}</h2><p class="label-code">Servicio {{ servicio.pk }}</p>
+{% if permitida %}<p class="info-box">Después de anular, este servicio no aceptará nuevas fotografías ni enlaces de captura.</p><form method="post">{% csrf_token %}{{ form.as_p }}<button class="button danger-button">Confirmar anulación</button></form>
+{% else %}<p role="status">Este servicio no puede anularse en su estado actual.</p>{% endif %}
+<a class="button secondary-button" href="{% url 'captura:gestion' %}?servicio={{ servicio.pk }}">Volver sin cambios</a>
+</section>
+{% endblock %}

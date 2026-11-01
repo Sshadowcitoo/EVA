@@ -36,6 +36,7 @@
 {% if bandeja %}
 <section class="panel capture-operation">
   <h2>Bandeja {{ bandeja.numero }}</h2>
+  {% if continuar_url %}<p><a class="button primary-button" href="{{ continuar_url }}">{{ continuar_texto }}</a></p>{% endif %}
   {% if servicio %}<p>{{ plato_nombre }} · {{ porcion_nombre }}</p>{% endif %}
   {% if form and confirmar_url and operacion_habilitada %}
   <form method="post" action="{{ confirmar_url }}">

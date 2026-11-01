@@ -132,3 +132,23 @@ class VinculacionHTTPTests(BaseDominio):
             'GET %s', ("/vinculada/?token=secreto HTTP/1.1 /login/?next=%2Fvinculada%2F%3Ftoken%3Dsecreto",), None)
         OcultarTokenCaptura().filter(record)
         self.assertNotIn("secreto", record.getMessage())
+
+    def test_buscar_retorno_sin_servido_explains_y_permite_continuar(self):
+        url = reverse("captura:buscar_retorno") + "?numero=1&etiqueta="
+        for respuesta in (self.client.get(url), self.client.post(url, {"confirmar": True})):
+            self.assertContains(respuesta, "Primero debes guardar la fotografía del servido")
+            self.assertContains(respuesta, self.directa)
+            self.assertContains(respuesta, "Continuar foto del servido")
+        self.assertFalse(self.servicio.fotografias.exists())
+
+    def test_buscar_servido_pendiente_retoma_sin_duplicar(self):
+        from .models import Servicio
+        total = Servicio.objects.count()
+        url = reverse("captura:resolver_bandeja") + "?numero=1"
+        self.assertContains(self.client.get(url), self.directa)
+        self.assertContains(self.client.post(url, {}), "Continúa su captura")
+        self.assertEqual(Servicio.objects.count(), total)
+
+    def test_retorno_de_bandeja_libre_muestra_mensaje_sin_404(self):
+        url = reverse("captura:buscar_retorno") + "?numero=10"
+        self.assertContains(self.client.get(url), "no tiene un servicio esperando retorno")

@@ -10,7 +10,7 @@
 {% if puede_cocina %}<a class="nav-link" href="{% url 'cuentas:cocina_pendiente' %}">Cocina</a>{% endif %}
 {% endblock %}
 {% block content %}
-<link rel="stylesheet" href="{% static 'css/captura.css' %}">
+<link rel="stylesheet" href="{% static 'css/captura.css' %}?v=20261101-camara">
 {% if error %}<div class="error-summary" role="alert">{{ error }}</div>{% endif %}
 {% if not operacion_habilitada %}
 <p class="info-box" role="status">Esta operación aún no está disponible. No se ha guardado ninguna fotografía.</p>

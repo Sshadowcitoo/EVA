@@ -44,6 +44,28 @@ Roles: Cocina solicita/reintenta/consulta; Registro no hereda Cocina y Administr
 
 Contexto de templates/analisis: `casos`, y detalle con `caso.plato_nombre`, `caso.porcion_nombre`, `caso.estado`, `caso.origen`, `caso.version_modelo`, `resultados` (componente, porcentaje_texto, confianza_texto, estado, motivo), `foto_servido_url`, `foto_retorno_url`, `error`, `solicitar_url`, `reintentar_url`. URLs ausentes deshabilitan acciones; porcentajes nulos se representan “No concluyente”, nunca 0. Las máscaras se entregan mediante URLs autorizadas, no claves S3.
 
+### Ampliación opcional ratificada para la interfaz de Jean (PR #34)
+
+Estos datos no son nuevas columnas obligatorias ni bloquean el renderizado. Lino construye el contexto a partir de los registros autorizados; no acepta porcentajes, permisos o URLs de evidencia enviados por el navegador.
+
+| Dato | Semántica y ausencia |
+| --- | --- |
+| `caso.bandeja_numero` | Número del soporte físico asociado históricamente a ese servicio, no su asignación actual. Ausente: guion. Rotular **Bandeja**, no Registro: el soporte se reutiliza. |
+| `caso.servicio_id` | UUID del servicio para distinguir varios usos de una bandeja; conservar la identificación única en detalle y acciones. No sustituirlo por bandeja_numero. |
+| `caso.intento_numero` | Número del intento que se está mostrando, entero positivo; ausente: omitir. |
+| `caso.duracion_texto` | Texto legible derivado de duracion_ms del mismo intento, nunca inventar 0 s cuando sea nulo. Ausente: omitir. |
+| `resumen.por_revisar` | Conteo de servicios distintos con resultado vigente completado REAL y revisión humana pendiente, dentro del mismo alcance/filtros que la lista. Ausente/None: Sin datos. Cero solo si la consulta real devuelve cero. |
+| `resumen.no_concluyentes` | Servicios distintos del mismo alcance con algún resultado vigente NO_CONCLUYENTE. No sumar componentes como si fueran servicios. Puede solaparse con por_revisar; las tarjetas no son categorías disjuntas. Ausente/None: Sin datos. |
+| `historial_url` | Enlace interno autorizado a una pantalla ya implementada. Ausente: Pendiente de conexión. No obliga a implementar histórico dentro del bloque 4. |
+| `mascaras` | Lista opcional `[{url, componente, etapa}]`; etapa solo SERVIDO/RETORNO. URL privada autorizada de una máscara de ese caso y foto padre, con geometría compatible. Sin elementos: sin superposición. |
+| `estado_url` | URL relativa del mismo origen, autorizada por caso; GET JSON `{"estado":"PENDIENTE|EN_PROCESO|COMPLETADO|FALLIDO|TIEMPO_AGOTADO"}`. La notación indica alternativas, no un valor literal. Ausente: recarga manual. |
+
+Los conteos de SIMULADO se omiten de estas tarjetas o se muestran en un resumen separado y explícitamente rotulado; no mezclarlos con evidencia real. Si Lino aún no implementó una consulta o permiso, omite el dato: una tarjeta sin datos no es un cero demostrado.
+
+Máscaras operativas y visualización: preservar la máscara original. Para superponer sobre la foto, entregar una representación PNG con fondo transparente, alineada con su foto padre. Acordar color estable por componente y leyenda coincidente; no asignar colores solo según la posición de la fila ni superponer un PNG opaco que tape el plato. La conversión de visualización no altera las áreas del resultado ni reinicia la retención.
+
+Consulta automática a cargo de Jean: mismo origen, `cache: no-store`, autorización en servidor, rechazo de redirecciones y validación de los cinco estados. Añadir AbortController con límite por petición y plazo total; veinte consultas no garantizan 60 s si un fetch queda abierto. Detener/abortar al ocultar o cerrar la página y al terminar; mostrar error/reintento manual ante pérdida de sesión o red, sin anunciar éxito ni recargar por un estado desconocido. El límite de consulta de la UI es independiente del plazo de 30 s del worker. Pruebas de JavaScript deben cubrir estas condiciones, además de las de plantilla.
+
 ## Motor y respuesta v1
 
 Propuesto `POST /v1/analizar-par`, autenticación interna configurada por César, solo endpoint permitido desde configuración del servidor. Enviar multipart con fotos operativas JPEG/PNG y campo metadata JSON: schema_version=1, request_id UUID del intento, servicio_id, version_modelo, version_configuracion y componentes [{id,codigo}] de Servicio.composicion.

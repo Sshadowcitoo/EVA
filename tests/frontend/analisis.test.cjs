@@ -23,7 +23,7 @@ querySelector: (s) => (s === "[data-estado-mensaje]" ? mensaje : s === "[data-es
 } : null;
 const documento = {
 get hidden() { return sim.oculto; },
-querySelector: () => elemento,
+querySelector: (s) => (s === "[data-estado-url]" ? elemento : null),
 addEventListener(n, fn) { oyentes["doc-" + n] = fn; },
 };
 const ventana = {

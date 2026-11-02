@@ -46,64 +46,11 @@
 {% else %}
 <section class="panel" aria-labelledby="evidencia-titulo">
 <h2 id="evidencia-titulo">Evidencia</h2>
-<div class="analisis-fotos">
-    {% if foto_servido_url %}
-    <figure class="analisis-foto">
-        <div class="analisis-foto-marco">
-        <img src="{{ foto_servido_url }}" alt="Foto del servido">
-        {% for m in mascaras %}{% if m.etapa == "SERVIDO" %}<img class="analisis-mascara" src="{{ m.url }}" alt="Máscara de {{ m.componente }} sobre el servido">{% endif %}{% endfor %}
-        </div>
-        <figcaption>Servido</figcaption>
-    </figure>
-    {% endif %}
-    {% if foto_retorno_url %}
-    <figure class="analisis-foto">
-        <div class="analisis-foto-marco">
-        <img src="{{ foto_retorno_url }}" alt="Foto del retorno">
-        {% for m in mascaras %}{% if m.etapa == "RETORNO" %}<img class="analisis-mascara" src="{{ m.url }}" alt="Máscara de {{ m.componente }} sobre el retorno">{% endif %}{% endfor %}
-        </div>
-        <figcaption>Retorno</figcaption>
-    </figure>
-    {% endif %}
-</div>
-{% if mascaras %}<p class="muted">Las máscaras sombreadas marcan el área que detectó el análisis en cada foto.</p>{% endif %}
-</section>
+{% include "analisis/_evidencia.html" %}
+  </section>
 
 <h2 class="section-title" id="hallazgos">Hallazgos por componente</h2>
-<section class="panel analisis-tabla" aria-labelledby="hallazgos">
-<table class="data-table">
-    <thead>
-    <tr>
-        <th scope="col">Componente</th>
-        <th scope="col">Sobrante visual</th>
-        <th scope="col">Confianza</th>
-        <th scope="col">Estado</th>
-    </tr>
-    </thead>
-    <tbody>
-    {% for resultado in resultados %}
-        <tr>
-        <td data-label="Componente"><span class="analisis-celda">{% if resultado.color_clave and resultado.color_clave|stringformat:"s" in "12345678" %}<span class="leyenda-punto c{{ resultado.color_clave }}" aria-hidden="true"></span>{% endif %}{{ resultado.componente }}</span></td>
-        <td data-label="Sobrante visual">{{ resultado.porcentaje_texto|default:"No concluyente" }}</td>
-        <td data-label="Confianza">{{ resultado.confianza_texto|default:"Sin dato" }}</td>
-        <td data-label="Estado"><div class="analisis-celda">
-            {% if resultado.estado == "NO_CONCLUYENTE" or resultado.motivo %}
-            <span class="estado-chip estado-aviso">No concluyente</span>
-            {% include "analisis/_motivo.html" with motivo=resultado.motivo %}
-            {% elif resultado.estado == "CONCLUYENTE" %}
-            <span class="estado-chip estado-completado">Concluyente</span>
-            {% else %}
-            <span class="estado-chip estado-neutro">Sin estado</span>
-            {% endif %}
-        </div></td>
-        </tr>
-    {% empty %}
-        <tr><td class="empty-row" colspan="4">Aún no hay resultados aceptados del motor.</td></tr>
-    {% endfor %}
-    </tbody>
-</table>
-{% if resultados %}<p class="muted">Los componentes no concluyentes quedan excluidos de los indicadores.</p>{% endif %}
-</section>
+{% include "analisis/_tabla_resultados.html" with titulo_id="hallazgos" %}
 
 {% if solicitar_url %}
 <form method="post" action="{{ solicitar_url }}">{% csrf_token %}

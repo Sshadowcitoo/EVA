@@ -4,11 +4,15 @@ Base revisada: main 1a2230635b32 y rama remota isaac-b4-modelos-analisis a6795ec
 
 ## Propiedad y dependencias
 
-- César: app registrada, configuración/permisos, este contrato, interfaz y contrato del motor.
+- César: app registrada, configuración/permisos, este contrato, contrato del motor e integración.
 - Isaac: AnalisisServicio, IntentoAnalisis, ResultadoComponente, ArtefactoAnalisis, migraciones y services.py. No necesita editar settings.py.
 - Lino: cliente, worker, rutas/vistas y almacenamiento de artefactos.
 - Eduardo: pruebas de integración y evidencias; preparar casos sin esperar, ejecutar integración tras integrar dependencias.
-- Jean: sin asignación obligatoria; César cubre interfaz mientras no confirme disponibilidad.
+- Jean: disponibilidad confirmada para la interfaz de los bloques 4 y 5, con mapeo y comparación en Figma.
+
+Desde la confirmación de disponibilidad, Jean tiene la propiedad de `templates/analisis/*`, `static/css/analisis.css` y `static/js/analisis.js`. César no editará esos archivos sin coordinarlo con él. Las bases ya publicadas en PR #32 y #33 se conservan como punto de partida; no duplicar ni descartar `revision.html` del bloque 5.
+
+Jean puede partir de `cesar-b4-contratos-motor` en `jean-b4-interfaz-analisis`, con PR contra esa rama y dependencia explícita del #32. Para bloque 5: `jean-b5-interfaz-cocina`, basada en `cesar-b5-contratos-interfaz` (#33), llevando primero los cambios compartidos de su bloque 4. Tras integrar las dependencias, cambiar las bases de los PR a main. Jean abre los PR; César hace la integración.
 
 No hacer merge de entregas propias: abrir PR con dependencias. Orden: base de César, modelos de Isaac, integración de Lino, pantallas conectadas y pruebas. `apps.py` de esta entrega reproduce el de Isaac para permitir registrar la app sin copiar sus modelos; Git puede integrar el archivo idéntico.
 

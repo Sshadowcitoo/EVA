@@ -3,7 +3,7 @@ from django.test import SimpleTestCase
 
 CASO = {"plato_nombre": "Seco de pollo", "porcion_nombre": "Porción mediana", "origen": "REAL"}
 RESULTADOS = [
-    {"componente": "Arroz", "porcentaje_texto": "24 %", "confianza_texto": "91 %", "estado": "CONCLUYENTE"},
+    {"componente": "Arroz", "porcentaje_texto": "24 %", "confianza_texto": "91 %", "estado": "CONCLUYENTE", "color_clave": 1},
     {"componente": "Ensalada", "estado": "NO_CONCLUYENTE", "motivo": "OCULTACION"},
 ]
 
@@ -46,7 +46,8 @@ class DetalleAnalisisTests(SimpleTestCase):
         html = detalle(caso={**CASO, "estado": "COMPLETADO"}, resultados=RESULTADOS)
         self.assertIn("24 %", html)
         self.assertIn("91 %", html)
-        self.assertIn("leyenda-punto", html)
+        self.assertIn("leyenda-punto c1", html)
+        self.assertEqual(html.count("leyenda-punto"), 1)  # sin color estable no se dibuja punto
         self.assertIn("No concluyente", html)
         self.assertIn("El componente está oculto", html)
         self.assertIn("OCULTACION", html)
@@ -71,6 +72,19 @@ class DetalleAnalisisTests(SimpleTestCase):
         self.assertIn("SIMULADO", html)
         self.assertIn("Intento 2", html)
         self.assertIn("Duración 12 s", html)
+
+    def test_bandeja_y_servicio_se_rotulan_sin_confundirse(self):
+        servicio = "7c9e6679-7425-40de-944b-e07fc1f90ae7"
+        html = detalle(caso={**CASO, "estado": "COMPLETADO", "bandeja_numero": "EVA-001", "servicio_id": servicio})
+        self.assertIn("Bandeja EVA-001", html)
+        self.assertNotIn("Registro EVA-001", html)
+        self.assertIn(servicio, html)
+
+    def test_consulta_automatica_ofrece_reintento_manual_oculto(self):
+        html = detalle(caso={**CASO, "estado": "EN_PROCESO"}, estado_url="/analisis/1/estado/")
+        self.assertIn("data-estado-reintentar hidden", html)
+        sin_ruta = detalle(caso={**CASO, "estado": "EN_PROCESO"})
+        self.assertNotIn("data-estado-reintentar", sin_ruta)
 
     def test_sin_estado_ni_resultados_explica_que_no_hay_datos(self):
         html = detalle(caso=CASO)

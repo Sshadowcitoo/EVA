@@ -36,7 +36,7 @@
   <table class="data-table">
     <thead>
       <tr>
-        <th scope="col">Registro</th>
+        <th scope="col">Bandeja</th>
         <th scope="col">Plato</th>
         <th scope="col">Estado</th>
         <th scope="col">Acción</th>
@@ -45,7 +45,7 @@
     <tbody>
       {% for caso in casos %}
         <tr>
-          <td data-label="Registro">{{ caso.bandeja_numero|default:"—" }}</td>
+          <td data-label="Bandeja">{{ caso.bandeja_numero|default:"—" }}{% if caso.servicio_id %}<small title="Servicio {{ caso.servicio_id }}">Servicio {{ caso.servicio_id|slice:":8" }}</small>{% endif %}</td>
           <td data-label="Plato">
             <div>
               <strong>{{ caso.plato_nombre }}</strong>

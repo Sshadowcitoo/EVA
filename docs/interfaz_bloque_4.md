@@ -13,7 +13,7 @@ Fecha de la revisión contra Figma: 02/11/2026.
 | Estados legibles y motivos legibles | `_estado.html`, `_motivo.html` | W01, W03, W16 | Hechos |
 | Actualización automática mientras el análisis está en curso | `static/js/analisis.js` | W30 | Hecha |
 | Estilos | `static/css/analisis.css` (se reutilizan las clases de `eva.css`) | — | Hechos |
-| Pruebas de plantilla | `apps/analisis/test_interfaz_lista.py`, `test_interfaz_detalle.py` | — | 21 pruebas de `apps.analisis` en OK |
+| Pruebas | `apps/analisis/test_interfaz_lista.py`, `test_interfaz_detalle.py`, `tests/frontend/analisis.test.cjs` | — | 24 de `apps.analisis` y 15 de JavaScript en OK |
 
 Las pantallas de revisión (confirmar, rechazar con motivo y estados guardados) **no** se tocaron aquí: dependen de la rama del bloque 5 (`cesar-b5-contratos-interfaz`) y quedan como siguiente paso.
 
@@ -32,18 +32,22 @@ Las pantallas de revisión (confirmar, rechazar con motivo y estados guardados) 
 
 Del contrato de César (`docs/contrato_bloque_4.md`): `casos` (`plato_nombre`, `porcion_nombre`, `estado`, `origen`, `detalle_url`), `caso` (`plato_nombre`, `porcion_nombre`, `estado`, `origen`, `version_modelo`), `resultados` (`componente`, `porcentaje_texto`, `confianza_texto`, `estado`, `motivo`), `foto_servido_url`, `foto_retorno_url`, `error`, `solicitar_url`, `reintentar_url`.
 
-**Datos opcionales añadidos por esta interfaz y que no están en el contrato.** Sin ellos las pantallas funcionan igual y simplemente omiten esa parte. Hay que confirmarlos con César y Lino:
+**Datos opcionales ratificados por César** en `docs/contrato_bloque_4.md` (ampliación del PR #34). Sin ellos las pantallas funcionan igual y simplemente omiten esa parte. Lino los construye a partir de registros autorizados:
 
 | Dato | Dónde se usa | Si no llega |
 |---|---|---|
-| `caso.bandeja_numero` (lista) y en el detalle | columna Registro | «—» |
+| `caso.bandeja_numero` | columna y texto «Bandeja» (no «Registro»: el soporte se reutiliza) | «—» |
+| `caso.servicio_id` (UUID) | identifica el servicio: 8 primeros caracteres en la lista, completo en el detalle | no se muestra |
+| `resultado.color_clave` (1 a 8) | punto de color de la leyenda; **propuesta de esta interfaz, pendiente de ratificar** con César y Lino (color estable por componente, igual al de su máscara) | sin punto de color |
 | `resumen.por_revisar`, `resumen.no_concluyentes` | tarjetas de la lista | «Sin datos» |
 | `historial_url` | tarjeta Historial | «Pendiente de conexión» |
 | `caso.intento_numero`, `caso.duracion_texto` | detalle | no se muestran |
 | `mascaras` (`url`, `componente`, `etapa` = `SERVIDO` o `RETORNO`) | máscaras sobre las fotos | no se dibujan |
 | `estado_url` (responde JSON `{"estado": "..."}`) | actualización automática del detalle | se pide recargar la página |
 
-Formato de las máscaras: la plantilla las superpone con 55 % de opacidad. Si el motor las entrega como PNG sin transparencia, hay que ajustarlo con Lino.
+Formato de las máscaras: la plantilla las superpone con 55 % de opacidad. El contrato pide PNG con fondo transparente, alineado con su foto, y color estable por componente igual al de la leyenda; se coordina con Lino. La leyenda ya no asigna colores por posición de fila.
+
+**Consulta automática del estado (`analisis.js`).** Mismo origen, `cache: no-store`, sin seguir redirecciones, validación de los cinco estados, tiempo máximo de 5 s por petición (`AbortController`) y plazo total de 60 s. Se pausa al ocultar la página y se detiene al salir. Ante pérdida de sesión (401 o 403), tres fallos seguidos o un estado desconocido se detiene, no recarga y ofrece «Reintentar consulta». Este límite es independiente del plazo de 30 s del worker. 15 pruebas de JavaScript lo cubren.
 
 ## 4. Mapeo con Figma
 
@@ -76,7 +80,7 @@ Se compararon capturas de la app a 1440 × 900 con el marco de Figma a la misma 
 
 | Pantalla | Parecido por revisión visual | Qué coincide | Qué difiere |
 |---|---|---|---|
-| Lista (W01) | Cercano, del orden del 70 % | Título, tres tarjetas, tabla con las mismas columnas, barra de etapas, estados con color | Falta el botón «Ver todos los registros», «Inicio» y «Cerrar sesión» en el menú, y la nota de datos de demostración |
+| Lista (W01) | Cercano, del orden del 70 % | Título, tres tarjetas, tabla con las mismas columnas, barra de etapas, estados con color | Falta el botón «Ver todos los registros», «Inicio» y «Cerrar sesión» en el menú, y la nota de datos de demostración. La columna se llama «Bandeja» y no «Registro» como en Figma, por indicación de César (el soporte se reutiliza) |
 | Detalle (W03) | Menor, estimado entre 55 % y 60 %: mismos elementos pero otra disposición | Título, fotos Servido y Retorno, leyenda por componente, estados, textos de aclaración | Figma usa una cuadrícula con tarjetas laterales («Registro e identificación», «Revisión de cocina», «Secuencia de evidencia») y los botones de revisión; la app apila las secciones y usa fotos reales en lugar de la ilustración de ejemplo. Los botones de revisión dependen del bloque 5 |
 | Pendiente o en proceso (W30) | Parcial | Aviso azul «Analizando fotografías», sin cifras | Sin mascota, sin tarjeta «ID de bandeja», sin barra de etapas |
 | Fallo (W16) | Parcial | Título de fallo técnico, nunca se muestra 0 %, botón Reintentar | Sin las tarjetas «Salida clara» y «Sin resultado analítico», sin «Revisar foto final» |
@@ -91,7 +95,8 @@ El objetivo acordado es un parecido aproximado del 70 %. Se cumple solo en la li
 - Etiqueta REAL o SIMULADO.
 - Aviso «estimación de área, no gramos ni volumen».
 - Motivo no concluyente con texto legible y código técnico en letra pequeña.
-- Actualización automática del estado cada 3 segundos, con tope de unos 60 segundos.
+- Actualización automática del estado cada 3 segundos, con las protecciones de la sección 3.
+- Botón «Reintentar consulta» ante error de red o de sesión.
 
 ## 7. Diferencias de Figma con las plantillas de César
 
@@ -106,6 +111,6 @@ El objetivo acordado es un parecido aproximado del 70 %. Se cumple solo en la li
 
 1. Alinear `revision.html` con W03, W12, W41, W32, W33 cuando la rama del bloque 5 esté integrada.
 2. Leer la página móvil de Figma y comparar a 390 × 844 con node-id verificados.
-3. Confirmar con César y Lino los datos opcionales de la sección 3.
+3. Ratificar `resultado.color_clave` y coordinar con Lino las máscaras transparentes y alineadas.
 4. Conectar las pantallas a las vistas reales (Lino) y a los modelos (Isaac). Hoy las plantillas se probaron con datos de prueba.
 5. Si se quiere subir el parecido del detalle con W03: reorganizarlo en cuadrícula con las tarjetas laterales.

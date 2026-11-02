@@ -2,6 +2,35 @@
 
 Proyecto de Construcción de Software, Ingeniería de Software, UNEMI.
 
+## Preparación de Eduardo: pruebas del bloque 4
+
+Esta rama, `eduardo-b4-pruebas`, parte de main `1a22306` y añade pruebas numéricas
+complementarias y el [plan/evidencias del bloque 4](docs/pruebas_bloque_4.md).
+No incorpora por su cuenta modelos de Isaac ni configuración de César.
+
+Se validaron en una copia aislada la base de César `1e416a5`, el dominio de Isaac
+`50ff172` y `apps/analisis/test_calculos.py`: **46 pruebas aprobadas**, seis de
+Eduardo y cuarenta de Isaac. El entorno utiliza las dependencias declaradas,
+incluido qrcode 8.2. Los umbrales numéricos de fixtures no son criterios aprobados
+para el modelo real.
+
+Cuando esas dependencias estén disponibles en la copia utilizada, ejecutar:
+
+```powershell
+.\.venv\Scripts\python.exe manage.py test apps.analisis.test_calculos apps.analisis.test_dominio_analisis --verbosity 1
+```
+
+En `.revision-b4-validacion` se usa `..\.venv\Scripts\python.exe` porque comparte
+el entorno de la carpeta EVA. No ejecutar el comando sobre esta rama sin las
+dependencias: main de partida aún no contiene la aplicación de análisis operativa.
+No se sustituyen rutas ni se omiten checks para aparentar una integración completa.
+
+Estas pruebas verifican cálculos y dominio con datos controlados. No certifican
+inferencia real, precisión, cliente del microservicio, worker ni permisos HTTP del
+bloque 4. Dichas comprobaciones y la revisión de Cocina del bloque 5 siguen según
+las dependencias del equipo. No instalar YOLO/OpenCV ni cambiar infraestructura
+para ejecutar estas pruebas de cálculo.
+
 ## Estado integrado: actualización del 1 de noviembre de 2026
 
 Integra las entregas de los bloques 2 y 3 de César, Isaac, Lino, Jean y Eduardo.

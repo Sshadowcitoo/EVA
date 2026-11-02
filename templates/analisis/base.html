@@ -1,5 +1,34 @@
-{% extends "base.html" %}{% load static %}
+{% extends "base.html" %}
+{% load static %}
+
 {% block title %}Análisis visual | EVA{% endblock %}
+
+{% block eyebrow %}COCINA / EVA{% endblock %}
+
+{% block navigation %}
+  {% url 'analisis:lista' as lista_url %}
+
+  {% if puede_registrar %}
+    <a class="nav-link" href="{% url 'captura:nueva_bandeja' %}">Nueva bandeja</a>
+  {% endif %}
+
+  {% if puede_cocina %}
+    {% if lista_url %}
+      <a class="nav-link{% if request.resolver_match.view_name == 'analisis:lista' %} active{% endif %}"
+         href="{{ lista_url }}"
+         {% if request.resolver_match.view_name == 'analisis:lista' %}aria-current="page"{% endif %}>Pendientes</a>
+    {% else %}
+      <span class="nav-link unavailable">Pendientes<small>Pendiente de conexión</small></span>
+    {% endif %}
+    <span class="nav-link unavailable">Historial<small>Pendiente</small></span>
+    <span class="nav-link unavailable">Indicadores<small>Pendiente</small></span>
+  {% endif %}
+
+  {% if puede_administrar_catalogo %}
+    <a class="nav-link" href="{% url 'catalogo:platos' %}">Catálogo</a>
+  {% endif %}
+{% endblock %}
+
 {% block content %}
 <link rel="stylesheet" href="{% static 'css/analisis.css' %}">
 {% if error %}<div class="error-summary" role="alert">{{ error }}</div>{% endif %}

@@ -1,8 +1,91 @@
 {% extends "analisis/base.html" %}
-{% block heading %}Análisis de servicios{% endblock %}
-{% block subtitle %}Un par completo todavía requiere análisis y revisión de Cocina.{% endblock %}
+
+{% block heading %}Pendientes de Cocina{% endblock %}
+{% block subtitle %}Abre los casos pendientes y revisa su evidencia.{% endblock %}
+
 {% block analisis_content %}
-<section class="panel"><h2>Servicios</h2>
-{% for caso in casos %}<article class="analisis-caso"><h3>{{ caso.plato_nombre }}</h3><p>{{ caso.porcion_nombre }} · {{ caso.estado }} · {{ caso.origen }}</p>{% if caso.detalle_url %}<a class="button" href="{{ caso.detalle_url }}">Ver análisis</a>{% endif %}</article>
-{% empty %}<p>No hay análisis disponibles. Los pares incompletos no se envían al motor.</p>{% endfor %}
-</section>{% endblock %}
+<section class="analisis-resumen" aria-label="Resumen de la cola de revisión">
+  <article class="panel analisis-tarjeta">
+    <h2>Por revisar</h2>
+    <p class="muted">Análisis que esperan confirmación de cocina.</p>
+    <p class="analisis-dato">
+      {% if resumen.por_revisar is not None %}{{ resumen.por_revisar }} caso{{ resumen.por_revisar|pluralize }}{% else %}Sin datos{% endif %}
+    </p>
+  </article>
+
+  <article class="panel analisis-tarjeta analisis-tarjeta-resaltada">
+    <h2>No concluyente</h2>
+    <p class="muted">Casos que requieren atención adicional.</p>
+    <p class="analisis-dato">
+      {% if resumen.no_concluyentes is not None %}{{ resumen.no_concluyentes }} caso{{ resumen.no_concluyentes|pluralize }}{% else %}Sin datos{% endif %}
+    </p>
+  </article>
+
+  <article class="panel analisis-tarjeta">
+    <h2>Historial</h2>
+    <p class="muted">Revisa registros y decisiones anteriores.</p>
+    <p class="analisis-dato">
+      {% if historial_url %}<a href="{{ historial_url }}">Ver registros →</a>{% else %}Pendiente de conexión{% endif %}
+    </p>
+  </article>
+</section>
+
+<h2 class="section-title" id="cola-revision">Cola de revisión</h2>
+
+<section class="panel" aria-labelledby="cola-revision">
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th scope="col">Registro</th>
+        <th scope="col">Plato</th>
+        <th scope="col">Estado</th>
+        <th scope="col">Acción</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for caso in casos %}
+        <tr>
+          <td data-label="Registro">{{ caso.bandeja_numero|default:"—" }}</td>
+          <td data-label="Plato">
+            <div>
+              <strong>{{ caso.plato_nombre }}</strong>
+              <small>{{ caso.porcion_nombre }}</small>
+            </div>
+          </td>
+          <td data-label="Estado">
+            <div class="analisis-estado">
+              {% include "analisis/_estado.html" with estado=caso.estado %}
+              {% if caso.origen == "SIMULADO" %}
+                <span class="origen-chip origen-simulado">Simulado</span>
+              {% elif caso.origen == "REAL" %}
+                <span class="origen-chip">Real</span>
+              {% endif %}
+            </div>
+          </td>
+          <td data-label="Acción">
+            {% if caso.detalle_url %}
+              <a href="{{ caso.detalle_url }}">Abrir análisis →</a>
+            {% else %}
+              —
+            {% endif %}
+          </td>
+        </tr>
+      {% empty %}
+        <tr>
+          <td class="empty-row" colspan="4">No hay análisis disponibles. Los pares incompletos no se envían al motor.</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+
+<section class="process-panel" aria-label="Etapas del servicio">
+  <ol class="process-steps">
+    <li><span>01</span> Registro</li>
+    <li><span>02</span> Foto servido</li>
+    <li><span>03</span> En espera</li>
+    <li><span>04</span> Foto retorno</li>
+    <li class="current" aria-current="step"><span>05</span> Análisis y revisión</li>
+  </ol>
+</section>
+{% endblock %}

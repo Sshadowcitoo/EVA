@@ -10,6 +10,22 @@ La rama de Eduardo no incorpora modelos ni configuración ajenos. Estos tests re
 
 ## Matriz pendiente
 
+### Ampliación complementaria ya ejecutada
+
+Se añadió `apps/analisis/test_jobs.py` con siete pruebas de dominio: rollback después de crear la primera fila de resultados; fallo al persistir metadatos de máscara; componente duplicado; respuesta antigua después de reclamar reintento; cierre exactamente en el límite de 30 s; rechazo un microsegundo después; selección de retención justo antes/en/después de vencer la foto padre.
+
+El nombre sigue la organización propuesta, pero este módulo **no prueba el worker HTTP ni una cola de ejecución de Lino**. Se crean fotos y máscaras como metadatos sintéticos, sin leer/escribir archivos operativos. Los mocks provocan fallos de BD y controlan el reloj. La transacción de BD no demuestra compensación de bytes en almacenamiento.
+
+En `.revision-b4-validacion`, con las mismas dependencias César/Isaac y copiando el archivo nuevo de Eduardo, se ejecutó:
+
+```powershell
+..\.venv\Scripts\python.exe -B manage.py test apps.analisis.test_calculos apps.analisis.test_jobs apps.analisis.test_dominio_analisis --verbosity 1
+```
+
+**Resultado 02/11/2026: 53 pruebas aprobadas en 2.512 s**, configuración sin problemas, base temporal creada y eliminada. Desglose: 40 de Isaac, 6 de cálculos y 7 nuevas de Eduardo. La evidencia de 46 pruebas más abajo corresponde a la ejecución anterior.
+
+Quedan pendientes cliente/worker HTTP, autorización de endpoints, máscara física y reconciliación/retención real, evaluación del motor y revisión de Cocina. La aceptación exactamente en `limite_en` refleja el guardia `>=` del dominio de Isaac; un microsegundo posterior se rechaza. Esto no mide duración de inferencia ni concurrencia simultánea de dos procesos.
+
 | Área | Casos |
 |---|---|
 | Cliente | Esquema/request_id/versiones/origen, tamaño acotado, PNG real, dimensiones/ROI, componente ajeno/duplicado, URL arbitraria, NaN/infinito |

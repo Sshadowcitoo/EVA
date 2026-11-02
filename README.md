@@ -14,10 +14,16 @@ Eduardo y cuarenta de Isaac. El entorno utiliza las dependencias declaradas,
 incluido qrcode 8.2. Los umbrales numéricos de fixtures no son criterios aprobados
 para el modelo real.
 
+Ampliación del 2 de noviembre: `apps/analisis/test_jobs.py` añade siete casos de
+persistencia, reintentos y límites temporales. La ejecución conjunta pasó
+**53 pruebas en 2.512 s**: 40 de Isaac y 13 de Eduardo. Este módulo comprueba
+servicios de dominio, no el worker HTTP pendiente. El selector de retención no
+acredita eliminación física de máscaras.
+
 Cuando esas dependencias estén disponibles en la copia utilizada, ejecutar:
 
 ```powershell
-.\.venv\Scripts\python.exe manage.py test apps.analisis.test_calculos apps.analisis.test_dominio_analisis --verbosity 1
+.\.venv\Scripts\python.exe manage.py test apps.analisis.test_calculos apps.analisis.test_jobs apps.analisis.test_dominio_analisis --verbosity 1
 ```
 
 En `.revision-b4-validacion` se usa `..\.venv\Scripts\python.exe` porque comparte

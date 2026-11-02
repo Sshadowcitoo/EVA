@@ -20,6 +20,9 @@ persistencia, reintentos y límites temporales. La ejecución conjunta pasó
 servicios de dominio, no el worker HTTP pendiente. El selector de retención no
 acredita eliminación física de máscaras.
 
+La ejecución posterior de toda `apps.analisis` disponible en la copia aislada
+pasó **59 pruebas en 6.350 s**, agregando configuración e interfaz de César.
+
 Cuando esas dependencias estén disponibles en la copia utilizada, ejecutar:
 
 ```powershell

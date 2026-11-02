@@ -24,6 +24,8 @@ En `.revision-b4-validacion`, con las mismas dependencias César/Isaac y copiand
 
 **Resultado 02/11/2026: 53 pruebas aprobadas en 2.512 s**, configuración sin problemas, base temporal creada y eliminada. Desglose: 40 de Isaac, 6 de cálculos y 7 nuevas de Eduardo. La evidencia de 46 pruebas más abajo corresponde a la ejecución anterior.
 
+Se amplió posteriormente a toda la aplicación disponible en esa copia con `..\.venv\Scripts\python.exe -B manage.py test apps.analisis --verbosity 1`: **59 pruebas aprobadas en 6.350 s**, incluidos configuración e interfaz de la base de César; checks sin problemas y BD temporal eliminada. No es la suite global del proyecto ni integración de endpoints todavía ausentes.
+
 Quedan pendientes cliente/worker HTTP, autorización de endpoints, máscara física y reconciliación/retención real, evaluación del motor y revisión de Cocina. La aceptación exactamente en `limite_en` refleja el guardia `>=` del dominio de Isaac; un microsegundo posterior se rechaza. Esto no mide duración de inferencia ni concurrencia simultánea de dos procesos.
 
 | Área | Casos |

@@ -7,7 +7,8 @@
 {% block analisis_content %}
 <section class="panel analisis-resumen-caso" aria-labelledby="caso-titulo">
 <h2 id="caso-titulo">{{ caso.plato_nombre }}</h2>
-<p class="muted">{{ caso.porcion_nombre }}{% if caso.bandeja_numero %} · Registro {{ caso.bandeja_numero }}{% endif %}</p>
+<p class="muted">{{ caso.porcion_nombre }}{% if caso.bandeja_numero %} · Bandeja {{ caso.bandeja_numero }}{% endif %}</p>
+{% if caso.servicio_id %}<p class="analisis-servicio">Servicio <code>{{ caso.servicio_id }}</code></p>{% endif %}
 <div class="analisis-estado">
 {% include "analisis/_estado.html" with estado=caso.estado %}
 {% if caso.origen == "SIMULADO" %}<span class="origen-chip origen-simulado">Simulado</span>
@@ -27,7 +28,7 @@
 <h3>Analizando fotografías</h3>
 <p>Aún no hay resultados. Se verifican la calidad, la asociación del par y el sobrante visual. Puedes consultar otro servicio mientras tanto.</p>
 <p data-estado-mensaje>{% if estado_url %}Esta pantalla se actualiza sola.{% else %}Recarga la página para ver el avance.{% endif %}</p>
-</section>
+    {% if estado_url %}<button class="button" type="button" data-estado-reintentar hidden>Reintentar consulta</button>{% endif %}</section>
 
 {% elif caso.estado == "FALLIDO" or caso.estado == "TIEMPO_AGOTADO" %}
 <section class="panel analisis-fallo" role="alert">
@@ -82,7 +83,7 @@
     <tbody>
     {% for resultado in resultados %}
         <tr>
-        <td data-label="Componente"><span class="analisis-celda"><span class="leyenda-punto {% cycle 'c1' 'c2' 'c3' 'c4' 'c5' %}" aria-hidden="true"></span>{{ resultado.componente }}</span></td>
+        <td data-label="Componente"><span class="analisis-celda">{% if resultado.color_clave and resultado.color_clave|stringformat:"s" in "12345678" %}<span class="leyenda-punto c{{ resultado.color_clave }}" aria-hidden="true"></span>{% endif %}{{ resultado.componente }}</span></td>
         <td data-label="Sobrante visual">{{ resultado.porcentaje_texto|default:"No concluyente" }}</td>
         <td data-label="Confianza">{{ resultado.confianza_texto|default:"Sin dato" }}</td>
         <td data-label="Estado"><div class="analisis-celda">

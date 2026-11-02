@@ -10,10 +10,13 @@ urlpatterns = [
 
 CASOS = [
     {"bandeja_numero": "EVA-001", "plato_nombre": "Seco de pollo", "porcion_nombre": "Porción mediana",
-     "estado": "COMPLETADO", "origen": "REAL", "detalle_url": "/analisis/uno/"},
+        "estado": "COMPLETADO", "origen": "REAL", "detalle_url": "/analisis/uno/"},
     {"plato_nombre": "Encebollado", "porcion_nombre": "Porción grande",
-     "estado": "TIEMPO_AGOTADO", "origen": "SIMULADO"},
+        "estado": "TIEMPO_AGOTADO", "origen": "SIMULADO"},
 ]
+
+
+CASOS_BASE = {"plato_nombre": "Seco de pollo", "porcion_nombre": "Porción mediana", "estado": "COMPLETADO", "origen": "REAL"}
 
 
 class ListaAnalisisTests(SimpleTestCase):
@@ -25,6 +28,14 @@ class ListaAnalisisTests(SimpleTestCase):
         self.assertIn("Simulado", html)
         self.assertIn("Real", html)
         self.assertIn("EVA-001", html)
+
+    def test_la_columna_se_llama_bandeja_y_distingue_el_servicio(self):
+        casos = [{**CASOS_BASE, "bandeja_numero": "EVA-001", "servicio_id": "7c9e6679-7425-40de-944b-e07fc1f90ae7"}]
+        html = render_to_string("analisis/lista.html", {"casos": casos})
+        self.assertIn(">Bandeja<", html)
+        self.assertNotIn(">Registro<", html)
+        self.assertIn("Servicio 7c9e6679", html)
+        self.assertIn('title="Servicio 7c9e6679-7425-40de-944b-e07fc1f90ae7"', html)
 
     def test_accion_solo_si_hay_ruta_de_detalle(self):
         html = render_to_string("analisis/lista.html", {"casos": CASOS})

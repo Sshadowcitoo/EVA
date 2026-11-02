@@ -30,6 +30,14 @@ Cocina recibe view/add_revisionanalisis cuando exista el modelo; ejecutar config
 
 ## Reparto e integración
 
-César publica contratos, configuración, regla de elegibilidad e interfaz; Isaac modelos/servicio de revisión; Lino listado, detalle, formulario/endpoints y gateway; Eduardo casos de concurrencia, permisos, elegibilidad y pruebas de recorrido. Jean no tiene tarea obligatoria pendiente de disponibilidad. Cada uno abre PR; César integra, nadie hace merge directo.
+César publica contratos, configuración, regla de elegibilidad, permisos, navegación e integración; Isaac modelos/servicio de revisión; Lino listado, detalle, formulario/endpoints y gateway; Eduardo casos de concurrencia, permisos, elegibilidad y pruebas de recorrido. Jean tiene disponibilidad confirmada y se encarga de la interfaz de revisión de Cocina del bloque 5, además de la interfaz del bloque 4. Cada uno abre PR; César integra, nadie hace merge directo.
+
+### Propiedad de interfaz: Jean
+
+- Archivos: `templates/analisis/*`, `static/css/analisis.css` y `static/js/analisis.js`. César no vuelve a editarlos sin coordinarlo con Jean; Lino entrega vistas, contextos y URLs, sin pisar sus plantillas.
+- Alcance: mapeo Figma, listado/detalle de revisión, comparación de servido/retorno y máscaras, tabla de resultados, acciones confirmar/rechazar/no concluyente, errores, evidencia vencida y estados de guardado. Adaptación móvil/escritorio y accesibilidad. El backend conserva la validación y los permisos.
+- Punto de partida: `templates/analisis/revision.html` y estilos ya publicados en PR #33; adaptar la base, no duplicarla ni eliminar trabajo previo sin acuerdo.
+- Rama propuesta: `jean-b5-interfaz-cocina`, basada en `cesar-b5-contratos-interfaz`. Su PR depende del #33 y de su interfaz compartida del bloque 4; llevar esos cambios primero y describirlos para evitar duplicar diffs o sobrescribir estilos. Cuando se integren las bases, pasar el PR a main.
+- Entrega: referencia/nodos de Figma, capturas en 390x844 y 1440x900, estados vacíos/error/no concluyente y comprobación sobre vistas reales de Lino. Un prototipo o contexto de prueba no acredita conexión real.
 
 Estos cambios preparan la revisión; no afirman que el bloque 5 esté operativo, que Figma se haya medido al 70 %, ni que la IA esté validada. Antes del cierre: combinar ramas, revisar pantallas en 390x844 y 1440x900 frente a Figma, comprobar roles aislados, repetición/concurrencia, conservación de decisiones y fallo/retención de evidencias.

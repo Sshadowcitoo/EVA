@@ -26,3 +26,28 @@
 .estado-fallido { color:#9b1c1c; background:#fde8e8; }
 .estado-neutro,.origen-chip { color:#41516a; background:#e0e8f1; }
 .origen-simulado { color:#7a4b00; background:#fff1d0; }
+
+/* Detalle: resumen, aviso, fallo, evidencia y leyenda */
+.analisis-resumen-caso { margin-bottom:20px; }
+.analisis-resumen-caso h2 { margin-bottom:4px; }
+.analisis-modelo { margin:12px 0 0; font-size:13px; color:#41516a; }
+.analisis-resumen-caso .info-box { margin-top:14px; }
+.analisis-aviso { margin-bottom:20px; }
+.analisis-fallo { border-color:#f1b8b8; background:#fff6f6; margin-bottom:20px; }
+.analisis-fallo h2 { color:#9b1c1c; }
+.analisis-foto-marco { position:relative; }
+.analisis-foto-marco img:first-child { display:block; width:100%; }
+.analisis-mascara { position:absolute; inset:0; width:100%; height:100%; object-fit:contain; opacity:.55; pointer-events:none; }
+.analisis-foto figcaption { margin-top:6px; font-size:13px; font-weight:700; color:#41516a; }
+.estado-aviso { color:#7a4b00; background:#fff1d0; }
+.motivo-texto { display:block; margin-top:4px; font-size:13px; }
+.motivo-codigo { display:block; font-size:11px; color:#5b6b82; }
+.leyenda-punto { display:inline-block; width:10px; height:10px; margin-right:8px; border-radius:50%; background:#1768b0; }
+.leyenda-punto.c2 { background:#2f8a3c; }
+.leyenda-punto.c3 { background:#c97a00; }
+.leyenda-punto.c4 { background:#8a3fb0; }
+.leyenda-punto.c5 { background:#b0392f; }
+.analisis-celda { min-width:0; }
+.analisis-fotos + .muted { margin-top:16px; }
+.analisis-tabla > .muted { margin:14px 0 0; }
+@media(max-width:640px) { .analisis-celda { text-align:right; } }

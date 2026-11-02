@@ -1,15 +1,115 @@
 {% extends "analisis/base.html" %}
-{% block heading %}Resultado visual{% endblock %}
+{% load static %}
+
+{% block heading %}Detalle del análisis{% endblock %}
 {% block subtitle %}Estimación de área; no representa gramos ni volumen.{% endblock %}
+
 {% block analisis_content %}
-<section class="panel"><h2>{{ caso.plato_nombre }}</h2><p>{{ caso.porcion_nombre }} · {{ caso.estado }}</p>
-{% if caso.origen == 'SIMULADO' %}<p class="info-box">SIMULADO: prueba del flujo. No válido para indicadores.</p>{% endif %}
-<p>Modelo: {{ caso.version_modelo|default:"Sin configurar" }}</p>
-{% if caso.estado == 'EN_PROCESO' %}<p role="status">Análisis en curso. Puedes consultar otro servicio.</p>{% endif %}
-<div class="analisis-fotos">{% if foto_servido_url %}<figure><img src="{{ foto_servido_url }}" alt="Foto del servido"><figcaption>Servido</figcaption></figure>{% endif %}{% if foto_retorno_url %}<figure><img src="{{ foto_retorno_url }}" alt="Foto del retorno"><figcaption>Retorno</figcaption></figure>{% endif %}</div>
-<div class="analisis-tabla"><table><thead><tr><th>Componente</th><th>Sobrante visual</th><th>Confianza</th><th>Estado / motivo</th></tr></thead><tbody>
-{% for resultado in resultados %}<tr><td>{{ resultado.componente }}</td><td>{{ resultado.porcentaje_texto|default:"No concluyente" }}</td><td>{{ resultado.confianza_texto|default:"Sin dato" }}</td><td>{{ resultado.estado }} {{ resultado.motivo }}</td></tr>{% empty %}<tr><td colspan="4">Aún no hay resultados aceptados del motor.</td></tr>{% endfor %}
-</tbody></table></div>
-{% if solicitar_url %}<form method="post" action="{{ solicitar_url }}">{% csrf_token %}<button class="button" type="submit">Solicitar análisis</button></form>{% endif %}
-{% if reintentar_url %}<form method="post" action="{{ reintentar_url }}">{% csrf_token %}<button class="button" type="submit">Reintentar análisis</button></form>{% endif %}
-</section>{% endblock %}
+<section class="panel analisis-resumen-caso" aria-labelledby="caso-titulo">
+<h2 id="caso-titulo">{{ caso.plato_nombre }}</h2>
+<p class="muted">{{ caso.porcion_nombre }}{% if caso.bandeja_numero %} · Registro {{ caso.bandeja_numero }}{% endif %}</p>
+<div class="analisis-estado">
+{% include "analisis/_estado.html" with estado=caso.estado %}
+{% if caso.origen == "SIMULADO" %}<span class="origen-chip origen-simulado">Simulado</span>
+{% elif caso.origen == "REAL" %}<span class="origen-chip">Real</span>{% endif %}
+{% if caso.intento_numero %}<span class="origen-chip">Intento {{ caso.intento_numero }}</span>{% endif %}
+{% if caso.duracion_texto %}<span class="origen-chip">Duración {{ caso.duracion_texto }}</span>{% endif %}
+</div>
+<p class="analisis-modelo">Modelo: {{ caso.version_modelo|default:"Sin configurar" }}</p>
+{% if caso.origen == 'SIMULADO' %}
+<p class="info-box">SIMULADO: prueba del flujo. No válido para indicadores.</p>
+{% endif %}
+</section>
+
+{% if caso.estado == "PENDIENTE" or caso.estado == "EN_PROCESO" %}
+<section class="info-box analisis-aviso" role="status"
+        {% if estado_url %}data-estado-url="{{ estado_url }}" data-estado-actual="{{ caso.estado }}"{% endif %}>
+<h3>Analizando fotografías</h3>
+<p>Aún no hay resultados. Se verifican la calidad, la asociación del par y el sobrante visual. Puedes consultar otro servicio mientras tanto.</p>
+<p data-estado-mensaje>{% if estado_url %}Esta pantalla se actualiza sola.{% else %}Recarga la página para ver el avance.{% endif %}</p>
+</section>
+
+{% elif caso.estado == "FALLIDO" or caso.estado == "TIEMPO_AGOTADO" %}
+<section class="panel analisis-fallo" role="alert">
+<h2>{% if caso.estado == "TIEMPO_AGOTADO" %}El análisis tardó demasiado{% else %}Fallo técnico del análisis{% endif %}</h2>
+<p>No hay resultado analítico para este par, y no se muestra ningún porcentaje. Los resultados anteriores no se modifican.</p>
+{% if reintentar_url %}
+    <form method="post" action="{{ reintentar_url }}">{% csrf_token %}
+    <button class="button" type="submit">Reintentar análisis</button>
+    </form>
+{% else %}
+    <p class="muted">El reintento todavía no está conectado.</p>
+{% endif %}
+</section>
+
+{% else %}
+<section class="panel" aria-labelledby="evidencia-titulo">
+<h2 id="evidencia-titulo">Evidencia</h2>
+<div class="analisis-fotos">
+    {% if foto_servido_url %}
+    <figure class="analisis-foto">
+        <div class="analisis-foto-marco">
+        <img src="{{ foto_servido_url }}" alt="Foto del servido">
+        {% for m in mascaras %}{% if m.etapa == "SERVIDO" %}<img class="analisis-mascara" src="{{ m.url }}" alt="Máscara de {{ m.componente }} sobre el servido">{% endif %}{% endfor %}
+        </div>
+        <figcaption>Servido</figcaption>
+    </figure>
+    {% endif %}
+    {% if foto_retorno_url %}
+    <figure class="analisis-foto">
+        <div class="analisis-foto-marco">
+        <img src="{{ foto_retorno_url }}" alt="Foto del retorno">
+        {% for m in mascaras %}{% if m.etapa == "RETORNO" %}<img class="analisis-mascara" src="{{ m.url }}" alt="Máscara de {{ m.componente }} sobre el retorno">{% endif %}{% endfor %}
+        </div>
+        <figcaption>Retorno</figcaption>
+    </figure>
+    {% endif %}
+</div>
+{% if mascaras %}<p class="muted">Las máscaras sombreadas marcan el área que detectó el análisis en cada foto.</p>{% endif %}
+</section>
+
+<h2 class="section-title" id="hallazgos">Hallazgos por componente</h2>
+<section class="panel analisis-tabla" aria-labelledby="hallazgos">
+<table class="data-table">
+    <thead>
+    <tr>
+        <th scope="col">Componente</th>
+        <th scope="col">Sobrante visual</th>
+        <th scope="col">Confianza</th>
+        <th scope="col">Estado</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for resultado in resultados %}
+        <tr>
+        <td data-label="Componente"><span class="analisis-celda"><span class="leyenda-punto {% cycle 'c1' 'c2' 'c3' 'c4' 'c5' %}" aria-hidden="true"></span>{{ resultado.componente }}</span></td>
+        <td data-label="Sobrante visual">{{ resultado.porcentaje_texto|default:"No concluyente" }}</td>
+        <td data-label="Confianza">{{ resultado.confianza_texto|default:"Sin dato" }}</td>
+        <td data-label="Estado"><div class="analisis-celda">
+            {% if resultado.estado == "NO_CONCLUYENTE" or resultado.motivo %}
+            <span class="estado-chip estado-aviso">No concluyente</span>
+            {% include "analisis/_motivo.html" with motivo=resultado.motivo %}
+            {% elif resultado.estado == "CONCLUYENTE" %}
+            <span class="estado-chip estado-completado">Concluyente</span>
+            {% else %}
+            <span class="estado-chip estado-neutro">Sin estado</span>
+            {% endif %}
+        </div></td>
+        </tr>
+    {% empty %}
+        <tr><td class="empty-row" colspan="4">Aún no hay resultados aceptados del motor.</td></tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% if resultados %}<p class="muted">Los componentes no concluyentes quedan excluidos de los indicadores.</p>{% endif %}
+</section>
+
+{% if solicitar_url %}
+<form method="post" action="{{ solicitar_url }}">{% csrf_token %}
+    <button class="button" type="submit">Solicitar análisis</button>
+</form>
+{% endif %}
+{% endif %}
+
+{% if estado_url %}<script src="{% static 'js/analisis.js' %}" defer></script>{% endif %}
+{% endblock %}

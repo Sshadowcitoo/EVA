@@ -25,13 +25,15 @@ Etapa = FotografiaServicio.Etapa
 
 
 class CalculoTests(SimpleTestCase):
-    def evaluar(self, inicial=1000, residual=250, confianza=0.9, umbral=0.5, **extra):
+    def evaluar(self, inicial=1000, residual=250, confianza=0.9, umbral=0.5,
+                comparable=True, oculto=False):
         return services.evaluar_componente(
             area_inicial=inicial,
             area_residual=residual,
             confianza=confianza,
             umbral_confianza=umbral,
-            **extra,
+            comparable=comparable,
+            oculto=oculto,
         )
 
     def test_porcentaje_visual_concluyente(self):
@@ -140,8 +142,18 @@ class BaseAnalisis(TestCase):
     def respuesta(self, **cambios):
         item = lambda c, ini=1000, res=250: dict(
             servicio_componente=c, area_inicial=ini, area_residual=res,
-            confianza=0.9, umbral_confianza=0.5, criterio="demo-v1")
+            confianza=0.9, umbral_confianza=0.5, criterio="demo-v1",
+            comparable=True, oculto=False)
         return [item(c) for c in self.comps]
+
+    def completar(self, intento, resultados=None, artefactos=(), **cambios):
+        datos = dict(
+            intento=intento, request_id=str(intento.pk), version_modelo="m1",
+            version_configuracion="c1", origen="REAL",
+            resultados=self.respuesta() if resultados is None else resultados,
+            artefactos=artefactos)
+        datos.update(cambios)
+        return services.completar_intento(**datos)
 
 
 class SolicitudTests(BaseAnalisis):
@@ -203,8 +215,7 @@ class WorkerTests(BaseAnalisis):
         intento = self.en_proceso()
         art = dict(servicio_componente=self.comps[0], etapa="SERVIDO", clave_archivo="m/1",
                    hash_sha256="a" * 64, ancho=4, alto=4)
-        hecho = services.completar_intento(
-            intento=intento, resultados=self.respuesta(), artefactos=[art], request_id="r1")
+        hecho = self.completar(intento, artefactos=[art])
         self.assertEqual(hecho.estado, Estado.COMPLETADO)
         self.assertIsNotNone(hecho.duracion_ms)
         self.assertEqual(hecho.analisis.intento_vigente_id, hecho.pk)
@@ -217,7 +228,7 @@ class WorkerTests(BaseAnalisis):
         intento = self.en_proceso()
         parcial = self.respuesta()[:-1]
         faltante = self.comps[-1]
-        hecho = services.completar_intento(intento=intento, resultados=parcial)
+        hecho = self.completar(intento, resultados=parcial)
         r = hecho.resultados.get(servicio_componente=faltante)
         self.assertEqual((r.estado, r.motivo, r.porcentaje), (Res.NO_CONCLUYENTE, Motivo.SIN_DETECCION, None))
 
@@ -228,7 +239,7 @@ class WorkerTests(BaseAnalisis):
         mala = self.respuesta()
         mala[0]["servicio_componente"] = ajeno
         with self.assertRaises(ValidationError):
-            services.completar_intento(intento=intento, resultados=mala)
+            self.completar(intento, resultados=mala)
         intento.refresh_from_db()
         self.assertEqual(intento.estado, Estado.EN_PROCESO)
         self.assertEqual(ResultadoComponente.objects.count(), 0)
@@ -238,7 +249,7 @@ class WorkerTests(BaseAnalisis):
         mala = self.respuesta()
         mala[0]["area_residual"] = float("nan")
         with self.assertRaises(ValidationError):
-            services.completar_intento(intento=intento, resultados=mala)
+            self.completar(intento, resultados=mala)
         self.assertEqual(ResultadoComponente.objects.count(), 0)
         intento.refresh_from_db()
         self.assertIsNone(intento.analisis.intento_vigente)
@@ -248,7 +259,7 @@ class WorkerTests(BaseAnalisis):
         IntentoAnalisis.objects.filter(pk=intento.pk).update(
             limite_en=timezone.now() - timedelta(seconds=1))
         with self.assertRaises(ValidationError):
-            services.completar_intento(intento=intento, resultados=self.respuesta())
+            self.completar(intento)
         intento.refresh_from_db()
         self.assertEqual(intento.estado, Estado.TIEMPO_AGOTADO)
         self.assertEqual(ResultadoComponente.objects.count(), 0)
@@ -256,10 +267,10 @@ class WorkerTests(BaseAnalisis):
 
     def test_intento_cerrado_descarta_respuestas_y_no_duplica(self):
         intento = self.en_proceso()
-        services.completar_intento(intento=intento, resultados=self.respuesta())
+        self.completar(intento)
         total = ResultadoComponente.objects.count()
         with self.assertRaises(ValidationError):
-            services.completar_intento(intento=intento, resultados=self.respuesta())
+            self.completar(intento)
         self.assertEqual(ResultadoComponente.objects.count(), total)
 
     def test_fallo_y_reintento_conservan_el_historial(self):
@@ -277,7 +288,7 @@ class WorkerTests(BaseAnalisis):
 
     def test_no_se_reintenta_un_intento_completado(self):
         intento = self.en_proceso()
-        services.completar_intento(intento=intento, resultados=self.respuesta())
+        self.completar(intento)
         with self.assertRaises(ValidationError):
             services.reintentar_analisis(analisis=intento.analisis)
 
@@ -301,12 +312,101 @@ class WorkerTests(BaseAnalisis):
                 intento=intento, servicio_componente=comp, estado=Res.NO_CONCLUYENTE)
 
 
+class ContratoTests(BaseAnalisis):
+    def test_comparable_y_oculto_son_obligatorios_en_la_respuesta(self):
+        intento = self.en_proceso()
+        for campo in ("comparable", "oculto"):
+            mala = self.respuesta()
+            del mala[0][campo]
+            with self.assertRaises(ValidationError):
+                self.completar(intento, resultados=mala)
+        self.assertEqual(ResultadoComponente.objects.count(), 0)
+        with self.assertRaises(TypeError):
+            services.evaluar_componente(area_inicial=1, area_residual=1)
+
+    def test_comparable_falso_deja_el_resultado_no_concluyente(self):
+        intento = self.en_proceso()
+        respuesta = self.respuesta()
+        for item in respuesta:
+            item["comparable"] = False
+        hecho = self.completar(intento, resultados=respuesta)
+        self.assertTrue(all(r.motivo == Motivo.NO_COMPARABLE for r in hecho.resultados.all()))
+        self.assertTrue(all(r.porcentaje is None for r in hecho.resultados.all()))
+
+    def test_respuesta_de_otro_intento_modelo_configuracion_u_origen(self):
+        intento = self.en_proceso()
+        for cambio in (dict(request_id="otro"), dict(version_modelo="m9"),
+                       dict(version_configuracion="c9"), dict(origen="SIMULADO")):
+            with self.assertRaises(ValidationError):
+                self.completar(intento, **cambio)
+        intento.refresh_from_db()
+        self.assertEqual(intento.estado, Estado.EN_PROCESO)
+        self.assertEqual(ResultadoComponente.objects.count(), 0)
+
+    def test_un_simulado_nunca_se_convierte_en_real(self):
+        self.solicitar(origen="SIMULADO")
+        intento = services.reclamar_siguiente_intento()
+        with self.assertRaises(ValidationError):
+            self.completar(intento, origen="REAL", version_modelo="m1", version_configuracion="c1")
+
+    def test_fotos_vencidas_se_detectan_antes_de_reclamar(self):
+        _, pendiente, _ = self.solicitar()
+        FotografiaServicio.objects.filter(pk=self.retorno.pk).update(
+            fecha=timezone.now() - timedelta(days=91))
+        self.assertIsNone(services.reclamar_siguiente_intento())
+        pendiente.refresh_from_db()
+        self.assertEqual(pendiente.estado, Estado.FALLIDO)
+        self.assertIn("conservación", pendiente.error_mensaje)
+
+    def romper_y_completar(self, romper):
+        intento = self.en_proceso()
+        romper()
+        with self.assertRaises(ValidationError):
+            self.completar(intento)
+        self.assertEqual(ResultadoComponente.objects.count(), 0)
+
+    def test_no_se_completa_con_una_foto_que_dejo_de_ser_vigente(self):
+        self.romper_y_completar(lambda: FotografiaServicio.objects.filter(
+            pk=self.servido.pk).update(vigente=False))
+
+    def test_no_se_completa_con_una_foto_vencida(self):
+        self.romper_y_completar(lambda: FotografiaServicio.objects.filter(
+            pk=self.retorno.pk).update(fecha=timezone.now() - timedelta(days=91)))
+
+    def test_no_se_completa_si_el_servicio_fue_anulado(self):
+        self.romper_y_completar(lambda: Servicio.objects.filter(
+            pk=self.servicio.pk).update(estado_captura="ANULADO"))
+
+    def test_solicitar_rechaza_fotos_vencidas(self):
+        FotografiaServicio.objects.filter(pk=self.servido.pk).update(
+            fecha=timezone.now() - timedelta(days=91))
+        with self.assertRaises(ValidationError):
+            self.solicitar()
+        self.assertEqual(AnalisisServicio.objects.count(), 0)
+
+    def test_solicitar_rechaza_servicio_sin_composicion(self):
+        self.servicio.composicion.all().delete()
+        with self.assertRaises(ValidationError):
+            self.solicitar()
+
+    def test_limite_se_comprueba_en_la_misma_actualizacion_que_cierra(self):
+        intento = self.en_proceso()
+        IntentoAnalisis.objects.filter(pk=intento.pk).update(
+            limite_en=timezone.now() - timedelta(milliseconds=1))
+        with self.assertRaises(ValidationError) as error:
+            self.completar(intento)
+        self.assertIn("límite de tiempo", str(error.exception))
+        intento.refresh_from_db()
+        self.assertEqual(intento.estado, Estado.TIEMPO_AGOTADO)
+        self.assertEqual(ResultadoComponente.objects.count(), 0)
+
+
 class RetencionTests(BaseAnalisis):
     def hacer_mascara(self):
         intento = self.en_proceso()
         art = dict(servicio_componente=self.comps[0], etapa="RETORNO", clave_archivo="m/2",
                    hash_sha256="b" * 64, ancho=4, alto=4)
-        services.completar_intento(intento=intento, resultados=self.respuesta(), artefactos=[art])
+        self.completar(intento, artefactos=[art])
         return ArtefactoAnalisis.objects.get()
 
     def test_la_mascara_hereda_el_plazo_de_la_foto_de_origen(self):

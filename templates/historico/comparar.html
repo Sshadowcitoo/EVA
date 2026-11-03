@@ -1,0 +1,14 @@
+{% extends 'historico/base.html' %}
+{% block heading %}Comparar periodos{% endblock %}
+{% block subtitle %}Mismos filtros, dos periodos sin superposición. Diferencias en puntos porcentuales.{% endblock %}
+{% block historico_content %}
+{% include 'historico/_filtros.html' %}
+{% if comparacion %}
+<section class="panel"><h2>Resultado de la comparación</h2>
+{% if comparacion.comparable %}<p>Periodos comparables según los criterios aplicados.</p>{% else %}<p class="historico-aviso">Periodos no comparables. No se puede afirmar una mejora.</p>{% endif %}
+{% for motivo in comparacion.motivos %}<p>{{ motivo }}</p>{% endfor %}
+<dl><dt>Diferencia de prevalencia (comparado − referencia)</dt><dd>{% if comparacion.diferencias.prevalencia_pp is not None %}{{ comparacion.diferencias.prevalencia_pp|floatformat:2 }} pp{% else %}No disponible{% endif %}</dd>
+<dt>Diferencia de intensidad (comparado − referencia)</dt><dd>{% if comparacion.diferencias.intensidad_pp is not None %}{{ comparacion.diferencias.intensidad_pp|floatformat:2 }} pp{% else %}No disponible{% endif %}</dd></dl><p class="muted">Una diferencia observada no demuestra una causa ni una mejora causal.</p></section>
+<div class="historico-comparacion"><section><h2>Referencia</h2><p>{{ comparacion.referencia.filtros.desde|date:'d/m/Y' }} – {{ comparacion.referencia.filtros.hasta|date:'d/m/Y' }}</p>{% include 'historico/_resumen.html' with datos=comparacion.referencia %}</section><section><h2>Comparado</h2><p>{{ comparacion.comparado.filtros.desde|date:'d/m/Y' }} – {{ comparacion.comparado.filtros.hasta|date:'d/m/Y' }}</p>{% include 'historico/_resumen.html' with datos=comparacion.comparado %}</section></div>
+{% else %}{% if not error %}<p>Selecciona ambos periodos para consultar su comparabilidad.</p>{% endif %}{% endif %}
+{% endblock %}

@@ -1,0 +1,11 @@
+{% extends 'historico/base.html' %}
+{% block heading %}Percepción de la porción{% endblock %}
+{% block subtitle %}Respuesta declarada y opcional, separada de la medición visual.{% endblock %}
+{% block historico_content %}
+<section class="panel"><h2>Servicio {{ servicio_id }}</h2>
+{% for message in messages %}<p role="status">{{ message }}</p>{% endfor %}
+{% if actual %}<h3>Respuesta vigente</h3><p>{{ actual.categoria }} · Versión {{ actual.version }}</p><p>{{ actual.motivo }}</p>{% if actual.registrada_en %}<p>{{ actual.operador_visible }} · {{ actual.registrada_en|date:'d/m/Y H:i' }}</p>{% else %}<p>Sin respuesta registrada.</p>{% endif %}{% endif %}
+{% if conflicto %}<p><a href="{% url 'historico:percepcion' servicio_id=servicio_id %}">Recargar respuesta vigente y volver a decidir</a></p><h3>Tu propuesta sin guardar</h3>{% endif %}
+{% include 'historico/_percepcion_form.html' %}
+</section>
+{% endblock %}

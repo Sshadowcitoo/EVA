@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Histórico e indicadores | EVA{% endblock %}
+{% block eyebrow %}SEGUIMIENTO / EVA{% endblock %}
+{% block heading %}Histórico e indicadores{% endblock %}
+{% block subtitle %}Consulta sobrantes visuales por componente y periodo. Horario de Ecuador (America/Guayaquil).{% endblock %}
+{% block navigation %}
+{% if puede_cocina or puede_administrar_catalogo %}
+<a class="nav-link{% if request.resolver_match.url_name == 'lista' %} active{% endif %}" href="{% url 'historico:lista' %}">Histórico e indicadores</a>
+<a class="nav-link{% if request.resolver_match.url_name == 'comparar' %} active{% endif %}" href="{% url 'historico:comparar' %}">Comparar periodos</a>
+{% endif %}
+{% url 'analisis:lista' as analisis_url %}{% if puede_cocina and analisis_url %}<a class="nav-link" href="{{ analisis_url }}">Revisión de Cocina</a>{% endif %}
+{% url 'captura:nueva_bandeja' as captura_url %}{% if puede_registrar and captura_url %}<a class="nav-link" href="{{ captura_url }}">Registro de servicios</a>{% endif %}
+{% url 'catalogo:platos' as catalogo_url %}{% if puede_administrar_catalogo and catalogo_url %}<a class="nav-link" href="{{ catalogo_url }}">Catálogo</a>{% endif %}
+{% endblock %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/historico.css' %}">
+<div class="historico">
+{% if error %}<section class="historico-aviso" role="alert"><h2>Acción pendiente</h2><p>{{ error }}</p></section>{% endif %}
+{% block historico_content %}{% endblock %}
+</div>
+<script src="{% static 'js/historico.js' %}" defer></script>
+{% endblock %}

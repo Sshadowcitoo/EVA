@@ -1,0 +1,9 @@
+<section class="panel"><h2>Filtros de consulta</h2>
+<p class="muted">Fechas inclusivas · horas del mismo día · solo evidencia real. Los totales incluyen todas las páginas.</p>
+<form method="get" class="historico-filtros">
+{% if form.errors %}<div class="historico-error" role="alert">Revisa los campos indicados. {{ form.non_field_errors }}</div>{% endif %}
+{% for field in form %}{% if field.is_hidden %}{{ field.errors }}{% else %}
+<div class="historico-campo">{{ field.label_tag }}{{ field }}{{ field.errors }}</div>
+{% endif %}{% endfor %}
+<div class="historico-acciones"><button type="submit" class="button">Consultar</button><a href="{{ request.path }}">Limpiar filtros</a></div>
+</form></section>

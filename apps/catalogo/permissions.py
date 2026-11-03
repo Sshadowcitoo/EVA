@@ -41,6 +41,8 @@ PERMISOS_POR_ROL = {
         "analisis.view_intentoanalisis",
         "analisis.view_resultadocomponente",
         "analisis.view_artefactoanalisis",
+        "analisis.view_revisionanalisis",
+        "analisis.add_revisionanalisis",
     ),
     ADMINISTRACION: tuple(
         f"catalogo.{accion}_{modelo}"

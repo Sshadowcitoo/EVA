@@ -190,5 +190,13 @@ pueden incluirse explícitamente; no confundirlos con los datos fotográficos de
 
 ## Administración y S3
 
+## Integración de análisis (bloque 4)
+
+Ver [cliente, worker y evidencia privada](docs/entrega_lino_bloque_4.md).
+La cola se ejecuta fuera de la web; no hay resultados ficticios si el motor está
+sin configurar. Instalar el código no activa el worker ni valida la IA.
+
+### Captura y almacenamiento existentes
+
 Ver [operación y permisos](docs/administracion_y_s3.md) para anulación, etiquetas,
 lectura mixta local/S3 y prueba explícita del bucket mediante el rol del servidor.

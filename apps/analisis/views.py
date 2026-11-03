@@ -40,24 +40,28 @@ def ultimo_intento(analisis):
 @never_cache
 @roles_required(COCINA)
 @require_GET
-def lista(request):
+def lista(request, solo_revision=False):
     _permiso(request, 'view_analisisservicio')
     servicios = Servicio.objects.filter(estado_captura='PAR_COMPLETO').order_by('-fecha_creacion', '-pk')
+    ultimos = AnalisisServicio.objects.filter(servicio_id=OuterRef('servicio_id')).order_by('-creado_en', '-pk').values('pk')[:1]
+    alcance = AnalisisServicio.objects.filter(pk=Subquery(ultimos), servicio__estado_captura='PAR_COMPLETO')
+    pendientes = alcance.filter(intento_vigente__estado='COMPLETADO').exclude(intento_vigente__revisiones__vigente=True)
+    if solo_revision:
+        servicios = servicios.filter(pk__in=pendientes.values('servicio_id'))
     page = Paginator(servicios, 30).get_page(request.GET.get('page'))
     casos = []
     for servicio in page:
         analisis = servicio.analisis.order_by('-creado_en', '-pk').first()
         if analisis:
             datos = contexto(analisis, ultimo_intento(analisis))['caso']
-            datos['detalle_url'] = reverse('analisis:detalle', args=[analisis.pk])
+            intento = ultimo_intento(analisis)
+            datos['detalle_url'] = reverse('analisis:revision_detalle' if intento and intento.estado == 'COMPLETADO' else 'analisis:detalle', args=[analisis.pk])
         else:
             datos = dict(plato_nombre=servicio.get_plato_display(), porcion_nombre=servicio.get_tipo_porcion_display(),
                          servicio_id=str(servicio.pk), estado='', detalle_url=reverse('analisis:par', args=[servicio.pk]))
         casos.append(datos)
-    ultimos = AnalisisServicio.objects.filter(servicio_id=OuterRef('servicio_id')).order_by('-creado_en', '-pk').values('pk')[:1]
-    alcance = AnalisisServicio.objects.filter(pk=Subquery(ultimos), origen='REAL', servicio__estado_captura='PAR_COMPLETO')
-    nulos = alcance.filter(intento_vigente__resultados__estado='NO_CONCLUYENTE').values('servicio_id').distinct().count()
-    resumen = dict(no_concluyentes=nulos, por_revisar=None)
+    nulos = alcance.filter(origen='REAL', intento_vigente__resultados__estado='NO_CONCLUYENTE').values('servicio_id').distinct().count()
+    resumen = dict(no_concluyentes=nulos, por_revisar=pendientes.filter(origen='REAL').values('servicio_id').distinct().count())
     return render(request, 'analisis/lista_operativa.html', dict(casos=casos, resumen=resumen, pagina=page))
 
 

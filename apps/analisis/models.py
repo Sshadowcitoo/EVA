@@ -147,6 +147,10 @@ class ResultadoComponente(models.Model):
     )
     confianza = models.FloatField(null=True, blank=True)
     criterio = models.CharField(max_length=100, blank=True, default="")
+    # Criterio realmente aplicado, para no juzgar la validez histórica contra
+    # una configuración posterior que pueda cambiar.
+    umbral_aplicado = models.FloatField(null=True, blank=True)
+    configuracion_aprobada = models.BooleanField(default=False)
     estado = models.CharField(max_length=20, choices=Estado.choices)
     motivo = models.CharField(
         max_length=20, choices=Motivo.choices, blank=True, default=""
@@ -218,3 +222,51 @@ class ArtefactoAnalisis(models.Model):
 
     def __str__(self):
         return f"{self.resultado_id} - {self.etapa}"
+
+
+class RevisionAnalisis(models.Model):
+    """Decisión humana de Cocina sobre un intento exacto. Se rectifica, no se edita."""
+
+    class Decision(models.TextChoices):
+        CONFIRMADO = "CONFIRMADO", "Confirmado"
+        RECHAZADO = "RECHAZADO", "Rechazado"
+        NO_CONCLUYENTE = "NO_CONCLUYENTE", "No concluyente"
+
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    intento = models.ForeignKey(
+        IntentoAnalisis, on_delete=models.PROTECT, related_name="revisiones"
+    )
+    decision = models.CharField(max_length=20, choices=Decision.choices)
+    motivo = models.TextField(blank=True, default="")
+    autor = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.PROTECT,
+        related_name="revisiones_analisis",
+    )
+    fecha = models.DateTimeField(auto_now_add=True)
+    sustituye = models.ForeignKey(
+        "self",
+        null=True,
+        blank=True,
+        on_delete=models.PROTECT,
+        related_name="sustituida_por",
+    )
+    # Versión de concurrencia: 1, 2, 3... por intento. Sin revisión vale 0.
+    version = models.PositiveIntegerField()
+    vigente = models.BooleanField(default=True)
+
+    class Meta:
+        ordering = ["intento", "version"]
+        constraints = [
+            models.UniqueConstraint(
+                fields=["intento", "version"], name="revision_version_unica"
+            ),
+            models.UniqueConstraint(
+                fields=["intento"],
+                condition=Q(vigente=True),
+                name="una_revision_vigente_por_intento",
+            ),
+        ]
+
+    def __str__(self):
+        return f"{self.intento_id} v{self.version} {self.decision}"

@@ -38,6 +38,11 @@ Crea un ID y registra el plato antes de tomar la foto inicial.
         {{ form.tipo_porcion }} {{ form.tipo_porcion.errors }}
       </div>
 
+      <p class="muted">Establecimiento: {{ form.establecimiento_nombre }}. La franja se guarda automáticamente al aceptar la foto del servido.</p>
+      {% for field in form %}{% if field.name != 'plato' and field.name != 'tipo_porcion' %}
+      <div class="form-field">{{ field.label_tag }} {{ field }} {{ field.errors }}{% if field.help_text %}<p class="muted" id="{{ field.auto_id }}_helptext">{{ field.help_text }}</p>{% endif %}</div>
+      {% endif %}{% endfor %}
+      <p class="muted">Sin sede, modalidad y lote completos, el registro queda sin contexto para comparaciones.</p>
       <div class="readonly-field">
         <span>ID de bandeja</span>
         <p>Se generará al guardar</p>

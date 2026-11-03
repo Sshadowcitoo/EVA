@@ -158,6 +158,14 @@ EVA_VISUAL_ENDPOINT = os.environ.get("EVA_VISUAL_ENDPOINT", "")
 EVA_VISUAL_VERSION_MODELO = os.environ.get("EVA_VISUAL_VERSION_MODELO", "")
 EVA_ANALISIS_TIMEOUT_SECONDS = 30
 EVA_HISTORICO_CRITERIOS = {"version": None, "aprobada": False, "presencia_t": None}
+EVA_CONTEXTO_SERVICIO = {
+    "version": "piloto-horas-v1",
+    "franja_minutos": 60,
+    "establecimiento": {"codigo": "la-mesa-costena", "nombre": "La Mesa Costeña"},
+    "sedes": [{"codigo": "principal", "nombre": "Sede principal"}],
+    "modalidades": [{"codigo": "mesa", "nombre": "Servicio en mesa"},
+                    {"codigo": "autoservicio", "nombre": "Autoservicio"}],
+}
 EVA_RECOMENDACIONES_CRITERIOS = {"version": None, "aprobada": False, "reglas": {}}
 EVA_VISUAL_TOKEN = os.environ.get("EVA_VISUAL_TOKEN", "")
 EVA_VISUAL_ORIGEN = os.environ.get("EVA_VISUAL_ORIGEN", "REAL")

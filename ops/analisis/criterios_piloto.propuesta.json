@@ -1,0 +1,32 @@
+{
+  "estado": "PROPUESTA_NO_ACTIVA",
+  "nota": "Valores experimentales para revisar tras medir el modelo; no son umbrales de precisión demostrada.",
+  "analisis": {
+    "version": "piloto-visual-propuesta-v1",
+    "aprobada": false,
+    "comparabilidad_aprobada": false,
+    "umbrales": {"yuca": 0.8, "pescado": 0.8, "arroz": 0.8, "pollo": 0.8, "maduro": 0.8, "menestra": 0.8, "carne": 0.8, "ensalada": 0.8}
+  },
+  "historico": {"version": "piloto-presencia-propuesta-v1", "aprobada": false, "presencia_t": 10},
+  "recomendaciones": {
+    "version": "piloto-recomendaciones-propuesta-v1",
+    "aprobada": false,
+    "descripcion": "Propuesta experimental: revisión humana, sin cambios automáticos del catálogo.",
+    "reglas": {
+      "muestra_minima": 5,
+      "periodos_minimos": 2,
+      "periodo_dias": 1,
+      "lotes_minimos": 2,
+      "presencia_t": 10,
+      "cobertura_minima": 80,
+      "calidad": "REVISION_CONFIRMADA",
+      "confianza": 0.8,
+      "comparabilidad": "CONTEXTO_Y_GRUPO",
+      "categorias": [
+        {"categoria": "MANTENER", "intensidad_desde": 0, "intensidad_hasta": 10, "prevalencia_desde": 0, "prevalencia_hasta": 20},
+        {"categoria": "REVISAR_PORCION", "intensidad_desde": 15, "intensidad_hasta": 100, "prevalencia_desde": 40, "prevalencia_hasta": 100},
+        {"categoria": "PRUEBA_CONTROLADA", "intensidad_desde": 0, "intensidad_hasta": 100, "prevalencia_desde": 0, "prevalencia_hasta": 100}
+      ]
+    }
+  }
+}

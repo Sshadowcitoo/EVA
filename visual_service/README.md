@@ -1,7 +1,13 @@
 # visual_service
 
-Módulo: Microservicio YOLO/OpenCV, fuera de MVT
-Requisitos: RF-06 a RF-08; RNF-07, RNF-08
-Historias: HU-04
-Pendiente: P-04, P-06, P-07
-Estado: sin código
+Motor separado YOLO/Pillow y herramientas del piloto. Incluye dataset, exportación/
+entrenamiento, inferencia, endpoint interno y métricas contra máscaras manuales.
+No contiene pesos, anotaciones ni resultados de precisión real. No está activado.
+
+Leer [preparación, contexto y límites](../docs/motor_contexto_piloto.md).
+El servidor incorporado solo se usa en desarrollo local; antes de desplegar se
+verifican capacidad, tiempo total, autenticación, geometría y criterios aprobados.
+
+```powershell
+python -m unittest visual_service.test_dataset visual_service.test_inference visual_service.test_evaluation
+```

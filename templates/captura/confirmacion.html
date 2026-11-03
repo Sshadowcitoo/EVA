@@ -26,6 +26,7 @@ de la bandeja quedaron guardados.{% endblock %} {% block content %}
       <dd>{{ servicio.fecha_creacion|date:"d/m/Y H:i" }}</dd>
     </div>
   </dl>
+  {% include 'captura/_contexto_servicio.html' %}
 
   <div class="info-box">
     <h3>Primer paso completado</h3>

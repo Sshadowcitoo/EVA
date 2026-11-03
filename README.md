@@ -2,6 +2,11 @@
 
 Proyecto de Construcción de Software, Ingeniería de Software, UNEMI.
 
+## Preparación del motor y contexto
+
+[Motor, fotografías, contexto y propuesta experimental](docs/motor_contexto_piloto.md).
+Implementación preparada; sin entrenamiento ni activación de criterios reales.
+
 ## Base de recomendaciones (bloque 7)
 
 [Contrato v1](docs/contrato_bloque_7.md) e [instrucciones de interfaz](docs/inicio_bloque_7.md).

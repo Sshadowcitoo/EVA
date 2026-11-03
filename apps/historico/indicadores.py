@@ -49,7 +49,7 @@ def resumir(datos, advertencias, filtros, pagina):
                 porcentaje_visual=porcentaje, motivo_exclusion=dato['motivo']))
             if dato['motivo'] is not None:
                 continue
-            clave = (servicio.plato, codigo, servicio.tipo_porcion, None,
+            clave = (servicio.plato, codigo, servicio.tipo_porcion, dato.get('contexto_clave'),
                      a.version_modelo, a.version_configuracion, a.foto_servido.protocolo_version)
             grupos.setdefault(clave, {})[str(servicio.pk)] = porcentaje
     salida_grupos = []

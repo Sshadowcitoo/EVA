@@ -8,6 +8,7 @@ from django.db.models.functions import Coalesce, TruncTime
 from apps.analisis.elegibilidad import evaluar_elegibilidad
 from apps.analisis.models import AnalisisServicio, IntentoAnalisis, ResultadoComponente, RevisionAnalisis
 from apps.captura.models import FotografiaServicio, Servicio
+from apps.captura.contexto import clave_historica
 from apps.captura.protocolo import CRITERIOS
 from .contracts import FiltrosInvalidos, ZONA_HORARIA
 
@@ -25,7 +26,7 @@ def opciones_historico():
     return dict(platos=opciones(servicios.values_list('plato', 'plato_nombre')),
                 porciones=opciones(servicios.values_list('tipo_porcion', 'porcion_nombre')),
                 componentes=opciones(componentes.values_list('componente_codigo', 'componente_nombre')),
-                contexto_disponible=False)
+                contexto_disponible=Servicio.objects.exclude(contexto_clave='').exists())
 
 
 def validar_codigos(filtros):
@@ -91,6 +92,7 @@ def seleccionar(filtros):
         componentes = list(servicio.composicion.all())
         motivo = motivo_exclusion(servicio, a, intento, resultados, revision, componentes)
         datos.append(dict(servicio=servicio, analisis=a, intento=intento, resultados=resultados,
+                          contexto_clave=clave_historica(servicio),
                           componentes=componentes, motivo=motivo, fecha=servicio.fecha_servido_analitica))
     advertencias = [f'{sin_fecha} servicios sin fecha de servido no se pueden asignar al periodo u horario solicitado.'] if sin_fecha else []
     return datos, advertencias

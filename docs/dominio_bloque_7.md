@@ -49,12 +49,12 @@ criterio produce INSUFICIENTE y motivos. Las cifras de tests no son valores apro
 La configuración del histórico y la de recomendaciones no se confunden: sus
 versiones son independientes y ambos criterios deben estar correctamente definidos.
 
-**Límite actual:** el histórico aún no registra contexto. Por ello la evidencia
-real sigue siendo insuficiente para generar propuestas, aunque haya resultados
-confirmados. No se añadió un contexto ficticio ni se aprobaron umbrales para eludir
-esa restricción. La prueba positiva habilita contexto hipotético solo dentro del
-test y lo identifica explícitamente. Para operar propuestas reales falta acordar
-y registrar contexto y aprobar criterios con evidencia.
+**Límite actual:** los criterios siguen sin aprobar. Las nuevas capturas pueden
+registrar contexto completo de sede/modalidad/lote/franja; los registros anteriores
+siguen sin contexto y no se rellenan. Ver docs/motor_contexto_piloto.md para el nuevo
+campo opcional lotes_minimos y la propuesta experimental no activa. Hay pruebas
+ORM de recomendaciones con contexto persistido; sus criterios son exclusivos de
+test. No prueban precisión de IA ni autorizan reglas operativas.
 
 ## Pruebas controladas
 

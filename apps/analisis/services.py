@@ -10,16 +10,18 @@ import math
 from datetime import timedelta
 from decimal import ROUND_HALF_EVEN, Decimal
 
-from django.core.exceptions import ValidationError
+from django.core.exceptions import PermissionDenied, ValidationError
 from django.db import IntegrityError, transaction
 from django.utils import timezone
 
+from apps.analisis.elegibilidad import evaluar_elegibilidad
 from apps.analisis.models import (
     RETENCION_DIAS,
     AnalisisServicio,
     ArtefactoAnalisis,
     IntentoAnalisis,
     ResultadoComponente,
+    RevisionAnalisis,
 )
 from apps.captura.models import FotografiaServicio, Servicio
 
@@ -405,6 +407,8 @@ def completar_intento(
                     porcentaje=ev["porcentaje"],
                     confianza=item.get("confianza"),
                     criterio=item.get("criterio", ""),
+                    umbral_aplicado=item.get("umbral_confianza"),
+                    configuracion_aprobada=item.get("umbral_confianza") is not None,
                     estado=ev["estado"],
                     motivo=ev["motivo"],
                 )
@@ -440,3 +444,153 @@ def artefactos_vencidos(ahora=None):
     return ArtefactoAnalisis.objects.filter(
         eliminado_en__isnull=True, foto_padre__fecha__lte=limite
     )
+
+
+
+
+# --- Revisión humana (bloque 5) ---------------------------------------------------
+
+Decision = RevisionAnalisis.Decision
+
+
+class ConflictoRevision(ValidationError):
+    """La revisión vigente cambió mientras el revisor preparaba su decisión."""
+
+
+def revision_vigente(intento):
+    return RevisionAnalisis.objects.filter(intento=intento, vigente=True).first()
+
+
+def intentos_pendientes_de_revision():
+    """Resultados vigentes de cada análisis, completados y sin revisión vigente."""
+    vigentes = AnalisisServicio.objects.exclude(intento_vigente=None).values(
+        "intento_vigente"
+    )
+    return (
+        IntentoAnalisis.objects.filter(estado=Estado.COMPLETADO, pk__in=vigentes)
+        .exclude(revisiones__vigente=True)
+        .order_by("finalizado_en")
+    )
+
+
+_TEXTO_MOTIVO = {
+    "ORIGEN_NO_REAL": "El análisis es simulado: no es evidencia real.",
+    "INTENTO_NO_COMPLETADO": "El intento no está completado.",
+    "SIN_CONFIGURACION_APROBADA": "Se aplicó una configuración sin aprobación.",
+    "COMPONENTES_NO_CONCLUYENTES": "Hay componentes no concluyentes o no hay resultados.",
+    "EVIDENCIA_NO_DISPONIBLE": "La evidencia (fotos y máscaras) no está disponible ahora.",
+}
+
+
+def _datos_elegibilidad(intento):
+    """Datos verificados del servidor (nunca del formulario) para la regla compartida."""
+    resultados = list(intento.resultados.all())
+    return {
+        "origen": intento.analisis.origen,
+        "estado_intento": intento.estado,
+        "estados_componentes": [r.estado for r in resultados],
+        "configuracion_aprobada": bool(resultados)
+        and all(r.configuracion_aprobada for r in resultados),
+    }
+
+
+def motivos_no_confirmable(intento, evidencia_disponible):
+    """Razones legibles por las que NO se puede confirmar; vacía si se puede.
+
+    Usa `evaluar_elegibilidad` (regla compartida de César): una confirmación
+    humana no convierte en evidencia apta un resultado simulado, fallido, no
+    concluyente, sin criterio aprobado o sin imágenes disponibles ahora.
+    """
+    evaluacion = evaluar_elegibilidad(
+        **_datos_elegibilidad(intento), evidencia_disponible=evidencia_disponible is True
+    )
+    if evaluacion["puede_confirmar"]:
+        return []
+    return [_TEXTO_MOTIVO.get(codigo, codigo) for codigo in evaluacion["motivos"]]
+
+
+def apto_historico(intento):
+    """True si el intento tiene revisión vigente CONFIRMADO y validez técnica.
+
+    No exige que los bytes sigan disponibles: una decisión válida anterior no
+    se borra al vencer la retención. Un intento nuevo no hereda la anterior.
+    """
+    revision = revision_vigente(intento)
+    if revision is None:
+        return False
+    evaluacion = evaluar_elegibilidad(
+        **_datos_elegibilidad(intento),
+        evidencia_disponible=False,
+        decision=revision.decision,
+        intento_id=intento.pk,
+        intento_revisado_id=revision.intento_id,
+    )
+    return evaluacion["apto_historico"]
+
+
+def revisar_resultado(
+    resultado, decision, motivo, usuario, version_esperada, *, evidencia_disponible=False
+):
+    """Registra la decisión de Cocina sobre el intento exacto `resultado`.
+
+    version_esperada: versión de la revisión vigente que el revisor vio (0 si
+    no había). Si cambió, lanza ConflictoRevision sin escribir nada. Un POST
+    repetido idéntico devuelve la revisión existente. Rechazar, marcar no
+    concluyente y rectificar exigen motivo; la rectificación crea otra revisión
+    que sustituye a la anterior, que se conserva. Confirmar exige que
+    `motivos_no_confirmable` salga vacío; `evidencia_disponible` lo comprueba
+    Lino contra el almacenamiento (por defecto False: no se confirma a ciegas).
+    """
+    if decision not in Decision.values:
+        raise ValidationError("Decisión no válida.")
+    if not (usuario and usuario.is_active and usuario.has_perm("analisis.add_revisionanalisis")):
+        raise PermissionDenied("No tienes permiso para revisar análisis.")
+    if not isinstance(version_esperada, int) or isinstance(version_esperada, bool) or version_esperada < 0:
+        raise ValidationError("Versión esperada no válida.")
+    motivo = (motivo or "").strip()
+
+    with transaction.atomic():
+        intento = IntentoAnalisis.objects.select_related("analisis").get(pk=resultado.pk)
+        if intento.estado != Estado.COMPLETADO:
+            raise ValidationError("Solo se revisan intentos completados.")
+        if intento.analisis.intento_vigente_id != intento.pk:
+            raise ValidationError("Este intento ya no es el resultado vigente del análisis.")
+
+        vigente = revision_vigente(intento)
+        actual = vigente.version if vigente else 0
+        if (
+            vigente
+            and (vigente.decision, vigente.motivo, vigente.autor_id)
+            == (decision, motivo, usuario.pk)
+            and version_esperada in (actual - 1, actual)
+        ):
+            return vigente  # doble envío: no duplica
+        if version_esperada != actual:
+            raise ConflictoRevision(
+                "La revisión cambió mientras la preparabas; vuelve a cargar el caso."
+            )
+        if (vigente or decision != Decision.CONFIRMADO) and not motivo:
+            raise ValidationError("Esta decisión requiere un motivo.")
+        if decision == Decision.CONFIRMADO:
+            razones = motivos_no_confirmable(intento, evidencia_disponible)
+            if razones:
+                raise ValidationError(razones)
+        if vigente:
+            filas = RevisionAnalisis.objects.filter(
+                pk=vigente.pk, vigente=True, version=actual
+            ).update(vigente=False)
+            if filas != 1:
+                raise ConflictoRevision("La revisión cambió mientras la preparabas.")
+        try:
+            with transaction.atomic():
+                return RevisionAnalisis.objects.create(
+                    intento=intento,
+                    decision=decision,
+                    motivo=motivo,
+                    autor=usuario,
+                    sustituye=vigente,
+                    version=actual + 1,
+                )
+        except IntegrityError:
+            raise ConflictoRevision("Otra persona registró una decisión al mismo tiempo.")
+

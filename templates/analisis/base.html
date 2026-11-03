@@ -1,0 +1,7 @@
+{% extends "base.html" %}{% load static %}
+{% block title %}Análisis visual | EVA{% endblock %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/analisis.css' %}">
+{% if error %}<div class="error-summary" role="alert">{{ error }}</div>{% endif %}
+{% block analisis_content %}{% endblock %}
+{% endblock %}

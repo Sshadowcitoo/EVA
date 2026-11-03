@@ -1,8 +1,16 @@
 from django.contrib.auth.views import LoginView
-from django.shortcuts import render
-from django.urls import reverse
+from django.shortcuts import redirect, render
+from django.urls import NoReverseMatch, reverse
 
 from .permissions import ADMINISTRACION, COCINA, REGISTRO, roles_required, tiene_rol
+
+
+def destino_cocina():
+    # No publicar una navegación rota mientras Lino todavía no integró sus rutas.
+    try:
+        return reverse("analisis:pendientes_revision")
+    except NoReverseMatch:
+        return reverse("cuentas:cocina_pendiente")
 
 
 def destino_por_rol(user):
@@ -12,7 +20,7 @@ def destino_por_rol(user):
     if tiene_rol(user, ADMINISTRACION):
         return reverse("catalogo:platos")
     if tiene_rol(user, COCINA):
-        return reverse("cuentas:cocina_pendiente")
+        return destino_cocina()
     # Sin ningún rol de EVA: no tiene a dónde ir.
     return None
 
@@ -32,4 +40,7 @@ class EvaLoginView(LoginView):
 
 @roles_required(COCINA)
 def cocina_pendiente(request):
+    destino = destino_cocina()
+    if destino != reverse("cuentas:cocina_pendiente"):
+        return redirect(destino)
     return render(request, "cuentas/cocina_pendiente.html")

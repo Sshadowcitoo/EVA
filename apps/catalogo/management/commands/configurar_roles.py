@@ -12,7 +12,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         permisos = list(
             Permission.objects.filter(
-                content_type__app_label__in=("captura", "catalogo")
+                content_type__app_label__in=("captura", "catalogo", "analisis")
             ).select_related("content_type")
         )
         disponibles = {

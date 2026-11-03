@@ -1,0 +1,8 @@
+{% extends "analisis/base.html" %}
+{% block heading %}Análisis de servicios{% endblock %}
+{% block subtitle %}Un par completo todavía requiere análisis y revisión de Cocina.{% endblock %}
+{% block analisis_content %}
+<section class="panel"><h2>Servicios</h2>
+{% for caso in casos %}<article class="analisis-caso"><h3>{{ caso.plato_nombre }}</h3><p>{{ caso.porcion_nombre }} · {{ caso.estado }} · {{ caso.origen }}</p>{% if caso.detalle_url %}<a class="button" href="{{ caso.detalle_url }}">Ver análisis</a>{% endif %}</article>
+{% empty %}<p>No hay análisis disponibles. Los pares incompletos no se envían al motor.</p>{% endfor %}
+</section>{% endblock %}

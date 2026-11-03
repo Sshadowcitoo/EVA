@@ -34,7 +34,16 @@ PERMISOS_POR_ROL = {
         "catalogo.view_tipoporcion",
         "catalogo.view_contexto",
     ),
-    COCINA: (),
+    COCINA: (
+        "analisis.add_analisisservicio",
+        "analisis.view_analisisservicio",
+        "analisis.add_intentoanalisis",
+        "analisis.view_intentoanalisis",
+        "analisis.view_resultadocomponente",
+        "analisis.view_artefactoanalisis",
+        "analisis.view_revisionanalisis",
+        "analisis.add_revisionanalisis",
+    ),
     ADMINISTRACION: tuple(
         f"catalogo.{accion}_{modelo}"
         for modelo in ("plato", "componente", "platocomponente", "tipoporcion", "contexto")

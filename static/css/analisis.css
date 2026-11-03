@@ -58,3 +58,35 @@
 .analisis-fotos + .muted { margin-top:16px; }
 .analisis-tabla > .muted { margin:14px 0 0; }
 @media(max-width:640px) { .analisis-celda { text-align:right; } }
+/* Revisión de Cocina */
+.revision-grid { display:grid; grid-template-columns:minmax(0,2fr) minmax(0,1fr); gap:20px; margin-bottom:20px; align-items:start; }
+.revision-principal, .revision-lateral { display:grid; gap:20px; min-width:0; }
+.revision-secuencia { grid-column:1 / -1; }
+.revision-secuencia p { margin:0; }
+.revision-grid h2 { margin-top:0; }
+.revision-datos { margin:0; }
+.revision-datos > div { padding:8px 0; border-bottom:1px solid #e5eaf0; }
+.revision-datos > div:last-child { border-bottom:0; }
+.revision-datos dt { margin-bottom:2px; }
+.revision-datos dd { font-weight:600; }
+.analisis-codigo { font-size:12px; word-break:break-all; }
+.analisis-simulado { margin-bottom:20px; }
+.revision-acciones label { display:block; margin:14px 0 4px; font-size:13px; font-weight:700; color:#18243b; }
+.revision-acciones textarea,
+.revision-acciones select { width:100%; padding:10px 12px; color:#18243b; background:#fff; border:1px solid #9fb0c4; border-radius:8px; font:inherit; font-size:14px; }
+.revision-acciones textarea:focus-visible,
+.revision-acciones select:focus-visible { outline:3px solid #a66100; outline-offset:2px; }
+.revision-acciones textarea[aria-invalid="true"] { border-color:#9b1c1c; }
+.error-texto { margin:6px 0 0; color:#9b1c1c; font-size:13px; font-weight:700; }
+.revision-botones { display:flex; flex-wrap:wrap; gap:12px; margin-top:18px; }
+.button-secundario { color:#1f4e79; background:#fff; border:1px solid #9fb0c4; }
+.button-secundario:hover { background:#eef4fb; }
+.button:disabled { color:#5b6b82; background:#e0e8f1; cursor:not-allowed; }
+.button:disabled:hover { background:#e0e8f1; }
+.revision-acciones .info-box { margin-top:14px; }
+@media(max-width:900px) {
+.revision-grid { grid-template-columns:1fr; }
+}
+@media(max-width:640px) {
+.revision-botones .button { width:100%; }
+}

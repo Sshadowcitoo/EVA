@@ -6,8 +6,8 @@
 {% block subtitle %}Consulta sobrantes visuales por componente y periodo. Horario de Ecuador (America/Guayaquil).{% endblock %}
 {% block navigation %}
 {% if puede_cocina or puede_administrar_catalogo %}
-<a class="nav-link{% if request.resolver_match.url_name == 'lista' %} active{% endif %}" href="{% url 'historico:lista' %}">Histórico e indicadores</a>
-<a class="nav-link{% if request.resolver_match.url_name == 'comparar' %} active{% endif %}" href="{% url 'historico:comparar' %}">Comparar periodos</a>
+<a class="nav-link{% if request.resolver_match.url_name == 'lista' %} active{% endif %}" href="{% url 'historico:lista' %}"{% if request.resolver_match.url_name == 'lista' %} aria-current="page"{% endif %}>Histórico e indicadores</a>
+<a class="nav-link{% if request.resolver_match.url_name == 'comparar' %} active{% endif %}" href="{% url 'historico:comparar' %}"{% if request.resolver_match.url_name == 'comparar' %} aria-current="page"{% endif %}>Comparar periodos</a>
 {% endif %}
 {% url 'analisis:lista' as analisis_url %}{% if puede_cocina and analisis_url %}<a class="nav-link" href="{{ analisis_url }}">Revisión de Cocina</a>{% endif %}
 {% url 'captura:nueva_bandeja' as captura_url %}{% if puede_registrar and captura_url %}<a class="nav-link" href="{{ captura_url }}">Registro de servicios</a>{% endif %}

@@ -58,3 +58,26 @@ No se acredita idempotencia persistida con mocks: eso pertenece al dominio.
 Los ensayos de pantalla sustituyen explícitamente services mediante fixtures en
 un proceso de prueba aislado. No introducen un proveedor sintético productivo.
 Los nodos Figma y el flujo con persistencia real permanecen pendientes.
+
+
+## Evidencia visual del ensayo
+
+Se renderizaron las vistas Django con RequestFactory y dobles explícitos de
+services en un proceso de prueba. Chromium revisó 20 combinaciones: diez estados
+por dos tamaños, 1440x900 y 390x844. No se detectó desbordamiento horizontal de la
+página; la tabla conserva su desplazamiento horizontal local accesible por teclado.
+Se inspeccionaron las capturas de histórico, comparación, percepción, backend
+pendiente y conflicto. No equivalen a un flujo con persistencia ni a validación Figma.
+
+Capturas de ejemplo (contenido sintético):
+
+| Pantalla | Escritorio | Móvil |
+| --- | --- | --- |
+| Histórico | [1440x900](evidencias/bloque_6/historico-1440.jpg) | [390x844](evidencias/bloque_6/historico-390.jpg) |
+| Comparación | [1440x900](evidencias/bloque_6/comparacion-1440.jpg) | [390x844](evidencias/bloque_6/comparacion-390.jpg) |
+| Percepción | [1440x900](evidencias/bloque_6/percepcion-1440.jpg) | [390x844](evidencias/bloque_6/percepcion-390.jpg) |
+| Backend pendiente | [1440x900](evidencias/bloque_6/pendiente-1440.jpg) | [390x844](evidencias/bloque_6/pendiente-390.jpg) |
+| Conflicto sin sobrescritura | [1440x900](evidencias/bloque_6/conflicto-1440.jpg) | [390x844](evidencias/bloque_6/conflicto-390.jpg) |
+
+Los tamaños indicados son los viewports del navegador; las capturas incluyen
+la página completa y por ello pueden tener más altura.

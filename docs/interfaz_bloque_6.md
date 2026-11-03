@@ -58,3 +58,8 @@ comparación, percepción y móvil permanecen SIN VERIFICAR. Se reutilizó la ba
 visual existente del repositorio. No se acredita el objetivo aproximado de 70 %.
 La comparación requiere restablecer el acceso al conector o recibir exportaciones
 autorizadas de los marcos correspondientes.
+
+
+Las capturas del ensayo están enlazadas en entrega_web_bloque_6.md. Se revisaron
+20 combinaciones de estado/tamaño en Chromium sin desbordamiento global, con
+fixtures únicamente en el proceso de prueba. La comparación Figma sigue pendiente.

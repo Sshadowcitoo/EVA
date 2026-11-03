@@ -2,7 +2,7 @@ from datetime import date, datetime, time, timedelta
 from decimal import Decimal
 
 from django.apps import apps
-from django.test import SimpleTestCase
+from django.test import SimpleTestCase, TestCase
 
 from . import contracts, services
 from .filtros import normalizar_filtros
@@ -84,12 +84,11 @@ class ContratoFixturesTests(SimpleTestCase):
         self.assertEqual(historico_fixture()['indicadores']['n'], 4)
         self.assertEqual(set(opciones_fixture()), set(contracts.OpcionesHistorico.__annotations__))
 
-    def test_servicios_sin_backend_nunca_devuelven_fixtures(self):
+class ContratoServiciosIntegradosTests(TestCase):
+    def test_backend_vacio_no_devuelve_datos_sinteticos(self):
         filtro = normalizar_filtros({})
-        llamadas = [(services.opciones_historico, ()), (services.consultar_historico, (filtro,)),
-                    (services.comparar_periodos, (filtro, filtro)),
-                    (services.obtener_percepcion, ('servicio', None)),
-                    (services.registrar_percepcion, ('servicio', 'ADECUADA', '', None, 0))]
-        for funcion, argumentos in llamadas:
-            with self.subTest(funcion=funcion.__name__), self.assertRaises(contracts.BackendHistoricoNoDisponible):
-                funcion(*argumentos)
+        self.assertEqual(services.opciones_historico()['platos'], [])
+        datos = services.consultar_historico(filtro)
+        self.assertFalse(datos['solo_pruebas'])
+        self.assertEqual(datos['filas'], [])
+        self.assertIsNone(datos['indicadores']['intensidad'])

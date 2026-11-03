@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     "apps.captura.apps.CapturaConfig",
     "apps.catalogo.apps.CatalogoConfig",
+    "apps.analisis.apps.AnalisisConfig",
 ]
 
 # Contrato del bloque inicial; las vistas de sesión las implementa Lino.
@@ -144,6 +145,16 @@ EVA_S3_REGION = os.environ.get("EVA_S3_REGION", "")
 EVA_S3_PREFIX = os.environ.get("EVA_S3_PREFIX", "eva/capturas/")
 EVA_CAPTURE_BASE_URL = os.environ.get("EVA_CAPTURE_BASE_URL", "")
 EVA_CAPTURE_LINK_TTL_SECONDS = 300
+# Sin evaluación local no hay umbrales ni comparabilidad aprobados.
+EVA_ANALISIS_CRITERIOS = {
+    "version": "pendiente-evaluacion",
+    "aprobada": False,
+    "comparabilidad_aprobada": False,
+    "umbrales": {},
+}
+EVA_VISUAL_ENDPOINT = os.environ.get("EVA_VISUAL_ENDPOINT", "")
+EVA_VISUAL_VERSION_MODELO = os.environ.get("EVA_VISUAL_VERSION_MODELO", "")
+EVA_ANALISIS_TIMEOUT_SECONDS = 30
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,

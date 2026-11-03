@@ -1,7 +1,7 @@
 # Bloque 5: vistas y decisiones de Cocina conectadas
 
 Esta rama sustituye la segunda parte de Lino. Se apoya en la rama del bloque 4 y
-combina, conservando autoría/historial, las dependencias #38 de Isaac (762a510),
+combina, conservando autoría/historial, las dependencias #38 de Isaac (3f7e5d7, actualización de 762a510),
 #35 de Jean (18cab5f) y #37 de Eduardo (8b7a47b). Sus merges en esta rama NO son
 merges a main. Se conservaron las guardas del #39 contra totales parciales y fotos
 eliminadas. Los conflictos de combinación se resolvieron conservando ambas partes.

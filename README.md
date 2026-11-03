@@ -5,8 +5,10 @@ Proyecto de Construcción de Software, Ingeniería de Software, UNEMI.
 ## Base de recomendaciones (bloque 7)
 
 [Contrato v1](docs/contrato_bloque_7.md) e [instrucciones de interfaz](docs/inicio_bloque_7.md).
-Bloque 6 integrado; el bloque 7 prepara funciones, DTO y fixtures para trabajar
-por separado. Sus operaciones de datos aún están pendientes, sin datos falsos en producción.
+Bloque 6 integrado. El bloque 7 implementa evaluaciones, recomendaciones, decisiones
+y pruebas controladas con ORM y auditoría, sin datos falsos en producción.
+Ver [dominio, configuración y límites](docs/dominio_bloque_7.md).
+Sin criterios aprobados o contexto histórico, la evidencia permanece insuficiente.
 
 ## Base del histórico (bloque 6)
 

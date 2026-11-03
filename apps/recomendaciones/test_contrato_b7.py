@@ -1,11 +1,11 @@
 from datetime import date
 from django.apps import apps
-from django.test import SimpleTestCase
+from django.test import TestCase
 from . import contracts as c, services
 from .testing.fixtures import detalle_fixture, evaluacion_fixture, lista_fixture, prueba_fixture, opciones_fixture_recomendaciones
 
 
-class ContratoBloque7Tests(SimpleTestCase):
+class ContratoBloque7Tests(TestCase):
     def test_app_y_dto_compartidos(self):
         self.assertEqual(apps.get_app_config('recomendaciones').name, 'apps.recomendaciones')
         self.assertEqual(set(detalle_fixture()), set(c.DetalleCaso.__annotations__))
@@ -71,7 +71,8 @@ class ContratoBloque7Tests(SimpleTestCase):
             with self.assertRaises(c.ParametrosInvalidos):
                 services.normalizar_prueba({**datos, **cambio})
 
-    def test_backend_pendiente_nunca_devuelve_fixture_o_exito(self):
+    def test_operaciones_exigen_usuario_autorizado_antes_de_consultar(self):
+        from django.core.exceptions import PermissionDenied
         llamadas = [(services.opciones_recomendaciones,(None,)), (services.consultar_recomendaciones,({},None)),
             (services.evaluar_evidencia,({},None,None)), (services.obtener_evaluacion,('id',None)),
             (services.generar_recomendacion,('id',None)), (services.obtener_recomendacion,('id',None)),
@@ -79,5 +80,5 @@ class ContratoBloque7Tests(SimpleTestCase):
             (services.registrar_prueba,('id','Cambio',1,{},None)), (services.obtener_prueba,('id',None)),
             (services.evaluar_prueba,('id',None,0))]
         for funcion, args in llamadas:
-            with self.subTest(funcion=funcion.__name__), self.assertRaises(c.BackendRecomendacionesNoDisponible):
+            with self.subTest(funcion=funcion.__name__), self.assertRaises(PermissionDenied):
                 funcion(*args)

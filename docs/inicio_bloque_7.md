@@ -32,10 +32,10 @@ No cambiar contracts.py ni los archivos de otros bloques unilateralmente. No dar
 por resueltos los parámetros de muestra/persistencia/calidad/confianza/contexto
 porque existan fixtures. Presentar valores del DTO, sin inventar causales o números.
 
-Las operaciones de datos de services.py todavía devuelven BackendRecomendacionesNoDisponible.
-Implementar el 503 legible. En tests sustituir cada servicio explícitamente con las
-fixtures; en producción no usar fallback. Cuando el dominio esté publicado, actualizar
-la dependencia y probar la conexión sin reemplazar las funciones.
+Las operaciones de datos ya tienen dominio ORM en dominio-recomendaciones-bloque-7.
+Ver docs/dominio_bloque_7.md. Mantener el 503 legible, simulándolo explícitamente
+en sus tests. Probar también recorridos HTTP reales sin sustituir servicios; en
+producción no usar fixtures ni aprobar criterios ilustrativos.
 
 El formulario puede mantener las decisiones en el detalle, con confirmación y
 errores claros. Cada POST lleva CSRF y los IDs/versiones indicados. Usar las

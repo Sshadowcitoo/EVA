@@ -2,8 +2,8 @@
 
 Base: main fb1e0684e48c80efbf97d4edf5aed90a9412cbfe, bloque 6 integrado.
 Rama: `base-recomendaciones-bloque-7`. Nombres ejecutables en
-`apps/recomendaciones/contracts.py`, CONTRACT_VERSION=1. Esta entrega prepara la
-frontera de trabajo; no implementa aún consultas/persistencia de este bloque.
+`apps/recomendaciones/contracts.py`, CONTRACT_VERSION=1. El dominio implementa consultas y persistencia. Ver `docs/dominio_bloque_7.md`
+para configuración, auditoría y límites de suficiencia.
 
 ## Responsabilidades
 
@@ -40,10 +40,10 @@ Todas las operaciones de datos reciben el usuario autenticado, no un ID del POST
 | obtener_prueba(prueba_id, usuario) | DetallePrueba |
 | evaluar_prueba(prueba_id, usuario, version_esperada) | DetallePrueba |
 
-Los cuatro normalizadores ya funcionan. Las otras operaciones lanzan
-BackendRecomendacionesNoDisponible hasta conectar el dominio: mostrar 503 legible,
-sin convertirlo en lista vacía ni recomendación o guardado ficticios. La interfaz
-puede usar dobles explícitos en tests; las fixtures no son un proveedor productivo.
+Los normalizadores y las diez operaciones de datos están implementados con ORM.
+Conservar el manejo de BackendRecomendacionesNoDisponible (503) para fallos de
+integración; sus tests deben simularlo explícitamente. Las fixtures no son un
+proveedor productivo y no se usan en services.
 
 ## Filtros y datos
 

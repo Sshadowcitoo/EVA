@@ -1,6 +1,10 @@
 [Unit]
 Description=EVA - Worker privado de analisis
 After=network.target
+Wants=eva-motor.service
+After=eva-motor.service
+StartLimitIntervalSec=300
+StartLimitBurst=3
 
 [Service]
 Type=simple
@@ -8,6 +12,7 @@ User=eva
 WorkingDirectory=/opt/eva/app
 EnvironmentFile=/etc/eva/eva.env
 Environment=DJANGO_SETTINGS_MODULE=config.production
+ExecStartPre=/opt/eva/venv/bin/python -m visual_service.production
 ExecStart=/opt/eva/venv/bin/python /opt/eva/app/manage.py procesar_analisis
 Restart=on-failure
 RestartSec=5

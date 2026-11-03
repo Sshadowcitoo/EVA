@@ -1,13 +1,26 @@
 {
-  "estado": "PROPUESTA_NO_ACTIVA",
+  "estado": "PERFIL_EXPERIMENTAL_APROBADO_NO_ACTIVO",
   "nota": "Valores experimentales para revisar tras medir el modelo; no son umbrales de precisión demostrada.",
   "analisis": {
     "version": "piloto-visual-propuesta-v1",
     "aprobada": false,
     "comparabilidad_aprobada": false,
-    "umbrales": {"yuca": 0.8, "pescado": 0.8, "arroz": 0.8, "pollo": 0.8, "maduro": 0.8, "menestra": 0.8, "carne": 0.8, "ensalada": 0.8}
+    "umbrales": {
+      "yuca": 0.8,
+      "pescado": 0.8,
+      "arroz": 0.8,
+      "pollo": 0.8,
+      "maduro": 0.8,
+      "menestra": 0.8,
+      "carne": 0.8,
+      "ensalada": 0.8
+    }
   },
-  "historico": {"version": "piloto-presencia-propuesta-v1", "aprobada": false, "presencia_t": 10},
+  "historico": {
+    "version": "piloto-presencia-propuesta-v1",
+    "aprobada": false,
+    "presencia_t": 10
+  },
   "recomendaciones": {
     "version": "piloto-recomendaciones-propuesta-v1",
     "aprobada": false,
@@ -23,10 +36,39 @@
       "confianza": 0.8,
       "comparabilidad": "CONTEXTO_Y_GRUPO",
       "categorias": [
-        {"categoria": "MANTENER", "intensidad_desde": 0, "intensidad_hasta": 10, "prevalencia_desde": 0, "prevalencia_hasta": 20},
-        {"categoria": "REVISAR_PORCION", "intensidad_desde": 15, "intensidad_hasta": 100, "prevalencia_desde": 40, "prevalencia_hasta": 100},
-        {"categoria": "PRUEBA_CONTROLADA", "intensidad_desde": 0, "intensidad_hasta": 100, "prevalencia_desde": 0, "prevalencia_hasta": 100}
+        {
+          "categoria": "MANTENER",
+          "intensidad_desde": 0,
+          "intensidad_hasta": 10,
+          "prevalencia_desde": 0,
+          "prevalencia_hasta": 20
+        },
+        {
+          "categoria": "REVISAR_PORCION",
+          "intensidad_desde": 15,
+          "intensidad_hasta": 100,
+          "prevalencia_desde": 40,
+          "prevalencia_hasta": 100
+        },
+        {
+          "categoria": "PRUEBA_CONTROLADA",
+          "intensidad_desde": 0,
+          "intensidad_hasta": 100,
+          "prevalencia_desde": 0,
+          "prevalencia_hasta": 100
+        }
       ]
     }
+  },
+  "aprobacion_perfil": {
+    "fecha": "2026-11-03",
+    "zona_horaria": "America/Guayaquil",
+    "origen": "Confirmacion explicita del responsable del proyecto",
+    "alcance": "Valores experimentales aprobados; no acredita precision ni comparabilidad y no autoriza activacion automatica.",
+    "activacion_pendiente": [
+      "modelo_entrenado_y_evaluado",
+      "validacion_comparabilidad",
+      "comprobacion_operativa_microservicio"
+    ]
   }
 }

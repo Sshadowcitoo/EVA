@@ -19,8 +19,8 @@ class PredictorYOLO:
         pesos = Path(pesos).resolve()
         if not pesos.is_file() or pesos.suffix.lower() != '.pt':
             raise EntradaInvalida('Se necesitan pesos .pt locales de segmentación entrenados para el catálogo.')
-        runtime = Path(__file__).resolve().parent / 'runtime'
-        runtime.mkdir(exist_ok=True)
+        runtime = Path(os.environ.get('EVA_VISUAL_RUNTIME', str(Path(__file__).resolve().parent / 'runtime')))
+        runtime.mkdir(parents=True, exist_ok=True)
         os.environ['YOLO_CONFIG_DIR'] = str(runtime)
         from ultralytics import YOLO
         self.modelo = YOLO(str(pesos))

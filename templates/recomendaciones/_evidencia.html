@@ -1,0 +1,28 @@
+{% if caso.evaluacion.solo_pruebas %}<p class="rec-aviso"><strong>Datos de prueba</strong> · Las cifras, la aprobación y los criterios de esta muestra no son válidos para operación real.</p>{% endif %}
+{% if not caso.evaluacion.vigente %}<section class="rec-aviso"><h2>Evidencia desactualizada</h2><p>Consulta una evaluación vigente antes de decidir. El snapshot anterior se conserva.</p>{% for motivo in caso.evaluacion.motivos_vigencia %}<p>{{ motivo }}</p>{% endfor %}</section>{% endif %}
+<section class="panel">
+  <h2>{% if caso.evaluacion.suficiencia == 'INSUFICIENTE' %}Evidencia insuficiente{% else %}Evidencia suficiente{% endif %}</h2>
+  <p>Periodo: {{ caso.evaluacion.filtros.desde|date:'d/m/Y' }} – {{ caso.evaluacion.filtros.hasta|date:'d/m/Y' }} · Origen: {{ caso.evaluacion.origen }} · Evaluada: {{ caso.evaluacion.evaluada_en|date:'d/m/Y H:i' }}</p>
+  <p>Plato: {{ caso.evaluacion.filtros.plato|default_if_none:'Todos' }} · Componente: {{ caso.evaluacion.filtros.componente|default_if_none:'Todos' }} · Porción: {{ caso.evaluacion.filtros.porcion|default_if_none:'Todas' }}</p>
+  {% for motivo in caso.evaluacion.motivos %}<p class="rec-aviso">{{ motivo }}</p>{% endfor %}
+  {% if caso.evaluacion.suficiencia == 'INSUFICIENTE' %}<p>No se propone ajustar ni se sustituye esta evaluación por «Mantener».</p>{% endif %}
+  <dl class="rec-contadores"><div><dt>Candidatos</dt><dd>{{ caso.evaluacion.resumen.candidatos }}</dd></div><div><dt>Aptos</dt><dd>{{ caso.evaluacion.resumen.aptos }}</dd></div><div><dt>Excluidos</dt><dd>{{ caso.evaluacion.resumen.excluidos }}</dd></div></dl>
+  <p>Proporción excluida: {% if caso.evaluacion.resumen.proporcion_excluidos is not None %}{{ caso.evaluacion.resumen.proporcion_excluidos|floatformat:2 }} %{% else %}No disponible{% endif %}</p>
+  {% for motivo, cantidad in caso.evaluacion.resumen.motivos.items %}<p>{{ motivo }}: {{ cantidad }}</p>{% endfor %}
+  {% include 'historico/_indicadores.html' with indicadores=caso.evaluacion.indicadores %}
+  {% for grupo in caso.evaluacion.grupos %}
+    <h3>Grupo {{ grupo.plato_codigo }} / {{ grupo.componente_codigo }} / {{ grupo.porcion_codigo }}</h3>
+    <p>Contexto: {{ grupo.contexto_clave|default_if_none:'No disponible' }} · Modelo {{ grupo.version_modelo }} · Configuración {{ grupo.version_configuracion }} · Protocolo {{ grupo.protocolo_version }}</p>
+    {% for motivo in grupo.motivos %}<p>{{ motivo }}</p>{% endfor %}
+    {% include 'historico/_indicadores.html' with indicadores=grupo.indicadores %}
+  {% endfor %}
+</section>
+<section class="panel">
+  <h2>Condiciones comprobadas</h2>
+  <div class="rec-tabla" tabindex="0" role="region" aria-label="Condiciones de suficiencia"><table>
+    <thead><tr><th scope="col">Condición</th><th scope="col">Resultado</th><th scope="col">Observado</th><th scope="col">Exigido</th><th scope="col">Motivo</th></tr></thead>
+    <tbody>{% for chequeo in caso.evaluacion.chequeos %}<tr><th scope="row">{{ chequeo.etiqueta }}</th><td>{% if chequeo.cumple %}Cumple{% else %}No demostrado{% endif %}</td><td>{{ chequeo.valor_texto|default_if_none:'No disponible' }}</td><td>{{ chequeo.exigido_texto|default_if_none:'No disponible' }}</td><td>{{ chequeo.motivo|default_if_none:'—' }}</td></tr>{% endfor %}</tbody>
+  </table></div>
+</section>
+<section class="panel"><h2>Criterios aplicados</h2><p>Versión: {{ caso.evaluacion.criterios.version|default_if_none:'Pendiente' }} · {% if caso.evaluacion.criterios.aprobada %}Aprobados{% else %}Sin aprobación{% endif %}</p><p>{{ caso.evaluacion.criterios.descripcion }}</p><pre>{{ parametros }}</pre></section>
+<details class="panel"><summary>Referencias de la evidencia conservada</summary><ul>{% for referencia in caso.evaluacion.referencias %}<li>Servicio {{ referencia.servicio_id }} · Intento {{ referencia.intento_id }} · Revisión {{ referencia.revision_id }} (v{{ referencia.version_revision }})</li>{% empty %}<li>Sin referencias disponibles.</li>{% endfor %}</ul></details>

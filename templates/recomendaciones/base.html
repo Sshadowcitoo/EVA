@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Recomendaciones | EVA{% endblock %}
+{% block eyebrow %}DECISIONES / EVA{% endblock %}
+{% block heading %}Recomendaciones{% endblock %}
+{% block subtitle %}Evidencia, decisiones humanas y seguimiento de pruebas. Horario de Ecuador.{% endblock %}
+{% block navigation %}
+<a class="nav-link active" href="{% url 'recomendaciones:lista' %}" aria-current="page">Recomendaciones</a>
+{% url 'historico:lista' as historico_url %}{% if historico_url %}<a class="nav-link" href="{{ historico_url }}">Histórico e indicadores</a>{% endif %}
+{% url 'catalogo:platos' as catalogo_url %}{% if administracion and catalogo_url %}<a class="nav-link" href="{{ catalogo_url }}">Catálogo</a>{% endif %}
+{% endblock %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/recomendaciones.css' %}">
+<div class="recomendaciones">
+{% for message in messages %}<p class="rec-aviso" role="status">{{ message }}</p>{% endfor %}
+{% if error %}<section class="rec-aviso" role="alert"><h2>Operación sin confirmar</h2><p>{{ error }}</p></section>{% endif %}
+{% if bloqueado %}<p><a href="{% url 'recomendaciones:lista' %}">Volver al listado y consultar datos vigentes</a></p>{% endif %}
+{% block recomendaciones_content %}{% endblock %}
+</div>
+<script src="{% static 'js/recomendaciones.js' %}" defer></script>
+{% endblock %}

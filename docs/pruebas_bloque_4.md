@@ -1,5 +1,14 @@
 # Plan y evidencia inicial del bloque 4 — 02/11/2026
 
+## Actualización de estado — 03/11/2026
+
+Main `24c305d` ya incorpora cliente HTTP, supervisor/worker, endpoints, persistencia
+y limpieza de máscaras de Lino, además de las pruebas de integración. Los bloqueos
+por código aún no publicado descritos abajo son antecedentes, no el estado actual.
+La nueva revisión y sus límites están en
+[validación integrada B4/B5](validacion_integrada_b4_b5_03_noviembre.md).
+No confundir integración funcional con motor REAL o precisión evaluados.
+
 Responsable: Eduardo. Rama nueva `eduardo-b4-pruebas`, basada en main `1a22306`. Referencias: guías B4/B5 del 1 de noviembre y contrato publicado de César `1e416a5`; dominio de Isaac `50ff172`. No se mezclaron ramas ni se instaló motor IA.
 
 ## Primera cobertura

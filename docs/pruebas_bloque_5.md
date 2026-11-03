@@ -1,5 +1,14 @@
 # Preparación y pruebas del bloque 5 — 02/11/2026
 
+## Actualización de estado — 03/11/2026
+
+Main `24c305d` incorpora RevisionAnalisis, decisiones versionadas, formularios,
+rutas reales de Cocina y gateway privado. Los pendientes de publicación que
+aparecen abajo corresponden a la preparación anterior y ya no bloquean la
+verificación integrada. Consultar
+[validación actual B4/B5](validacion_integrada_b4_b5_03_noviembre.md).
+La evidencia con fixtures no acredita precisión de IA ni entorno operativo REAL.
+
 Rama `eduardo-b5-pruebas-revision`, desde main `1a22306`. Dependencia explícita: regla y contrato de César `2479f9e`. Esta rama no incorpora modelos ni endpoints de revisión ajenos; no se hizo merge.
 
 ## Código preparado

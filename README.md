@@ -7,6 +7,30 @@ Proyecto de Construcción de Software, Ingeniería de Software, UNEMI.
 [Motor, fotografías, contexto y propuesta experimental](docs/motor_contexto_piloto.md).
 Implementación preparada; sin entrenamiento ni activación de criterios reales.
 
+## Registro de validación integrada — 3 de noviembre de 2026
+
+Main `24c305d` ya incluye modelos, revisiones versionadas, cliente HTTP,
+supervisor/worker, gateways privados y vistas de Cocina de los bloques 4 y 5.
+También integra histórico y recomendaciones. Tener el código no equivale a motor
+REAL evaluado, criterios aprobados ni despliegue operativo del worker.
+
+Las secciones «Preparación de Eduardo» conservan antecedentes del 2 de noviembre,
+no dependencias aún ausentes en esta versión. Consultar la
+[validación integrada actual](docs/validacion_integrada_b4_b5_03_noviembre.md)
+para comandos, resultados y pendientes. No interpretar las cifras históricas de
+46/53/59/9 o 156 pruebas como total de esta base.
+
+Verificación repetida el 3 de noviembre en copia aislada: **480 pruebas Django
+aprobadas** y **42 JavaScript aprobadas**, check sin problemas y migraciones sin
+cambios. La suite usa fixtures y bases/archivos temporales; no acredita precisión
+de IA REAL ni despliegue operativo en AWS.
+
+También pasó `python ops/analisis/smoke_integracion.py` ejecutado en aislamiento:
+worker/proceso hijo reales, motor HTTP SIMULADO, máscaras privadas y rechazo
+humano persistido; se bloqueó Confirmar la simulación. No habilita motor ni worker
+en el servidor. El primer intento se detuvo por tiempo de preparación mientras
+la suite estaba activa; el segundo pasó sin cambiar límites. Véase el registro.
+
 ## Base de recomendaciones (bloque 7)
 
 [Contrato v1](docs/contrato_bloque_7.md) e [instrucciones de interfaz](docs/inicio_bloque_7.md).
@@ -24,11 +48,12 @@ y percepción versionada conservando el contrato. Ver [dominio y verificación](
 La interfaz se conecta en una entrega independiente, sin datos de muestra en producción.
 
 
-## Preparación de Eduardo: pruebas del bloque 4
+## Antecedente: preparación de Eduardo del bloque 4
 
 Esta rama, `eduardo-b4-pruebas`, parte de main `1a22306` y añade pruebas numéricas
 complementarias y el [plan/evidencias del bloque 4](docs/pruebas_bloque_4.md).
-No incorpora por su cuenta modelos de Isaac ni configuración de César.
+En esa preparación no se incorporaron modelos de Isaac ni configuración de César;
+ambas dependencias ya están incluidas en el main actual.
 
 Se validaron en una copia aislada la base de César `1e416a5`, el dominio de Isaac
 `50ff172` y `apps/analisis/test_calculos.py`: **46 pruebas aprobadas**, seis de
@@ -52,25 +77,26 @@ Cuando esas dependencias estén disponibles en la copia utilizada, ejecutar:
 ```
 
 En `.revision-b4-validacion` se usa `..\.venv\Scripts\python.exe` porque comparte
-el entorno de la carpeta EVA. No ejecutar el comando sobre esta rama sin las
-dependencias: main de partida aún no contiene la aplicación de análisis operativa.
+el entorno de la carpeta EVA. El main de partida `1a22306` no contenía la aplicación
+de análisis; esta advertencia histórica ya no aplica a la base integrada actual.
 No se sustituyen rutas ni se omiten checks para aparentar una integración completa.
 
 Estas pruebas verifican cálculos y dominio con datos controlados. No certifican
 inferencia real, precisión, cliente del microservicio, worker ni permisos HTTP del
-bloque 4. Dichas comprobaciones y la revisión de Cocina del bloque 5 siguen según
-las dependencias del equipo. No instalar YOLO/OpenCV ni cambiar infraestructura
+bloque 4 por sí solas. La integración actual añade esas pruebas y la revisión
+de Cocina; véanse las entregas de Lino. No instalar YOLO/OpenCV ni cambiar infraestructura
 para ejecutar estas pruebas de cálculo.
 
-## Preparación de Eduardo: revisión de Cocina (bloque 5)
+## Antecedente: preparación de Eduardo del bloque 5
 
 Esta rama `eduardo-b5-pruebas-revision` añade el
 [plan y evidencias del bloque 5](docs/pruebas_bloque_5.md) y pruebas de la regla
-de elegibilidad publicada por César `2479f9e`. Requiere esa dependencia; el main
-de partida `1a22306` todavía no tiene la regla ni la revisión de Cocina operativa.
+de elegibilidad publicada por César `2479f9e`. En aquel main de partida `1a22306`
+no existía revisión operativa; la base actual ya incorpora esa regla y el flujo.
 
 No confundir validación de una función pura con decisiones humanas persistidas.
-Faltan el modelo/servicio versionado de Isaac y los endpoints/evidencia de Lino.
+El modelo/servicio versionado de Isaac y los endpoints/evidencia de Lino ya están
+integrados. La evidencia aislada anterior no equivale por sí sola al recorrido real.
 No se amplía el gateway de Registro ni se incorpora una app Cocina paralela.
 Los datos simulados nunca se convierten en evidencia real por pulsar Confirmar.
 
@@ -106,10 +132,12 @@ Disponible sobre almacenamiento local privado:
 El adaptador S3 ya está conectado al guardado y lectura de fotografías, mediado por
 Django. Conserva el backend y las versiones de cada archivo; las fotos locales
 anteriores siguen accesibles. Un fallo S3 no cae a disco ni confirma el guardado.
-Faltan los endpoints de vinculación PC–celular: no se acredita ese recorrido completo.
+Los endpoints de vinculación PC–celular están integrados; su existencia no acredita
+el ensayo físico de dos dispositivos en el entorno AWS/HTTPS.
 La configuración de desarrollo continúa local hasta activar el entorno autorizado.
 
-Cocina ve su pantalla pendiente: no dispone aún de análisis ni revisión de fotos.
+Cocina accede a `/analisis/revision/`, con análisis y revisión de evidencia privada
+por caso; sin motor evaluado y criterios aprobados no se acreditan resultados REAL.
 Administración no hereda Registro ni recibe borrado genérico: conserva únicamente
 las acciones aprobadas de anulación y reemplazo de etiqueta, además del catálogo.
 Las pantallas de anulación y reemplazo están disponibles en Bandejas y servicios,
@@ -181,7 +209,7 @@ comprobar restricciones entre roles. No hay contraseñas demo predefinidas.
 - Login: <http://127.0.0.1:8000/cuentas/login/>
 - Registro: <http://127.0.0.1:8000/captura/nueva/>
 - Administración: <http://127.0.0.1:8000/catalogo/platos/>
-- Cocina: <http://127.0.0.1:8000/cuentas/cocina/>
+- Cocina/revisión: <http://127.0.0.1:8000/analisis/revision/>. `/cuentas/cocina/` redirige de forma compatible.
 
 El login prioriza Registro, luego Administración y luego Cocina cuando se asignan
 varios grupos; el menú permite cambiar entre sus funciones autorizadas. Una cuenta
@@ -191,11 +219,11 @@ sin rol no inicia sesión en EVA. La raíz `/` aún puede responder 404.
 
 ```powershell
 .\.venv\Scripts\python.exe manage.py check
-.\.venv\Scripts\python.exe manage.py test apps.catalogo apps.captura
+.\.venv\Scripts\python.exe manage.py test --noinput
 .\.venv\Scripts\python.exe manage.py makemigrations --check --dry-run
 ```
 
-Comprobación actualizada el 1 de noviembre de 2026:
+Comprobación histórica del 1 de noviembre de 2026 (no total de esta versión):
 
 - `check`: sin incidencias.
 - **156 pruebas Django aprobadas**, sobre base temporal/archivos temporales y S3 simulado.
@@ -211,12 +239,12 @@ sus fallos y pendientes no sustituyen este estado integrado.
 
 ## Pendiente del proyecto
 
-- Impresión/ensayo de etiquetas físicas y endpoints de vinculación entre dispositivos.
-- Versionar protocolo/checklist y probar montaje/cámara física; el guardado local servido/retorno ya está integrado.
+- Ensayo físico de etiquetas y vinculación entre dispositivos en el entorno autorizado.
+- Probar montaje/cámara y comparabilidad; el protocolo/checklist ya está versionado.
 - Microservicio visual, conjunto de imágenes anotadas y evaluación independiente.
-- Revisión de Cocina, histórico analítico y percepción del comensal.
-- Recomendaciones, decisiones y seguimiento de pruebas controladas.
-- Conservación de imágenes/máscaras y publicación versionada del despliegue.
+- Validación operativa de revisión, histórico, percepción y recomendaciones implementados; criterios y contexto reales aprobados.
+- Verificación de eliminación física de imágenes/máscaras y copias en el entorno autorizado; código de conservación ya integrado.
+- Publicación versionada del despliegue y habilitación autorizada del worker.
 - Contexto/horario y demás decisiones de datos aún no ratificadas.
 
 La configuración predeterminada del repositorio usa SQLite y ajustes de desarrollo.

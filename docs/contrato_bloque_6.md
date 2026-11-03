@@ -122,11 +122,14 @@ Por grupo y periodo, n servicios aptos comparables:
 - Sin n: None y motivo, nunca cero desperdicio. Sin t aprobado: prevalencia None,
   SIN_CRITERIO_PRESENCIA; intensidad puede existir si los registros sí son aptos.
 
-t aún no tiene valor aprobado para el piloto. Los ejemplos t=20 son exclusivamente
-fixtures. Contexto histórico tampoco está implementado en Servicio: no usar datos
-del catálogo actual ni fabricar contexto. Grupo.contexto_clave puede ser None;
-si impide comparar, comparable=False y motivo SIN_CONTEXTO_HISTORICO. Completar su
-captura/persistencia requiere otra entrega de dominio y no se resuelve en las vistas.
+El perfil experimental aprobado el 03/11/2026 fija t=10, pero sigue sin activarse
+operativamente. Los ejemplos t=20 son exclusivamente fixtures. Servicio registra
+contexto_snapshot y contexto_clave desde la captura del servido: establecimiento,
+sede, modalidad, lote y franja automática. El retorno conserva esa instantánea;
+el lote no separa grupos equivalentes. Ver docs/motor_contexto_piloto.md.
+Registros anteriores u omisiones completas conservan contexto desconocido: no usar
+el catálogo actual para fabricar contexto ni rellenar el pasado. Grupo.contexto_clave
+puede ser None; comparable=False con SIN_CONTEXTO_HISTORICO.
 
 ## 6. Comparación
 

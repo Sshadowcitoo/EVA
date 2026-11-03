@@ -131,10 +131,14 @@ compatibles en apariencia, se mantienen grupos separados y no se mezclan sus med
 Un alcance con varios grupos requiere acotarlo; no se agregó un nuevo filtro público
 por sede que cambiara unilateralmente los DTO del bloque 6.
 
-## Propuesta de recomendaciones, sin activar
+## Perfil experimental aprobado, sin activar
 
+El responsable aprobó explícitamente los valores del perfil el 03/11/2026.
+La aprobación fija criterios experimentales; no certifica precisión ni comparabilidad.
 Archivo: ops/analisis/criterios_piloto.propuesta.json. No lo importa settings.
-Todos los estados aprobada/comparabilidad_aprobada siguen false. Valores propuestos:
+Los indicadores operativos aprobada/comparabilidad_aprobada siguen false hasta la
+activación supervisada con modelo evaluado y comparabilidad validada. La aprobación
+del perfil se registra aparte en aprobacion_perfil. Valores experimentales acordados:
 
 | Condición | Propuesta experimental |
 | --- | --- |

@@ -1,5 +1,10 @@
 # Cierre técnico de integración: contexto, histórico y recomendaciones
 
+Actualización al integrar: se coordinó y corrigió el párrafo del contrato B6 sobre
+contexto y se registró la aprobación del perfil experimental el 03/11/2026. Sus
+indicadores operativos siguen desactivados. Las secciones siguientes conservan
+la revisión original y sus resultados, no una lista de pendientes aún abiertos.
+
 Base de main comprobada: `543d57572fd1c897e721b99110139b19d499541b`.
 Rama: `integracion-contexto-historico-recomendaciones`. Entrega en PR borrador
 contra main, sin merge ni despliegue.

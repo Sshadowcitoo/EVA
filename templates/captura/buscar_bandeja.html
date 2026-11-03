@@ -38,10 +38,14 @@
   <h2>Bandeja {{ bandeja.numero }}</h2>
   {% if continuar_url %}<p><a class="button primary-button" href="{{ continuar_url }}">{{ continuar_texto }}</a></p>{% endif %}
   {% if servicio %}<p>{{ plato_nombre }} · {{ porcion_nombre }}</p>{% endif %}
+  {% if es_retorno and servicio %}
+    {% if foto_servido_url %}<img class="capture-image" src="{{ foto_servido_url }}" alt="Fotografía del servido para confirmar la correspondencia">{% else %}<p class="muted">La fotografía del servido no está disponible. Revisa los identificadores y el historial del servicio.</p>{% endif %}
+    {% if servicio.contexto_snapshot %}<p class="muted">Establecimiento: {{ servicio.contexto_snapshot.establecimiento.nombre }} · {{ servicio.contexto_snapshot.sede.nombre }}. Lote: {{ servicio.contexto_snapshot.lote_preparacion }}.</p>{% endif %}
+  {% endif %}
   {% if form and confirmar_url and operacion_habilitada %}
   <form method="post" action="{{ confirmar_url }}">
     {% csrf_token %}{{ form.as_p }}
-    <p class="muted">Establecimiento: {{ form.establecimiento_nombre }}. La franja se registra automáticamente con la foto del servido. Sin contexto completo no se habilitan comparaciones.</p>
+    {% if form.establecimiento_nombre %}<p class="muted">Establecimiento: {{ form.establecimiento_nombre }}. La franja se registra automáticamente con la foto del servido. Sin contexto completo no se habilitan comparaciones.</p>{% endif %}
     <button class="button primary-button">Confirmar bandeja y continuar</button>
   </form>
   {% endif %}

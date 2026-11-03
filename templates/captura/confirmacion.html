@@ -7,7 +7,7 @@ de la bandeja quedaron guardados.{% endblock %} {% block content %}
 
   <dl class="record-details">
     <div>
-      <dt>ID de bandeja</dt>
+      <dt>ID del servicio</dt>
       <dd class="record-id">{{ servicio.id }}</dd>
     </div>
 
@@ -31,10 +31,11 @@ de la bandeja quedaron guardados.{% endblock %} {% block content %}
   <div class="info-box">
     <h3>Primer paso completado</h3>
     <p>
-      El servicio ya tiene un identificador. La captura de fotografías y el
-      retorno siguen pendientes de implementación.
+      Este registro tiene un identificador y no tiene una bandeja física asignada.
+      Para el recorrido con fotos, inicia una captura con bandeja desde el menú.
     </p>
   </div>
+  <p><a class="button primary-button" href="{% url 'captura:resolver_bandeja' %}">Iniciar captura con bandeja</a></p>
 
   <a class="button primary-button" href="{% url 'captura:nueva_bandeja' %}">
     Crear otro registro

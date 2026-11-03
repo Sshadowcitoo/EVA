@@ -198,10 +198,13 @@ def buscar_retorno(request):
     if request.method == "POST" and form.is_valid():
         return redirect("captura:foto_retorno", pk=servicio.pk)
 
+    foto_servido = _foto_vigente(servicio, Etapa.SERVIDO)
     contexto.update(
         servicio=servicio,
         plato_nombre=servicio.get_plato_display(),
         porcion_nombre=servicio.get_tipo_porcion_display(),
+        foto_servido_url=(reverse("captura:imagen", args=[foto_servido.pk])
+                         if foto_servido is not None and foto_servido.disponible else None),
         form=form,
         confirmar_url=f"{reverse('captura:buscar_retorno')}?{consulta}",
     )

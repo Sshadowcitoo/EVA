@@ -24,6 +24,22 @@ DATOS = dict(sede='principal', modalidad='mesa', lote_preparacion='PREP-01')
 
 
 class ContextoTests(BaseHistorico):
+    def test_busqueda_retorno_muestra_foto_privada_y_contexto(self):
+        bandeja = Bandeja.objects.create(numero=993)
+        servicio = Servicio.registrar(plato=Plato.objects.get(codigo='seco_de_pollo'),
+            porcion=TipoPorcion.objects.get(codigo='estandar'), usuario=self.registro,
+            bandeja=bandeja, datos_contexto=DATOS)
+        foto = services.registrar_captura(servicio=servicio, etapa='SERVIDO',
+            clave_archivo='fixture/servido.png', tipo_contenido='image/png',
+            tamano_bytes=10, ancho=4, alto=4, autor=self.registro,
+            checklist=dict.fromkeys(CRITERIOS, True))
+        self.client.force_login(self.registro)
+        respuesta = self.client.get(reverse('captura:buscar_retorno'), {'numero':bandeja.numero})
+        self.assertContains(respuesta, reverse('captura:imagen', args=[foto.pk]))
+        self.assertContains(respuesta, 'Fotografía del servido para confirmar la correspondencia')
+        self.assertContains(respuesta, 'La Mesa Costeña')
+        self.assertNotContains(respuesta, 'Establecimiento: .')
+
     def agregar_contexto_fixture(self, servicio, analisis, lote='PREP-01', modalidad='mesa'):
         Servicio.objects.filter(pk=servicio.pk).update(contexto_snapshot=contexto.preparar(dict(DATOS,lote_preparacion=lote,modalidad=modalidad)))
         servicio.refresh_from_db()

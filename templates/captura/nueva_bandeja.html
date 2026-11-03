@@ -9,7 +9,7 @@ Nueva bandeja
 {% endblock %}
 
 {% block subtitle %}
-Crea un ID y registra el plato antes de tomar la foto inicial.
+Registro básico del servicio. Para fotografiar servido y retorno, usa la captura con bandeja.
 {% endblock %}
 
 {% block content %}
@@ -44,24 +44,24 @@ Crea un ID y registra el plato antes de tomar la foto inicial.
       {% endif %}{% endfor %}
       <p class="muted">Sin sede, modalidad y lote completos, el registro queda sin contexto para comparaciones.</p>
       <div class="readonly-field">
-        <span>ID de bandeja</span>
+        <span>ID del servicio</span>
         <p>Se generará al guardar</p>
       </div>
 
       <div class="info-box">
         <h3>Relación de las fotos</h3>
         <p>
-          Este ID permitirá asociar el servido y el retorno cuando se implemente
-          la captura de fotografías.
+          Este formulario crea un registro sin asignar una bandeja física. Para el
+          recorrido con fotos, escanea o busca una bandeja en Capturar con bandeja.
         </p>
       </div>
     </section>
 
     <section class="photo-placeholder" aria-labelledby="titulo-foto">
       <span class="photo-icon" aria-hidden="true">▧</span>
-      <h2 id="titulo-foto">Fotografía del plato</h2>
-      <p>La captura de fotografías se implementará después.</p>
-      <span class="status-label">Pendiente de implementación</span>
+      <h2 id="titulo-foto">Captura con bandeja</h2>
+      <p>Asocia una bandeja física y registra las fotografías del servido y del retorno.</p>
+      <a class="button primary-button" href="{% url 'captura:resolver_bandeja' %}">Escanear o buscar una bandeja</a>
     </section>
   </div>
 
@@ -77,7 +77,7 @@ Crea un ID y registra el plato antes de tomar la foto inicial.
     <li><span>05</span> Análisis y revisión</li>
   </ol>
   <p class="process-note">
-    En este avance está disponible únicamente el registro básico.
+    Este formulario crea solo el registro básico. La captura con bandeja está disponible en el menú.
   </p>
 </section>
 {% endblock %}

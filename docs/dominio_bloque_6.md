@@ -107,3 +107,34 @@ y un nuevo envío después de refrescar puede registrar la respuesta.
 
 No se aplicaron migraciones a la base operativa ni se modificó AWS. Quedan conexión
 con la interfaz, decisiones de contexto/t, pruebas del recorrido y despliegue.
+
+## Comprobación temporal con la interfaz publicada
+
+Se combinó localmente, sin commit, la rama de interfaz en
+66d60c55a75491f90d63dee2fdc1803557f67b93. La combinación se abortó limpiamente después
+del ensayo; no se integraron archivos web en esta rama ni se hizo merge remoto.
+
+- Tres recorridos HTTP adicionales contra el dominio ORM sin dobles: aprobados.
+  Consulta con prevalencia/intensidad conocidas; guardado e idempotencia de percepción
+  y conflicto de versión; comparación que informa contexto ausente.
+- Tres tests JavaScript propios de la interfaz: aprobados.
+- Suite combinada: 405 pruebas, un fallo de aislamiento en
+  `test_backend_pendiente_no_se_convierte_en_vacio` del archivo
+  `apps/historico/test_web_interfaz.py`. Los demás casos pasaron.
+
+Ese test simula indisponibilidad de opciones_historico, pero no de
+obtener_percepcion. La lectura de percepción ya implementada devuelve 404 para el
+UUID inexistente de esa fixture, en lugar del 503 que daba la base sin implementar.
+Para probar el estado pendiente debe simular explícitamente la lectura:
+
+```python
+with patch('apps.historico.services.obtener_percepcion',
+           side_effect=BackendHistoricoNoDisponible()), \
+     patch('apps.historico.services.registrar_percepcion') as guardar:
+    # Mantener las aserciones de 503 y guardar.assert_not_called().
+    ...
+```
+
+La corrección corresponde al test de la interfaz. No cambiar ServicioNoDisponible
+ni devolver un 503 para un servicio realmente inexistente. Ese estado sigue siendo
+404 según el contrato v1. Repetir la suite combinada después de corregir ese test.

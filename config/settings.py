@@ -155,6 +155,8 @@ EVA_ANALISIS_CRITERIOS = {
 EVA_VISUAL_ENDPOINT = os.environ.get("EVA_VISUAL_ENDPOINT", "")
 EVA_VISUAL_VERSION_MODELO = os.environ.get("EVA_VISUAL_VERSION_MODELO", "")
 EVA_ANALISIS_TIMEOUT_SECONDS = 30
+EVA_VISUAL_TOKEN = os.environ.get("EVA_VISUAL_TOKEN", "")
+EVA_VISUAL_ORIGEN = os.environ.get("EVA_VISUAL_ORIGEN", "REAL")
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,

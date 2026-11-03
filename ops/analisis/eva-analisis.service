@@ -1,0 +1,23 @@
+[Unit]
+Description=EVA - Worker privado de analisis
+After=network.target
+
+[Service]
+Type=simple
+User=eva
+WorkingDirectory=/opt/eva/app
+EnvironmentFile=/etc/eva/eva.env
+Environment=DJANGO_SETTINGS_MODULE=config.production
+ExecStart=/opt/eva/venv/bin/python /opt/eva/app/manage.py procesar_analisis
+Restart=on-failure
+RestartSec=5
+KillMode=control-group
+TimeoutStopSec=5
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ReadWritePaths=/var/lib/eva
+UMask=0077
+
+[Install]
+WantedBy=multi-user.target

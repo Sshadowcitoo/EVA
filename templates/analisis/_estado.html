@@ -1,0 +1,11 @@
+{% comment %}
+Estado técnico del intento con texto legible.
+Uso: {% include "analisis/_estado.html" with estado=caso.estado %}
+{% endcomment %}
+{% if estado == "PENDIENTE" %}<span class="estado-chip estado-proceso">Pendiente</span>
+{% elif estado == "EN_PROCESO" %}<span class="estado-chip estado-proceso">En proceso</span>
+{% elif estado == "COMPLETADO" %}<span class="estado-chip estado-completado">Completado</span>
+{% elif estado == "FALLIDO" %}<span class="estado-chip estado-fallido">Fallido</span>
+{% elif estado == "TIEMPO_AGOTADO" %}<span class="estado-chip estado-fallido">Tiempo agotado</span>
+{% else %}<span class="estado-chip estado-neutro">Sin estado</span>
+{% endif %}

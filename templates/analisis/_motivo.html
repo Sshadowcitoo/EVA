@@ -1,0 +1,16 @@
+{% comment %}
+Motivo legible de un resultado no concluyente.
+Uso: {% include "analisis/_motivo.html" with motivo=resultado.motivo %}
+Se conserva el código técnico en letra pequeña para poder rastrearlo.
+{% endcomment %}
+{% if motivo %}
+<span class="motivo-texto">{% if motivo == "AREA_INICIAL_CERO" %}No se detectó el componente en el servido
+{% elif motivo == "NO_COMPARABLE" %}Las fotos no son comparables
+{% elif motivo == "OCULTACION" %}El componente está oculto
+{% elif motivo == "SIN_DETECCION" %}No se detectó el componente
+{% elif motivo == "MAYOR_100" %}El resultado supera el 100 %
+{% elif motivo == "SIN_CRITERIO" %}Sin criterio aprobado
+{% elif motivo == "BAJA_CONFIANZA" %}Confianza insuficiente
+{% else %}Motivo no reconocido{% endif %}</span>
+<small class="motivo-codigo">{{ motivo }}</small>
+{% endif %}

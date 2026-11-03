@@ -2,4 +2,4 @@
 {% block title %}Fotografía de {{ etapa|lower }} | EVA{% endblock %}
 {% block heading %}Fotografía de {{ etapa|lower }}{% endblock %}
 {% block subtitle %}Revisa la bandeja y el plato antes de guardar.{% endblock %}
-{% block captura_content %}{% include "captura/_fotografia.html" %}{% endblock %}
+{% block captura_content %}{% if servicio %}{% include 'captura/_contexto_servicio.html' %}{% endif %}{% include "captura/_fotografia.html" %}{% endblock %}

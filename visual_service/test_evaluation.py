@@ -41,3 +41,12 @@ class EvaluacionTests(unittest.TestCase):
         self.assertIsNone(datos['porcentaje_modelo'])
         self.assertEqual(datos['servido']['iou'],1)
         self.assertIn('GEOMETRIA_NO_VERIFICADA',datos['motivos'])
+
+    def test_referencia_manual_superior_100_no_valida_modelo(self):
+        datos=evaluar_par(mascara((0,0,4,4)),mascara((0,0,9,9)),
+            mascara((0,0,9,9)),mascara((0,0,4,4)),geometria_verificada=True)
+        self.assertEqual(datos['porcentaje_manual'],400)
+        self.assertEqual(datos['porcentaje_modelo'],25)
+        self.assertEqual(datos['estado'],'NO_CONCLUYENTE')
+        self.assertIn('REFERENCIA_MAYOR_100',datos['motivos'])
+        self.assertIsNone(datos['error_absoluto_pp'])

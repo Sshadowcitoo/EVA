@@ -1,4 +1,8 @@
-# Entrega web del bloque 7
+# Entrega web del bloque 7 (registro inicial)
+
+Estado posterior: dominio y rutas globales ya conectados. La comprobación actual
+se documenta en [verificación HTTP con ORM real](verificacion_web_bloque_7.md).
+Lo siguiente conserva el registro de la entrega inicial del PR #47.
 
 Rama: interfaz-recomendaciones-bloque-7.
 Base exacta: 061f1fef62e878d40403c28023f162d90ca947e2,

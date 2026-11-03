@@ -12,8 +12,12 @@
 {% block content %}
 <link rel="stylesheet" href="{% static 'css/recomendaciones.css' %}">
 <div class="recomendaciones">
-{% for message in messages %}<p class="rec-aviso" role="status">{{ message }}</p>{% endfor %}
 {% if error %}<section class="rec-aviso" role="alert"><h2>Operación sin confirmar</h2><p>{{ error }}</p></section>{% endif %}
+{% if messages %}
+{% if error %}<details class="panel"><summary>Avisos de operaciones anteriores</summary>{% endif %}
+{% for message in messages %}<p class="rec-aviso" role="status">{{ message }}</p>{% endfor %}
+{% if error %}</details>{% endif %}
+{% endif %}
 {% if bloqueado %}<p><a href="{% url 'recomendaciones:lista' %}">Volver al listado y consultar datos vigentes</a></p>{% endif %}
 {% block recomendaciones_content %}{% endblock %}
 </div>

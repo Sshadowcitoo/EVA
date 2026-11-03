@@ -19,7 +19,8 @@ def _error(exc, form=None):
     if isinstance(exc, BackendRecomendacionesNoDisponible):
         return 503, 'El módulo está pendiente de conexión. No hay confirmación de guardado ni resultados disponibles para esta operación.'
     if isinstance(exc, ConflictoRecomendacion):
-        return 409, 'La evidencia o la versión cambió. Tu borrador se conserva sin guardar. Recarga los datos y vuelve a decidir; no se reintentará la operación automáticamente.'
+        motivo = str(exc).strip() or 'La evidencia o la versión cambió.'
+        return 409, motivo+' Tu borrador se conserva sin guardar. Recarga los datos y vuelve a decidir; no se reintentará la operación automáticamente.'
     errores = exc.errores if isinstance(exc, ParametrosInvalidos) else (exc.message_dict if hasattr(exc, 'message_dict') else {'__all__':exc.messages})
     if form is not None:
         errores_formulario(form, errores)

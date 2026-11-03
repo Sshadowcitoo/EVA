@@ -2,6 +2,8 @@
 {% block heading %}Seguimiento de prueba controlada{% endblock %}
 {% block recomendaciones_content %}
 {% if prueba %}
+{% if not caso.evaluacion.vigente %}<section class="rec-aviso" role="alert"><h2>Evidencia vinculada desactualizada</h2><p>La prueba y sus resultados anteriores se conservan. No admite nuevas evaluaciones con esta evidencia.</p>{% for motivo in caso.evaluacion.motivos_vigencia %}<p>{{ motivo }}</p>{% endfor %}</section>{% endif %}
+{% if administracion and not prueba.puede_evaluar %}<p class="rec-aviso">La evaluación de esta prueba no está habilitada. Revisa la vigencia de la evidencia y la aceptación vinculada.</p>{% endif %}
 {% if caso.evaluacion.solo_pruebas %}<p class="rec-aviso"><strong>Datos de prueba</strong> · No acreditan resultados reales.</p>{% endif %}
 <section class="panel"><h2>{% if prueba.estado == 'REGISTRADA' %}Registrada{% elif prueba.estado == 'EVALUADA' %}Evaluada{% else %}No evaluable{% endif %}</h2><p>{{ prueba.cambio }}</p><p>Responsable: {{ prueba.responsable_nombre }} · Registrada por {{ prueba.registrada_por }} · {{ prueba.registrada_en|date:'d/m/Y H:i' }} · Versión {{ prueba.version }}</p>
 <p>Aceptación vinculada: {{ prueba.aceptacion_id }}</p>

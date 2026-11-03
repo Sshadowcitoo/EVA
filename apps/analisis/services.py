@@ -99,7 +99,7 @@ def evaluar_componente(
 
 
 def total_ponderado(resultados):
-    """Total = 100 x suma de residuales / suma de iniciales, solo de los válidos.
+    """Total = 100 x suma de residuales / suma de iniciales, si todos son válidos.
 
     No promedia porcentajes. Declara los componentes excluidos y la cobertura.
     """
@@ -119,7 +119,10 @@ def total_ponderado(resultados):
     suma_inicial = sum(r.area_inicial for r in incluidos)
     suma_residual = sum(r.area_residual for r in incluidos)
     return {
-        "porcentaje": _porcentaje(suma_inicial, suma_residual) if suma_inicial else None,
+        "porcentaje": (
+            _porcentaje(suma_inicial, suma_residual)
+            if suma_inicial and not excluidos else None
+        ),
         "incluidos": [r.servicio_componente.componente_codigo for r in incluidos],
         "excluidos": excluidos,
         "cobertura": f"{len(incluidos)}/{len(resultados)}",
@@ -142,6 +145,8 @@ def _verificar_precondiciones(servicio, foto_servido, foto_retorno):
         ).first()
         if vigente is None:
             raise ValidationError(f"La fotografía de {etapa} ya no es la vigente del servicio.")
+        if vigente.eliminada_en is not None:
+            raise ValidationError(f"La fotografía de {etapa} ya fue eliminada.")
         if vigente.fecha <= limite:
             raise ValidationError(f"La fotografía de {etapa} superó su plazo de conservación.")
     if not actual.composicion.exists():

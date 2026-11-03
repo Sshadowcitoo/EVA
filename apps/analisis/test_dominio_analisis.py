@@ -97,7 +97,10 @@ class CalculoTests(SimpleTestCase):
             R("pollo", 300, 0),
             R("maduro", None, None, Res.NO_CONCLUYENTE, Motivo.OCULTACION),
         ])
-        self.assertEqual(total["porcentaje"], Decimal("12.5000"))  # no 25 (promedio)
+        self.assertIsNone(total["porcentaje"])  # No publicar un total parcial.
+        completo = services.total_ponderado([R("arroz", 100, 50), R("pollo", 300, 0)])
+        self.assertEqual(completo["porcentaje"], Decimal("12.5000"))  # No 25 (promedio).
+        self.assertTrue(completo["completo"])
         self.assertEqual(total["cobertura"], "2/3")
         self.assertFalse(total["completo"])
         self.assertEqual(total["excluidos"], [{"componente": "maduro", "motivo": Motivo.OCULTACION}])

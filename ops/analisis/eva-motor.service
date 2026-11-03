@@ -1,0 +1,28 @@
+[Unit]
+Description=EVA - Motor visual privado
+After=network.target
+StartLimitIntervalSec=300
+StartLimitBurst=3
+
+[Service]
+Type=simple
+User=eva
+WorkingDirectory=/opt/eva/app
+EnvironmentFile=/etc/eva/eva.env
+Environment=EVA_VISUAL_RUNTIME=/var/lib/eva-motor/runtime
+Environment=OMP_NUM_THREADS=1
+Environment=MKL_NUM_THREADS=1
+StateDirectory=eva-motor
+ExecStart=/opt/eva/venv/bin/gunicorn --bind 127.0.0.1:8765 --workers 1 --threads 1 --timeout 25 --graceful-timeout 5 --worker-tmp-dir /var/lib/eva-motor --access-logfile /dev/null visual_service.production:create_app()
+Restart=on-failure
+RestartSec=5
+TimeoutStopSec=35
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/eva-motor
+UMask=0077
+
+[Install]
+WantedBy=multi-user.target

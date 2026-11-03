@@ -65,6 +65,8 @@ def aplicacion(predictor, token, version_modelo, *, identidad_verificada=False):
         auth = environ.get('HTTP_AUTHORIZATION', '')
         if not isinstance(auth, str) or not hmac.compare_digest(auth.encode('utf-8'), ('Bearer ' + token).encode('utf-8')):
             return responder('401 Unauthorized', dict(error='Autenticación interna requerida.'))
+        if environ.get('PATH_INFO') == '/v1/salud' and environ.get('REQUEST_METHOD') == 'GET':
+            return responder('200 OK', dict(estado='LISTO', version_modelo=version_modelo))
         if environ.get('PATH_INFO') != '/v1/analizar-par':
             return responder('404 Not Found', dict(error='Ruta no disponible.'))
         if environ.get('REQUEST_METHOD') != 'POST':

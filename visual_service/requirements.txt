@@ -1,3 +1,4 @@
 ultralytics
 opencv-python-headless
-# Framework del endpoint HTTP: pendiente de definir (P-07)
+# Servidor WSGI de producción (Linux); no se usa el servidor de desarrollo.
+gunicorn>=23,<24; sys_platform != "win32"

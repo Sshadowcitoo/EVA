@@ -79,8 +79,7 @@ claves S3, rutas locales ni mensajes internos al usuario.
 
 ## Verificación y pendientes
 
-Suite combinada: 286 pruebas aprobadas antes de la última guarda de interrupción;
-después 17 pruebas específicas aprobadas, incluyendo HTTP real local autenticado,
+Suite final del bloque 4 por separado: 287 pruebas aprobadas, incluidas 17 específicas con HTTP real local autenticado,
 cancelación de subproceso real bloqueado, almacenamiento temporal, cola, retención,
 permisos HTTP, CSRF y fallos. Check sin problemas y migraciones sin cambios.
 Pruebas usan fixtures; no acreditan segmentación o precisión de IA.

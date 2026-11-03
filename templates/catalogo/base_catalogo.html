@@ -16,15 +16,7 @@
     <a class="nav-link" href="{% url 'cuentas:cocina_pendiente' %}">Cocina</a>
   {% endif %}
 
-  <span class="nav-link unavailable">
-    Indicadores
-    <small>Pendiente</small>
-  </span>
-
-  <span class="nav-link unavailable">
-    Historial
-    <small>Pendiente</small>
-  </span>
+  {% include 'includes/historico_nav.html' %}
 
   <span class="nav-link unavailable">
     Recomendación

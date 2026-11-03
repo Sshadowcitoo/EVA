@@ -20,13 +20,12 @@
     {% else %}
       <span class="nav-link unavailable">Pendientes<small>Pendiente de conexión</small></span>
     {% endif %}
-    <span class="nav-link unavailable">Historial<small>Pendiente</small></span>
-    <span class="nav-link unavailable">Indicadores<small>Pendiente</small></span>
   {% endif %}
 
   {% if puede_administrar_catalogo %}
     <a class="nav-link" href="{% url 'catalogo:platos' %}">Catálogo</a>
   {% endif %}
+  {% include 'includes/historico_nav.html' %}
 {% endblock %}
 
 {% block content %}

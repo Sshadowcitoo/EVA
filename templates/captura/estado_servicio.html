@@ -26,5 +26,7 @@
   <p class="muted">Fecha y hora registradas automáticamente al guardar cada fotografía.</p>
   {% endif %}
   {% if continuar_url %}<a class="button primary-button" href="{{ continuar_url }}">Continuar</a>{% endif %}
+  {% url 'historico:percepcion' servicio.pk as percepcion_url %}
+  {% if puede_registrar and estado != 'ANULADO' and percepcion_url %}<p><a href="{{ percepcion_url }}">Registrar percepción opcional</a></p>{% endif %}
 </section>
 {% endblock %}

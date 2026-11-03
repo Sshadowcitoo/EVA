@@ -38,5 +38,7 @@ de la bandeja quedaron guardados.{% endblock %} {% block content %}
   <a class="button primary-button" href="{% url 'captura:nueva_bandeja' %}">
     Crear otro registro
   </a>
+  {% url 'historico:percepcion' servicio.pk as percepcion_url %}
+  {% if puede_registrar and percepcion_url %}<p><a href="{{ percepcion_url }}">Registrar percepción opcional</a></p>{% endif %}
 </section>
 {% endblock %}

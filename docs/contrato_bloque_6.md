@@ -2,9 +2,10 @@
 
 Base integrada: main `55495b56251e85a11433e705b0c498f27958c718` (bloques 4/5).
 Rama de preparación: `base-historico-bloque-6`. Fuente ejecutable de nombres y
-tipos: `apps/historico/contracts.py`, CONTRACT_VERSION=1. Esta entrega fija la
-frontera para trabajar por separado; no implementa todavía consultas ORM ni
-persistencia de percepción. No acredita el cierre del bloque 6.
+tipos: `apps/historico/contracts.py`, CONTRACT_VERSION=1. La base fija la frontera
+para trabajar por separado. La rama `dominio-historico-bloque-6` implementa consultas
+ORM y percepción sin cambiar estos nombres o DTO; no incluye la interfaz ni acredita
+el cierre operativo del bloque 6. Detalle en docs/dominio_bloque_6.md.
 
 ## 1. Reparto por archivos
 
@@ -35,10 +36,10 @@ services.obtener_percepcion(servicio_id, usuario) -> Percepcion
 services.registrar_percepcion(servicio_id, categoria, motivo, usuario, version_esperada) -> Percepcion
 ```
 
-`normalizar_filtros` ya funciona sin DB. Las otras cinco funciones lanzan
-BackendHistoricoNoDisponible mientras se implementa el dominio. Es deliberado:
-la interfaz puede prepararse con dobles solo en pruebas, pero nunca debe convertir
-ese error en datos de muestra, una escritura exitosa o un histórico vacío real.
+`normalizar_filtros` funciona sin DB. En la base original las otras cinco funciones
+lanzan BackendHistoricoNoDisponible; en la rama de dominio ya consultan y persisten.
+La excepción permanece en el contrato por compatibilidad. La interfaz puede usar
+dobles solo en pruebas; nunca convertir un fallo en datos de muestra o éxito falso.
 
 ## 3. Filtros y tiempo
 

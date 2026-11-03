@@ -40,6 +40,12 @@ de producción llama services; los tests pueden sustituirlo por las fixtures.
 Los servicios aún pendientes fallan explícitamente: implementar su estado 503
 legible, sin fallback a datos falsos ni confirmación de guardado.
 
+Actualización de dominio: `dominio-historico-bloque-6` ya implementa las funciones
+del contrato y añade la migración 0001_percepcion_versionada. Al conectar con esa
+entrega, conservar nombres/DTO y aplicar migraciones en la base local de pruebas.
+No copiar su código a la rama de interfaz ni generar una migración alternativa;
+combinar las ramas de dependencia o esperar la integración de la base.
+
 No modificar settings.py, urls globales, roles compartidos o navegación global en
 paralelo. Describir los enlaces/includes necesarios en docs/entrega_web_bloque_6.md.
 No cambiar el contrato unilateralmente: comunicar cualquier dato que falte antes.

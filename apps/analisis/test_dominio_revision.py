@@ -133,6 +133,46 @@ class DecisionTests(BaseRevision):
                 self.revisar(intento, Decision.CONFIRMADO, version=mala)
 
 
+class ElegibilidadTests(BaseRevision):
+    def test_los_motivos_siguen_la_regla_compartida(self):
+        sim = self.intento_completado(origen="SIMULADO")
+        textos = services.motivos_no_confirmable(sim, evidencia_disponible=False)
+        self.assertTrue(any("simulado" in m for m in textos))
+        self.assertTrue(any("evidencia" in m.lower() for m in textos))
+        real = self.intento_completado(version_modelo="m2")
+        self.assertEqual(services.motivos_no_confirmable(real, True), [])
+        self.assertEqual(len(services.motivos_no_confirmable(real, False)), 1)
+        self.assertEqual(len(services.motivos_no_confirmable(real, "si")), 1)  # solo True cuenta
+
+    def test_apto_historico_solo_con_confirmacion_vigente_del_mismo_intento(self):
+        intento = self.intento_completado()
+        self.assertFalse(services.apto_historico(intento))  # sin revisión
+        self.revisar(intento, Decision.RECHAZADO, motivo="Duda")
+        self.assertFalse(services.apto_historico(intento))
+        self.revisar(intento, Decision.CONFIRMADO, motivo="Revisado", version=1)
+        self.assertTrue(services.apto_historico(intento))
+
+    def test_la_decision_valida_sobrevive_a_la_retencion_de_los_bytes(self):
+        intento = self.intento_completado()
+        self.revisar(intento, Decision.CONFIRMADO)
+        # La evidencia vence: ya no se puede confirmar de nuevo, pero lo anterior vale.
+        self.assertTrue(services.motivos_no_confirmable(intento, False))
+        self.assertTrue(services.apto_historico(intento))
+
+    def test_un_intento_nuevo_no_hereda_la_aptitud(self):
+        primero = self.intento_completado()
+        self.revisar(primero, Decision.CONFIRMADO)
+        segundo = self.intento_completado(version_modelo="m2")
+        self.assertTrue(services.apto_historico(primero))
+        self.assertFalse(services.apto_historico(segundo))
+
+    def test_rectificar_a_rechazado_quita_la_aptitud(self):
+        intento = self.intento_completado()
+        self.revisar(intento, Decision.CONFIRMADO)
+        self.revisar(intento, Decision.RECHAZADO, motivo="Error", version=1)
+        self.assertFalse(services.apto_historico(intento))
+
+
 class PermisosTests(BaseRevision):
     def test_sin_permiso_o_inactivo_se_deniega(self):
         intento = self.intento_completado()

@@ -14,6 +14,7 @@ from django.core.exceptions import PermissionDenied, ValidationError
 from django.db import IntegrityError, transaction
 from django.utils import timezone
 
+from apps.analisis.elegibilidad import evaluar_elegibilidad
 from apps.analisis.models import (
     RETENCION_DIAS,
     AnalisisServicio,
@@ -465,29 +466,59 @@ def intentos_pendientes_de_revision():
     )
 
 
-def motivos_no_confirmable(intento, evidencia_disponible):
-    """Razones por las que NO se puede confirmar; lista vacía si se puede.
+_TEXTO_MOTIVO = {
+    "ORIGEN_NO_REAL": "El análisis es simulado: no es evidencia real.",
+    "INTENTO_NO_COMPLETADO": "El intento no está completado.",
+    "SIN_CONFIGURACION_APROBADA": "Se aplicó una configuración sin aprobación.",
+    "COMPONENTES_NO_CONCLUYENTES": "Hay componentes no concluyentes o no hay resultados.",
+    "EVIDENCIA_NO_DISPONIBLE": "La evidencia (fotos y máscaras) no está disponible ahora.",
+}
 
-    Una confirmación humana no convierte en evidencia apta un resultado
-    SIMULADO, fallido, no concluyente, sin criterio aprobado o sin imágenes.
-    Aísla la regla del contrato; si se integra `evaluar_elegibilidad`, se
-    sustituye solo esta función.
-    """
-    motivos = []
-    if intento.analisis.origen != AnalisisServicio.Origen.REAL:
-        motivos.append("El análisis es simulado: no es evidencia real.")
-    if intento.estado != Estado.COMPLETADO:
-        motivos.append("El intento no está completado.")
+
+def _datos_elegibilidad(intento):
+    """Datos verificados del servidor (nunca del formulario) para la regla compartida."""
     resultados = list(intento.resultados.all())
-    if not resultados:
-        motivos.append("El intento no tiene resultados.")
-    if any(r.estado != Resultado.CONCLUYENTE for r in resultados):
-        motivos.append("Hay componentes no concluyentes.")
-    if any(not r.configuracion_aprobada for r in resultados):
-        motivos.append("Se aplicó una configuración sin aprobación.")
-    if not evidencia_disponible:
-        motivos.append("La evidencia (fotos y máscaras) no está disponible ahora.")
-    return motivos
+    return {
+        "origen": intento.analisis.origen,
+        "estado_intento": intento.estado,
+        "estados_componentes": [r.estado for r in resultados],
+        "configuracion_aprobada": bool(resultados)
+        and all(r.configuracion_aprobada for r in resultados),
+    }
+
+
+def motivos_no_confirmable(intento, evidencia_disponible):
+    """Razones legibles por las que NO se puede confirmar; vacía si se puede.
+
+    Usa `evaluar_elegibilidad` (regla compartida de César): una confirmación
+    humana no convierte en evidencia apta un resultado simulado, fallido, no
+    concluyente, sin criterio aprobado o sin imágenes disponibles ahora.
+    """
+    evaluacion = evaluar_elegibilidad(
+        **_datos_elegibilidad(intento), evidencia_disponible=evidencia_disponible is True
+    )
+    if evaluacion["puede_confirmar"]:
+        return []
+    return [_TEXTO_MOTIVO.get(codigo, codigo) for codigo in evaluacion["motivos"]]
+
+
+def apto_historico(intento):
+    """True si el intento tiene revisión vigente CONFIRMADO y validez técnica.
+
+    No exige que los bytes sigan disponibles: una decisión válida anterior no
+    se borra al vencer la retención. Un intento nuevo no hereda la anterior.
+    """
+    revision = revision_vigente(intento)
+    if revision is None:
+        return False
+    evaluacion = evaluar_elegibilidad(
+        **_datos_elegibilidad(intento),
+        evidencia_disponible=False,
+        decision=revision.decision,
+        intento_id=intento.pk,
+        intento_revisado_id=revision.intento_id,
+    )
+    return evaluacion["apto_historico"]
 
 
 def revisar_resultado(

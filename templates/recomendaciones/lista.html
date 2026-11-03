@@ -1,0 +1,40 @@
+{% extends 'recomendaciones/base.html' %}
+{% block recomendaciones_content %}
+<section class="panel">
+  <h2>Consultar evaluaciones</h2>
+  <p class="muted">Fechas inclusivas y horas del mismo día, en America/Guayaquil. Los contadores usan todo el conjunto filtrado y pueden solaparse.</p>
+  <form method="get" class="rec-form-grid">
+    {% include 'recomendaciones/_campos.html' with formulario=form omitir_ocultos=True %}
+    <div class="rec-acciones"><button type="submit" class="button">Consultar</button><a href="{% url 'recomendaciones:lista' %}">Limpiar filtros</a></div>
+  </form>
+</section>
+{% if administracion %}
+<section class="panel">
+  <h2>Evaluar evidencia</h2>
+  <p>No genera una propuesta automáticamente. Usa criterios del servidor; si faltan condiciones, la evidencia será insuficiente.</p>
+  <form method="post" action="{% url 'recomendaciones:evaluar' %}" class="rec-form-grid" data-rec-submit{% if bloqueado %} data-bloqueado="true"{% endif %}>
+    {% csrf_token %}
+    {% include 'recomendaciones/_campos.html' with formulario=evaluacion_form %}
+    <div class="rec-acciones"><button type="submit" class="button"{% if bloqueado %} disabled{% endif %}>Evaluar evidencia</button><span data-envio role="status"></span></div>
+  </form>
+</section>
+{% endif %}
+{% if datos %}
+{% if datos.solo_pruebas %}<p class="rec-aviso"><strong>Datos de prueba</strong> · Cifras y aprobaciones ilustrativas, sin validez para operación real.</p>{% endif %}
+<section class="panel">
+  <h2>Evaluaciones del periodo</h2>
+  <dl class="rec-contadores"><div><dt>Total</dt><dd>{{ datos.resumen.total }}</dd></div><div><dt>Insuficientes</dt><dd>{{ datos.resumen.insuficientes }}</dd></div><div><dt>Sin decisión</dt><dd>{{ datos.resumen.sin_decision }}</dd></div><div><dt>En observación</dt><dd>{{ datos.resumen.en_observacion }}</dd></div><div><dt>Obsoletas</dt><dd>{{ datos.resumen.obsoletas }}</dd></div></dl>
+  <div class="rec-tabla" tabindex="0" role="region" aria-label="Evaluaciones; desplazamiento horizontal disponible">
+    <table><caption>Se cuentan evaluaciones, no servicios</caption><thead><tr><th scope="col">Grupo</th><th scope="col">Evidencia / muestra</th><th scope="col">Propuesta</th><th scope="col">Decisión</th><th scope="col">Vigencia</th><th scope="col">Fecha / detalle</th></tr></thead>
+    <tbody>{% for fila in filas_presentadas %}<tr>
+      <td>{{ fila.plato_nombre }}<small>{{ fila.componente_nombre }} · {{ fila.porcion_nombre }}</small></td>
+      <td>{{ fila.suficiencia_visible }}<small>n = {{ fila.n }}</small></td>
+      <td>{{ fila.categoria_visible|default_if_none:'Sin propuesta' }}</td><td>{{ fila.decision_visible|default_if_none:'Sin decisión' }}</td>
+      <td>{% if fila.vigente %}Vigente{% else %}Obsoleta{% endif %}</td>
+      <td>{{ fila.evaluada_en|date:'d/m/Y H:i' }}<small>{% if fila.recomendacion_id %}<a href="{% url 'recomendaciones:detalle' recomendacion_id=fila.recomendacion_id %}">Ver recomendación</a>{% else %}<a href="{% url 'recomendaciones:evaluacion' evaluacion_id=fila.evaluacion_id %}">Ver evidencia</a>{% endif %}</small></td>
+    </tr>{% empty %}<tr><td colspan="6">No hay evaluaciones para estos filtros. No equivale a ausencia de sobrantes ni a una recomendación de mantener.</td></tr>{% endfor %}</tbody></table>
+  </div>
+  <nav class="rec-acciones" aria-label="Páginas de evaluaciones">{% if enlaces.anterior %}<a href="{{ enlaces.anterior }}">← Anterior</a>{% endif %}<span>Página {{ datos.paginacion.pagina }} de {{ datos.paginacion.paginas }}</span>{% if enlaces.siguiente %}<a href="{{ enlaces.siguiente }}">Siguiente →</a>{% endif %}</nav>
+</section>
+{% endif %}
+{% endblock %}

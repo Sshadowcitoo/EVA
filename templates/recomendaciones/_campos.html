@@ -1,0 +1,8 @@
+{% if formulario.errors %}<div class="rec-error" role="alert">Revisa los campos indicados. {{ formulario.non_field_errors }}</div>{% endif %}
+{% for field in formulario %}
+  {% if field.is_hidden %}
+    {% if not omitir_ocultos %}{{ field }}{% endif %}{{ field.errors }}
+  {% else %}
+    <div class="rec-campo">{{ field.label_tag }}{{ field }}{{ field.errors }}</div>
+  {% endif %}
+{% endfor %}

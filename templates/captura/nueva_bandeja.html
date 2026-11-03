@@ -24,7 +24,7 @@ Registro básico del servicio. Para fotografiar servido y retorno, usa la captur
   <div class="capture-grid">
     <section class="panel" aria-labelledby="datos-servicio">
       <h2 id="datos-servicio">Datos del servicio</h2>
-      <p class="muted">Asocia la bandeja con un plato del catálogo.</p>
+      <p class="muted">Este formulario crea un registro básico de servicio. Para asociar una bandeja y capturar servido y retorno, usa <a href="{% url 'captura:resolver_bandeja' %}">Capturar con bandeja</a>.</p>
 
       <div class="form-field">
         <label for="{{ form.plato.id_for_label }}">Plato del catálogo</label>
@@ -42,7 +42,7 @@ Registro básico del servicio. Para fotografiar servido y retorno, usa la captur
       {% for field in form %}{% if field.name != 'plato' and field.name != 'tipo_porcion' %}
       <div class="form-field">{{ field.label_tag }} {{ field }} {{ field.errors }}{% if field.help_text %}<p class="muted" id="{{ field.auto_id }}_helptext">{{ field.help_text }}</p>{% endif %}</div>
       {% endif %}{% endfor %}
-      <p class="muted">Sin sede, modalidad y lote completos, el registro queda sin contexto para comparaciones.</p>
+      <p class="muted">Completa sede, modalidad y lote juntos. Si dejas los tres sin especificar, el servicio se guarda sin contexto comparable; una combinación incompleta se rechaza.</p>
       <div class="readonly-field">
         <span>ID del servicio</span>
         <p>Se generará al guardar</p>

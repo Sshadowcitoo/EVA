@@ -36,7 +36,10 @@ Formato de una entrada del manifiesto (rutas relativas a data/piloto):
 ```
 
 Los TXT tienen una línea por instancia: índice de clase desde cero y al menos tres
-pares x/y normalizados en 0..1, siguiendo el orden de clases del manifiesto. Un TXT
+pares x/y normalizados en 0..1, siguiendo el orden de clases del manifiesto.
+Se exigen polígonos simples, sin cruces ni contactos no adyacentes y hasta 2048
+vértices; se acepta repetir el vértice inicial para cerrar. Los contornos más
+complejos requieren simplificación y revisión de la anotación antes de exportar. Un TXT
 vacío requiere vacio_confirmado=true y significa ausencia visible anotada, no una
 foto sin revisar. No etiquetar caldo que oculta pescado/yuca como ausencia: ese
 material requiere revisión y no puede utilizarse como negativo confiable.
@@ -97,6 +100,8 @@ La primera versión tampoco certifica plato vacío por mera falta de detecciones
 visual_service/evaluation.py calcula IoU, Dice y error absoluto en puntos porcentuales
 frente a máscaras manuales. Casos sin detección conservan métricas ausentes; máscaras
 ambas vacías no inflan la media de IoU. Más de 100 % se conserva como no concluyente.
+Una referencia manual >100 % también queda no concluyente y no produce un error
+para validar al modelo; no se recorta la referencia.
 Todavía no existe un informe de rendimiento sobre imágenes reales: faltan etiquetas,
 pesos y la ejecución de la evaluación separada.
 

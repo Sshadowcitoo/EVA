@@ -86,3 +86,15 @@ class DatasetTests(unittest.TestCase):
             self.datos = dict(original, **cambios)
             with self.assertRaises(DatasetInvalido):
                 validar(self.escribir())
+
+    def test_rechaza_cruces_incluso_con_area_positiva_y_acepta_concavos_simples(self):
+        from .dataset import leer_poligonos
+        ruta=self.raiz/'0.txt'
+        for texto in ('0 0.1 0.1 0.9 0.9 0.1 0.9 0.7 0.1',
+                      '0 0 0 1 0 0.5 0.5 1 1 0 1 0.5 0.5'):
+            ruta.write_text(texto)
+            with self.subTest(texto=texto), self.assertRaises(DatasetInvalido):
+                leer_poligonos(ruta,1)
+        # Polígono cóncavo y cierre explícito: no se rechazan figuras válidas.
+        ruta.write_text('0 0 0 1 0 0.5 0.5 1 1 0 1 0 0')
+        self.assertEqual(len(leer_poligonos(ruta,1)[0][1]),5)

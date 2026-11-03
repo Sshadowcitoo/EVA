@@ -11,10 +11,44 @@ CLASES = ('yuca', 'pescado', 'arroz', 'pollo', 'maduro', 'menestra', 'carne', 'e
 PARTICIONES = ('train', 'val', 'test')
 MAX_PIXELES = 20_000_000
 MAX_BYTES = 10 * 1024 * 1024
+MAX_VERTICES = 2048
 
 
 class DatasetInvalido(ValueError):
     pass
+
+
+def _poligono_simple(xy):
+    """Rechaza cruces y contactos entre bordes no adyacentes, sin rasterizar."""
+    if len(xy) < 3 or len(xy) > MAX_VERTICES or len(set(xy)) != len(xy):
+        return False
+    eps = 1e-12
+
+    def orientacion(a, b, c):
+        return (b[0]-a[0])*(c[1]-a[1]) - (b[1]-a[1])*(c[0]-a[0])
+
+    def sobre(a, b, c):
+        return (min(a[0],b[0])-eps <= c[0] <= max(a[0],b[0])+eps
+                and min(a[1],b[1])-eps <= c[1] <= max(a[1],b[1])+eps)
+
+    n = len(xy)
+    for i in range(n):
+        a, b = xy[i], xy[(i+1) % n]
+        for j in range(i+1,n):
+            if j == i+1 or (i == 0 and j == n-1):
+                continue
+            c, d = xy[j], xy[(j+1) % n]
+            if (max(a[0],b[0])+eps < min(c[0],d[0]) or max(c[0],d[0])+eps < min(a[0],b[0])
+                    or max(a[1],b[1])+eps < min(c[1],d[1]) or max(c[1],d[1])+eps < min(a[1],b[1])):
+                continue
+            o1, o2, o3, o4 = orientacion(a,b,c), orientacion(a,b,d), orientacion(c,d,a), orientacion(c,d,b)
+            if ((o1 > eps and o2 < -eps or o1 < -eps and o2 > eps)
+                    and (o3 > eps and o4 < -eps or o3 < -eps and o4 > eps)):
+                return False
+            if (abs(o1) <= eps and sobre(a,b,c) or abs(o2) <= eps and sobre(a,b,d)
+                    or abs(o3) <= eps and sobre(c,d,a) or abs(o4) <= eps and sobre(c,d,b)):
+                return False
+    return True
 
 
 def _ruta(raiz, relativo):
@@ -47,6 +81,10 @@ def leer_poligonos(ruta, cantidad_clases, vacio_confirmado=False):
                     or any(not math.isfinite(v) or not 0 <= v <= 1 for v in puntos)):
                 raise ValueError()
             xy = list(zip(puntos[::2], puntos[1::2]))
+            if len(xy) > 1 and xy[0] == xy[-1]:
+                xy.pop()  # Algunos exportadores repiten el vértice inicial al cerrar.
+            if not _poligono_simple(xy):
+                raise ValueError()
             area = abs(sum(a[0]*b[1] - b[0]*a[1] for a, b in zip(xy, xy[1:] + xy[:1]))) / 2
             if area <= 0:
                 raise ValueError()

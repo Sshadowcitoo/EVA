@@ -9,4 +9,9 @@
 <dt>Versión del contexto</dt><dd>{{ servicio.contexto_snapshot.version }}</dd>
 </dl>
 </section>
+{% else %}
+<section class="panel" aria-label="Contexto histórico del servicio">
+<h2>Sin contexto histórico</h2>
+<p>No se registraron sede, modalidad y lote completos para este servicio. No se reconstruyen con las opciones actuales y este registro no aporta contexto comparable.</p>
+</section>
 {% endif %}

@@ -30,6 +30,8 @@ def evaluar_par(manual_servido, manual_retorno, modelo_servido=None, modelo_reto
     area_inicial=manual_servido.histogram()[255]
     if area_inicial and geometria:
         resultado['porcentaje_manual']=Decimal(100)*manual_retorno.histogram()[255]/area_inicial
+        if resultado['porcentaje_manual'] > 100:
+            resultado['motivos'].append('REFERENCIA_MAYOR_100')
     elif not area_inicial:
         resultado['motivos'].append('SIN_AREA_MANUAL_INICIAL')
     for etapa, manual, modelo in [('servido',manual_servido,modelo_servido),('retorno',manual_retorno,modelo_retorno)]:
@@ -42,7 +44,8 @@ def evaluar_par(manual_servido, manual_retorno, modelo_servido=None, modelo_reto
         else:
             resultado['motivos'].append('SIN_AREA_MODELO_INICIAL')
     if resultado['porcentaje_manual'] is not None and resultado['porcentaje_modelo'] is not None:
-        resultado['error_absoluto_pp']=abs(resultado['porcentaje_modelo']-resultado['porcentaje_manual'])
+        if resultado['porcentaje_manual'] <= 100:
+            resultado['error_absoluto_pp']=abs(resultado['porcentaje_modelo']-resultado['porcentaje_manual'])
         if resultado['porcentaje_modelo'] > 100:resultado['motivos'].append('MAYOR_100')
         if not resultado['motivos']:resultado['estado']='EVALUABLE'
     return resultado

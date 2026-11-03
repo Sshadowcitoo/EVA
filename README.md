@@ -2,6 +2,7 @@
 
 Proyecto de Construcción de Software, Ingeniería de Software, UNEMI.
 
+
 ## Preparación de Eduardo: pruebas del bloque 4
 
 Esta rama, `eduardo-b4-pruebas`, parte de main `1a22306` y añade pruebas numéricas
@@ -39,6 +40,31 @@ inferencia real, precisión, cliente del microservicio, worker ni permisos HTTP 
 bloque 4. Dichas comprobaciones y la revisión de Cocina del bloque 5 siguen según
 las dependencias del equipo. No instalar YOLO/OpenCV ni cambiar infraestructura
 para ejecutar estas pruebas de cálculo.
+
+## Preparación de Eduardo: revisión de Cocina (bloque 5)
+
+Esta rama `eduardo-b5-pruebas-revision` añade el
+[plan y evidencias del bloque 5](docs/pruebas_bloque_5.md) y pruebas de la regla
+de elegibilidad publicada por César `2479f9e`. Requiere esa dependencia; el main
+de partida `1a22306` todavía no tiene la regla ni la revisión de Cocina operativa.
+
+No confundir validación de una función pura con decisiones humanas persistidas.
+Faltan el modelo/servicio versionado de Isaac y los endpoints/evidencia de Lino.
+No se amplía el gateway de Registro ni se incorpora una app Cocina paralela.
+Los datos simulados nunca se convierten en evidencia real por pulsar Confirmar.
+
+Validación aislada el 2 de noviembre: **9 pruebas aprobadas en 0.018 s**,
+seis complementarias de Eduardo y tres de César. No acredita el bloque completo.
+
+En una copia que incluya la base de César y este archivo de pruebas:
+
+```powershell
+.\.venv\Scripts\python.exe manage.py test apps.analisis.test_elegibilidad apps.analisis.test_elegibilidad_complementaria --verbosity 1
+```
+
+En worktrees de revisión se usa `..\.venv\Scripts\python.exe`. Solo César integra
+los PR; esta preparación no instala IA ni modifica infraestructura.
+
 
 ## Estado integrado: actualización del 1 de noviembre de 2026
 

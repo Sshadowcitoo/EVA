@@ -2,6 +2,13 @@
 
 Proyecto de Construcción de Software, Ingeniería de Software, UNEMI.
 
+## Base del histórico (bloque 6)
+
+Preparación: [inicio y reparto](docs/inicio_bloque_6.md),
+[contrato v1](docs/contrato_bloque_6.md) y [referencia Figma](docs/figma_referencia.md).
+DTO y fixtures ya publicados en esta rama; las consultas/persistencia todavía no
+están conectadas. Los servicios pendientes fallan expresamente, sin datos ficticios.
+
 
 ## Preparación de Eduardo: pruebas del bloque 4
 

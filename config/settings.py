@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     "apps.captura.apps.CapturaConfig",
     "apps.catalogo.apps.CatalogoConfig",
     "apps.analisis.apps.AnalisisConfig",
+    "apps.historico.apps.HistoricoConfig",
 ]
 
 # Contrato del bloque inicial; las vistas de sesión las implementa Lino.

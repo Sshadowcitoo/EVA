@@ -63,3 +63,13 @@ autorizadas de los marcos correspondientes.
 Las capturas del ensayo están enlazadas en entrega_web_bloque_6.md. Se revisaron
 20 combinaciones de estado/tamaño en Chromium sin desbordamiento global, con
 fixtures únicamente en el proceso de prueba. La comparación Figma sigue pendiente.
+
+
+## Actualización de conexión con el dominio
+
+Se verificó localmente la interfaz con el PR #44 en 6b79011, sin modificar el
+contrato v1 ni copiar dominio a esta rama. La prueba del estado 503 simula ahora
+la indisponibilidad de obtener_percepcion explícitamente, sin depender de una
+implementación ausente. Tres recorridos HTTP/ORM adicionales y la suite conjunta
+pasaron; resultados y bases exactas en entrega_web_bloque_6.md. La integración
+global y la comparación Figma siguen pendientes.

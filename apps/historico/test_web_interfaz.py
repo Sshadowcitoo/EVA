@@ -96,7 +96,7 @@ class HistoricoWebTests(TestCase):
             self.assertContains(response, 'pendiente de conexión', status_code=503)
             self.assertNotContains(response, 'Datos de prueba', status_code=503)
         self.registro()
-        with patch('apps.historico.services.registrar_percepcion') as guardar:
+        with patch('apps.historico.services.obtener_percepcion', side_effect=BackendHistoricoNoDisponible()), patch('apps.historico.services.registrar_percepcion') as guardar:
             self.assertEqual(self.client.post(PERCEPCION, dict(categoria='ADECUADA', version_esperada=0)).status_code, 503)
             guardar.assert_not_called()
 

@@ -3,7 +3,9 @@
 Rama: interfaz-historico-bloque-6. Base exacta:
 `b217b6e92dea596b14b45ca2ce25797b291437d0`.
 PR dependiente de base-historico-bloque-6 mientras esta no esté integrada.
-Estado funcional: interfaz preparada; BACKEND_PENDIENTE en esta base.
+Estado de la base original: interfaz preparada; BACKEND_PENDIENTE.
+Actualización: conexión con el dominio del PR #44 verificada localmente; véase
+la sección de comprobación conjunta al final. La rama web no copia el dominio.
 
 ## Archivos
 
@@ -34,7 +36,7 @@ los tests. No se cambia el bloque 7.
 
 No se realiza merge ni despliegue en esta entrega.
 
-## Verificación ejecutada
+## Verificación inicial de la interfaz
 
 Entorno virtual aislado, Python 3.12, Django 5.2.19 y dependencias declaradas.
 Base SQLite local; las pruebas usan la base temporal de Django.
@@ -81,3 +83,44 @@ Capturas de ejemplo (contenido sintético):
 
 Los tamaños indicados son los viewports del navegador; las capturas incluyen
 la página completa y por ello pueden tener más altura.
+
+
+## Comprobación conjunta con el dominio (PR #44)
+
+Dependencia comprobada: `dominio-historico-bloque-6`, commit
+`6b79011ae1ecd491d974ba25bd9212f445fe7aa2`. Interfaz publicada tomada desde
+`7227b8e8b3b8e331d9293662585c14f81217efd0`, más la corrección y los tres
+recorridos incorporados en esta actualización. Se combinaron en una copia local
+separada; no se incorporó código de dominio a la rama web ni se hizo merge remoto.
+
+Se aplicó `python manage.py migrate --noinput` sobre SQLite de desarrollo de esa
+copia; `historico.0001_percepcion_versionada` se aplicó correctamente.
+
+Se corrigió `test_backend_pendiente_no_se_convierte_en_vacio`: ahora simula
+explícitamente obtener_percepcion con BackendHistoricoNoDisponible. Un UUID
+inexistente sigue devolviendo 404 cuando el backend real está conectado.
+
+`apps/historico/test_web_conexion.py` añade tres recorridos HTTP sin mocks de
+services: histórico/indicadores y rechazo posterior, guardado/idempotencia/conflicto
+con auditoría de percepción, y comparación que informa SIN_CONTEXTO_HISTORICO sin
+inventar diferencias. Usa exclusivamente registros ORM sintéticos de prueba, sin
+fotos físicas, S3 ni inferencia del motor visual.
+
+| Comando sobre la combinación | Resultado |
+| --- | --- |
+| python manage.py migrate --noinput | Migración de percepción aplicada |
+| python manage.py check | Sin incidencias |
+| python manage.py makemigrations --check --dry-run | No changes detected |
+| python manage.py test apps.historico | 67 pruebas aprobadas, sin omisiones |
+| python manage.py test | 408 pruebas aprobadas, sin omisiones |
+| node --test tests/frontend/*.test.cjs | 39 pruebas aprobadas |
+
+La rama web sin la dependencia ejecuta 35 pruebas del módulo: 32 aprobadas y tres
+recorridos de conexión omitidos explícitamente porque requieren el dominio #44.
+No se presentan como conexiones verificadas en esa base aislada. Al combinar ambas
+entregas se ejecutan los tres y pasan: no se sustituyen por mocks.
+
+Siguen pendientes el include y la navegación global, el recorrido desde captura,
+las decisiones de contexto/t, la comparación con Figma y el despliegue. Figma
+permanece pendiente hasta disponer de acceso o exportaciones; las capturas anteriores
+son ensayos de interfaz y no una validación contra sus marcos.

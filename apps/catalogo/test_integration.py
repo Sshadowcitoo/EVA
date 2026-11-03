@@ -1,5 +1,6 @@
 """Recorridos HTTP reales del bloque integrado; no sustituyen vistas por dobles."""
 import uuid
+from io import StringIO
 
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
@@ -16,6 +17,7 @@ class BloqueIntegradoTests(TestCase):
     @classmethod
     def setUpTestData(cls):
         call_command("cargar_catalogo_demo", verbosity=0)
+        call_command("configurar_roles", stdout=StringIO())
         cls.clave = uuid.uuid4().hex
         cls.usuarios = {}
         for nombre, roles in (
@@ -35,7 +37,7 @@ class BloqueIntegradoTests(TestCase):
         for nombre, destino in (
             ("registro", "captura:nueva_bandeja"),
             ("administracion", "catalogo:platos"),
-            ("cocina", "cuentas:cocina_pendiente"),
+            ("cocina", "analisis:pendientes_revision"),
             ("mixto", "captura:nueva_bandeja"),
         ):
             with self.subTest(rol=nombre):
@@ -165,8 +167,10 @@ class BloqueIntegradoTests(TestCase):
         self.assertTrue(plato.activo)
         self.client.force_login(self.usuarios["cocina"])
         response = self.client.get(reverse("cuentas:cocina_pendiente"))
-        self.assertContains(response, "Funciones de Cocina pendientes")
-        self.assertNotContains(response, 'href="/captura/nueva/"')
+        self.assertRedirects(response, reverse("analisis:pendientes_revision"))
+        destino = self.client.get(reverse("analisis:pendientes_revision"))
+        self.assertContains(destino, "Pendientes de Cocina")
+        self.assertNotContains(destino, 'href="/captura/nueva/"')
         self.client.force_login(self.usuarios["registro"])
         self.assertEqual(self.client.get(reverse("cuentas:cocina_pendiente")).status_code, 403)
 

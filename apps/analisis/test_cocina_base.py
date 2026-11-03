@@ -12,7 +12,12 @@ urlpatterns = [
 ]
 
 
+class SinRevision:
+    urlpatterns = [path("cuentas/", include("apps.catalogo.cuentas_urls"))]
+
+
 class BaseCocinaTests(SimpleTestCase):
+    @override_settings(ROOT_URLCONF=SinRevision)
     def test_navegacion_sin_endpoint_conserva_destino_actual(self):
         self.assertEqual(destino_cocina(), reverse("cuentas:cocina_pendiente"))
 

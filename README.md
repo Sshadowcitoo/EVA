@@ -222,6 +222,13 @@ Ver [cliente, worker y evidencia privada](docs/entrega_lino_bloque_4.md).
 La cola se ejecuta fuera de la web; no hay resultados ficticios si el motor está
 sin configurar. Instalar el código no activa el worker ni valida la IA.
 
+## Revisión de Cocina (bloque 5)
+
+Ver [revisión conectada y comprobación de evidencia](docs/entrega_lino_bloque_5.md).
+Tras migrar, ejecutar `python manage.py configurar_roles`. El ensayo aislado
+`python ops/analisis/smoke_integracion.py` usa un motor HTTP SIMULADO, base y archivos
+temporales; no toca producción ni acredita segmentación REAL.
+
 ### Captura y almacenamiento existentes
 
 Ver [operación y permisos](docs/administracion_y_s3.md) para anulación, etiquetas,

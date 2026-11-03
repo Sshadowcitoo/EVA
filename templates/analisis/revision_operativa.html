@@ -1,0 +1,10 @@
+{% extends 'analisis/revision.html' %}
+{% block analisis_content %}
+{% if form_errores %}<div class="error-summary" role="alert">{{ form_errores }}</div>{% endif %}
+{% if error and motivo_borrador %}<section class="panel"><h2>Motivo pendiente de guardar</h2><p>Conservamos tu texto para que puedas copiarlo y corregir el envío.</p><pre>{{ motivo_borrador }}</pre></section>{% endif %}
+{{ block.super }}
+<section class="panel"><h2>Historial de revisiones de este intento</h2>
+{% for r in revisiones %}<p>Versión {{ r.version }} · {{ r.get_decision_display }} · {{ r.autor }} · {{ r.fecha }}{% if not r.vigente %} · Sustituida{% endif %}</p><p>{{ r.motivo }}</p>
+{% empty %}<p>Todavía no hay revisiones guardadas.</p>{% endfor %}
+</section>
+{% endblock %}

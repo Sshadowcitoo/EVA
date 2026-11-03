@@ -5,6 +5,7 @@
 {% block heading %}Histórico e indicadores{% endblock %}
 {% block subtitle %}Consulta sobrantes visuales por componente y periodo. Horario de Ecuador (America/Guayaquil).{% endblock %}
 {% block navigation %}
+{% if recomendaciones_url %}<a class="nav-link" href="{{ recomendaciones_url }}">Recomendaciones</a>{% endif %}
 {% if puede_cocina or puede_administrar_catalogo %}
 <a class="nav-link{% if request.resolver_match.url_name == 'lista' %} active{% endif %}" href="{% url 'historico:lista' %}"{% if request.resolver_match.url_name == 'lista' %} aria-current="page"{% endif %}>Histórico e indicadores</a>
 <a class="nav-link{% if request.resolver_match.url_name == 'comparar' %} active{% endif %}" href="{% url 'historico:comparar' %}"{% if request.resolver_match.url_name == 'comparar' %} aria-current="page"{% endif %}>Comparar periodos</a>

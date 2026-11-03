@@ -244,7 +244,8 @@ class DominioRecomendacionesTests(BaseHistorico):
 
     def test_reglas_malformadas_no_aprueban_evidencia(self):
         self.caso()
-        for campo, valor in [('muestra_minima', True), ('confianza', 'NaN'), ('categorias', [{}]), ('periodo_dias', 0)]:
+        for campo, valor in [('muestra_minima', True), ('confianza', 'NaN'), ('confianza', float('nan')),
+                             ('categorias', [{}]), ('categorias', [dict(categoria=[])]), ('periodo_dias', 0)]:
             config = deepcopy(CONFIG)
             config['reglas'][campo] = valor
             with override_settings(EVA_RECOMENDACIONES_CRITERIOS=config), self.contexto():

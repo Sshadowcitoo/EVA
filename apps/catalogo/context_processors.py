@@ -18,4 +18,5 @@ def roles_eva(request):
         "puede_cocina": tiene_rol(request.user, COCINA),
         "historial_url": ruta("historico:lista"),
         "comparar_historico_url": ruta("historico:comparar"),
+        "recomendaciones_url": ruta("recomendaciones:lista"),
     }

@@ -121,7 +121,8 @@ def elegir_categoria(reglas, metricas):
         return None
     seleccion = None
     for regla in opciones:
-        if not isinstance(regla, dict) or regla.get('categoria') not in categorias:
+        if (not isinstance(regla, dict) or not isinstance(regla.get('categoria'), str)
+                or regla['categoria'] not in categorias):
             return None
         limites = [numero(regla, clave, 0, 100) for clave in
                    ('intensidad_desde', 'intensidad_hasta', 'prevalencia_desde', 'prevalencia_hasta')]

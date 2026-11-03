@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     "apps.captura.apps.CapturaConfig",
     "apps.catalogo.apps.CatalogoConfig",
     "apps.analisis.apps.AnalisisConfig",
+    "apps.historico.apps.HistoricoConfig",
 ]
 
 # Contrato del bloque inicial; las vistas de sesión las implementa Lino.
@@ -155,6 +156,7 @@ EVA_ANALISIS_CRITERIOS = {
 EVA_VISUAL_ENDPOINT = os.environ.get("EVA_VISUAL_ENDPOINT", "")
 EVA_VISUAL_VERSION_MODELO = os.environ.get("EVA_VISUAL_VERSION_MODELO", "")
 EVA_ANALISIS_TIMEOUT_SECONDS = 30
+EVA_HISTORICO_CRITERIOS = {"version": None, "aprobada": False, "presencia_t": None}
 EVA_VISUAL_TOKEN = os.environ.get("EVA_VISUAL_TOKEN", "")
 EVA_VISUAL_ORIGEN = os.environ.get("EVA_VISUAL_ORIGEN", "REAL")
 

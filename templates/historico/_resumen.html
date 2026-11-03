@@ -1,0 +1,13 @@
+{% if datos.solo_pruebas %}<p class="historico-aviso"><strong>Datos de prueba</strong> · No corresponden a servicios reales ni a parámetros aprobados.</p>{% endif %}
+{% for aviso in datos.advertencias %}<p class="historico-aviso">{{ aviso }}</p>{% endfor %}
+<section class="panel"><h2>Muestra e indicadores</h2>
+<dl class="historico-conteos"><div><dt>Candidatos</dt><dd>{{ datos.resumen.candidatos }}</dd></div><div><dt>Aptos</dt><dd>{{ datos.resumen.aptos }}</dd></div><div><dt>Excluidos</dt><dd>{{ datos.resumen.excluidos }} · {% if datos.resumen.proporcion_excluidos is not None %}{{ datos.resumen.proporcion_excluidos|floatformat:2 }} %{% else %}No disponible{% endif %}</dd></div></dl>
+{% if not datos.resumen.candidatos %}<p>No hay registros para los filtros elegidos. Esto no significa cero sobrantes.</p>{% elif not datos.resumen.aptos %}<p>No hay servicios aptos para calcular indicadores.</p>{% endif %}
+{% if datos.grupos|length > 1 %}<p>Hay varios grupos: no se combinan sus medias. Consulta la muestra e indicadores de cada grupo por separado.</p>{% endif %}
+{% include 'historico/_indicadores.html' with indicadores=datos.indicadores %}
+{% if datos.resumen.motivos %}<h3>Motivos de exclusión (servicios únicos)</h3><ul>{% for motivo, cantidad in datos.resumen.motivos.items %}<li>{{ motivo }}: {{ cantidad }}</li>{% endfor %}</ul>{% endif %}
+</section>
+{% for grupo in datos.grupos %}<section class="panel"><h2>Grupo: {{ grupo.plato_codigo }} / {{ grupo.componente_codigo }} / {{ grupo.porcion_codigo }}</h2>
+<p class="muted">Contexto: {{ grupo.contexto_clave|default_if_none:"No disponible" }} · Modelo: {{ grupo.version_modelo }} · Configuración: {{ grupo.version_configuracion }} · Protocolo: {{ grupo.protocolo_version }}</p>
+{% if not grupo.comparable %}<p class="historico-aviso">Grupo no comparable.</p>{% endif %}{% for motivo in grupo.motivos %}<p>{{ motivo }}</p>{% endfor %}
+{% include 'historico/_indicadores.html' with indicadores=grupo.indicadores %}</section>{% endfor %}

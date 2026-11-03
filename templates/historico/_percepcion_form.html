@@ -1,0 +1,8 @@
+<p id="privacidad-percepcion" class="muted">Respuesta voluntaria. No escribas nombre, teléfono ni otros datos personales del comensal. No modifica el resultado visual ni bloquea las fotografías.</p>
+<form method="post" action="{% url 'historico:percepcion' servicio_id=servicio_id %}" data-percepcion-form{% if bloqueado %} data-bloqueado="true"{% endif %}>
+{% csrf_token %}
+{% if form.errors %}<div class="historico-error" role="alert">Revisa la respuesta. {{ form.non_field_errors }}</div>{% endif %}
+{% for field in form %}{% if field.is_hidden %}{{ field }}{{ field.errors }}{% else %}<div class="historico-campo">{{ field.label_tag }}{{ field }}{{ field.errors }}</div>{% endif %}{% endfor %}
+<button type="submit" class="button"{% if bloqueado %} disabled{% endif %}>Guardar respuesta</button>
+<p data-estado-envio role="status" aria-live="polite"></p>
+</form>

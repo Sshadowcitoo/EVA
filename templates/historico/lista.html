@@ -1,0 +1,17 @@
+{% extends 'historico/base.html' %}
+{% block historico_content %}
+{% include 'historico/_filtros.html' %}
+{% if datos %}
+{% include 'historico/_resumen.html' %}
+<section class="panel"><h2>Servicios y componentes</h2><p class="muted">Una fila por servicio y componente; los contadores representan servicios únicos.</p>
+<div class="historico-tabla" tabindex="0" role="region" aria-label="Tabla de resultados; desplazamiento horizontal disponible"><table class="data-table"><caption>Resultados de la consulta · porcentaje visual estimado</caption>
+<thead><tr><th scope="col">Servicio / servido</th><th scope="col">Plato / porción</th><th scope="col">Componente</th><th scope="col">Estado / origen</th><th scope="col">Sobrante visual</th><th scope="col">Exclusión</th></tr></thead>
+<tbody>{% for fila in datos.filas %}<tr>
+<td>{{ fila.servicio_id }}<small>{% if fila.fecha_servido %}{{ fila.fecha_servido|date:'d/m/Y H:i' }}{% else %}Sin fecha de servido{% endif %}</small></td>
+<td>{{ fila.plato_nombre }}<small>{{ fila.porcion_nombre }}</small></td><td>{{ fila.componente_nombre }}</td>
+<td><span class="historico-estado">{{ fila.estado }}</span><small>{{ fila.origen|default_if_none:'Sin análisis' }}</small></td>
+<td>{% if fila.porcentaje_visual is not None %}{{ fila.porcentaje_visual|floatformat:2 }} %{% else %}No disponible{% endif %}</td><td>{{ fila.motivo_exclusion|default_if_none:'—' }}</td>
+</tr>{% empty %}<tr><td colspan="6">No hay filas en esta página.</td></tr>{% endfor %}</tbody></table></div>
+<nav class="historico-paginacion" aria-label="Páginas de resultados">{% if enlaces.anterior %}<a href="{{ enlaces.anterior }}">← Anterior</a>{% endif %}<span>Página {{ datos.paginacion.pagina }} de {{ datos.paginacion.paginas }} · {{ datos.paginacion.total_filas }} filas</span>{% if enlaces.siguiente %}<a href="{{ enlaces.siguiente }}">Siguiente →</a>{% endif %}</nav>
+</section>{% endif %}
+{% endblock %}

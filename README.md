@@ -2,6 +2,14 @@
 
 Proyecto de Construcción de Software, Ingeniería de Software, UNEMI.
 
+## Base del histórico (bloque 6)
+
+Preparación: [inicio y reparto](docs/inicio_bloque_6.md),
+[contrato v1](docs/contrato_bloque_6.md) y [referencia Figma](docs/figma_referencia.md).
+DTO y fixtures publicados; la rama `dominio-historico-bloque-6` implementa consultas
+y percepción versionada conservando el contrato. Ver [dominio y verificación](docs/dominio_bloque_6.md).
+La interfaz se conecta en una entrega independiente, sin datos de muestra en producción.
+
 
 ## Preparación de Eduardo: pruebas del bloque 4
 

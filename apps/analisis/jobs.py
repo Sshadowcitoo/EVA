@@ -85,7 +85,7 @@ def ejecutar_uno():
     try:
         proceso = subprocess.Popen(
             [sys.executable, str(Path(settings.BASE_DIR) / 'manage.py'), 'analisis_ejecutar_intento', str(intento.pk)],
-            cwd=settings.BASE_DIR, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+            cwd=settings.BASE_DIR, stdout=subprocess.DEVNULL,
             creationflags=getattr(subprocess, 'CREATE_NO_WINDOW', 0))
         proceso.wait(timeout=disponible(intento))
     except (subprocess.TimeoutExpired, TimeoutError):

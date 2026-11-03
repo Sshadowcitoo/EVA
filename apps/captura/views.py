@@ -31,6 +31,7 @@ def nueva_bandeja(request):
                     plato=form.cleaned_data["plato"],
                     porcion=form.cleaned_data["tipo_porcion"],
                     usuario=request.user,
+                    datos_contexto=form.datos_contexto,
                 )
             except ValidationError as error:
                 # Por si el plato se desactivó justo entre la validación
@@ -151,6 +152,7 @@ def resolver_bandeja(request):
                 porcion=form.cleaned_data["tipo_porcion"],
                 usuario=request.user,
                 bandeja=bandeja,
+                datos_contexto=form.datos_contexto,
             )
         except ValidationError as exc:
             form.add_error(None, exc)

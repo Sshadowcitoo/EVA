@@ -89,9 +89,9 @@ nuevo posterior desactualiza las nuevas decisiones sobre la evaluación; el snap
 anterior se conserva. La evaluación repetida de la misma entrada/evidencia/versión
 debe ser idempotente, no generar propuestas duplicadas.
 
-El histórico actual no registra contexto y no tiene t aprobado. No presumir que
-esos límites quedaron resueltos por integrar el bloque 6: la evaluación real debe
-informar insuficiencia donde corresponda. No aprobar valores de fixture por defecto.
+El histórico registra contexto en nuevas capturas completas; los registros anteriores
+siguen sin contexto. t y reglas reales permanecen sin aprobar. Ver
+docs/motor_contexto_piloto.md: no reconstruir contexto ni aprobar fixtures por defecto.
 
 ## Recomendación y decisión humana (RF-17/RF-18)
 

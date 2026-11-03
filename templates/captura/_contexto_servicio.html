@@ -1,0 +1,12 @@
+{% if servicio.contexto_snapshot %}
+<section class="panel" aria-label="Contexto histórico del servicio">
+<h2>Contexto del servicio</h2>
+<dl class="record-details">
+<dt>Establecimiento</dt><dd>{{ servicio.contexto_snapshot.establecimiento.nombre }} · {{ servicio.contexto_snapshot.sede.nombre }}</dd>
+<dt>Modalidad</dt><dd>{{ servicio.contexto_snapshot.modalidad.nombre }}</dd>
+<dt>Lote de preparación</dt><dd>{{ servicio.contexto_snapshot.lote_preparacion }}</dd>
+<dt>Franja del servido</dt><dd>{{ servicio.contexto_snapshot.franja.nombre|default:'Pendiente de aceptar la foto del servido' }}</dd>
+<dt>Versión del contexto</dt><dd>{{ servicio.contexto_snapshot.version }}</dd>
+</dl>
+</section>
+{% endif %}

@@ -35,6 +35,8 @@ class Servicio(models.Model):
     tipo_porcion = models.CharField(max_length=20)
     plato_nombre = models.CharField(max_length=100, blank=True, default="")
     porcion_nombre = models.CharField(max_length=100, blank=True, default="")
+    contexto_snapshot = models.JSONField(default=dict, blank=True, editable=False)
+    contexto_clave = models.CharField(max_length=64, default="", blank=True, editable=False)
 
     # Referencias al catálogo. Nulas en los registros anteriores al catálogo.
     plato_catalogo = models.ForeignKey(
@@ -89,7 +91,7 @@ class Servicio(models.Model):
         return self.porcion_nombre or self.tipo_porcion
 
     @classmethod
-    def registrar(cls, *, plato, porcion, usuario=None, bandeja=None):
+    def registrar(cls, *, plato, porcion, usuario=None, bandeja=None, datos_contexto=None):
         """Crea un servicio con su instantánea de catálogo en una sola transacción.
 
         Sin bandeja se comporta como antes (servicio sin captura). Con bandeja
@@ -97,6 +99,8 @@ class Servicio(models.Model):
         no queda ninguna fila.
         """
         with transaction.atomic():
+            from .contexto import preparar
+            contexto = preparar(datos_contexto) if datos_contexto is not None else {}
             try:
                 plato_actual = catalogo.Plato.objects.get(pk=plato.pk, activo=True)
             except catalogo.Plato.DoesNotExist:
@@ -118,6 +122,7 @@ class Servicio(models.Model):
                 plato_catalogo=plato_actual,
                 porcion_catalogo=porcion_actual,
                 creado_por=usuario,
+                contexto_snapshot=contexto,
                 estado_captura=(
                     cls.EstadoCaptura.PENDIENTE_SERVIDO if bandeja is not None else ""
                 ),

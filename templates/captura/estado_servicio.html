@@ -29,4 +29,5 @@
   {% url 'historico:percepcion' servicio.pk as percepcion_url %}
   {% if puede_registrar and estado != 'ANULADO' and percepcion_url %}<p><a href="{{ percepcion_url }}">Registrar percepción opcional</a></p>{% endif %}
 </section>
+{% include 'captura/_contexto_servicio.html' %}
 {% endblock %}

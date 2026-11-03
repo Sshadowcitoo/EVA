@@ -63,12 +63,12 @@ Se validan fechas completas, periodos no superpuestos y filtros equivalentes.
 Las diferencias son comparado - referencia, en puntos porcentuales, nunca cambio
 relativo ni prueba causal. Si falta un criterio, la diferencia afectada queda None.
 
-Servicio todavía no tiene contexto histórico persistido: contexto_clave=None,
-comparable=False y SIN_CONTEXTO_HISTORICO. Se muestran métricas descriptivas por
-grupo, pero NO diferencias entre periodos suponiendo un contexto inexistente.
-Los tests positivos de la aritmética de comparación usan DTO sintéticos con contexto
-conocido; no acreditan una captura de contexto que aún no existe. Completarla será
-una decisión de datos separada, sin reconstruirla retrospectivamente del catálogo.
+La ampliación de contexto persiste sede, modalidad, lote y franja del servido en
+las capturas nuevas completas. Ver docs/motor_contexto_piloto.md. Los registros
+anteriores conservan contexto_clave=None, comparable=False y SIN_CONTEXTO_HISTORICO.
+No se reconstruye contexto del catálogo ni se mezclan grupos desconocidos. Existen
+pruebas ORM de comparación con contexto persistido y lotes distintos; no acreditan
+precisión del motor ni aprueban el criterio de presencia.
 
 ## Percepción y auditoría
 

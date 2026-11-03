@@ -41,6 +41,7 @@
   {% if form and confirmar_url and operacion_habilitada %}
   <form method="post" action="{{ confirmar_url }}">
     {% csrf_token %}{{ form.as_p }}
+    <p class="muted">Establecimiento: {{ form.establecimiento_nombre }}. La franja se registra automáticamente con la foto del servido. Sin contexto completo no se habilitan comparaciones.</p>
     <button class="button primary-button">Confirmar bandeja y continuar</button>
   </form>
   {% endif %}

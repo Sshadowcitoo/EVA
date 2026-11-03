@@ -127,6 +127,9 @@ def registrar_captura(
                 foto = FotografiaServicio.objects.create(**datos)
         except IntegrityError:
             raise ValidationError("Ese servicio ya tiene una fotografía en esa etapa.")
+        if etapa == Etapa.SERVIDO:
+            from .contexto import fijar_servido
+            fijar_servido(servicio, foto)
         if etapa == Etapa.RETORNO:
             completar_par(servicio=servicio)
         return foto

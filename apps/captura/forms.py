@@ -8,6 +8,39 @@ from PIL import Image, ImageOps, UnidentifiedImageError
 from apps.catalogo.models import Plato, TipoPorcion
 
 class ServicioForm(forms.Form):
+    sede = forms.ChoiceField(label="Sede", required=False)
+    modalidad = forms.ChoiceField(label="Modalidad de servicio", required=False)
+    lote_preparacion = forms.CharField(label="Lote de preparación", max_length=64, required=False,
+        help_text="Usa el mismo código para platos de una misma preparación; no es el número de bandeja.")
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        from .contexto import configuracion
+        config = configuracion()
+        self.establecimiento_nombre = config['establecimiento']['nombre']
+        self.datos_contexto = None
+        for campo, plural in [('sede', 'sedes'), ('modalidad', 'modalidades')]:
+            opciones = config[plural]
+            self.fields[campo].choices = [('', 'Sin especificar')] + [(o['codigo'], o['nombre']) for o in opciones]
+            if len(opciones) == 1:
+                self.fields[campo].initial = opciones[0]['codigo']
+        self.order_fields(['plato', 'tipo_porcion', 'sede', 'modalidad', 'lote_preparacion'])
+
+    def clean(self):
+        datos = super().clean()
+        campos = ('sede', 'modalidad', 'lote_preparacion')
+        if not any(datos.get(c) for c in campos):
+            return datos  # Compatibilidad: sin contexto no podrá fundamentar comparaciones.
+        if not all(datos.get(c) for c in campos):
+            raise forms.ValidationError('Completa sede, modalidad y lote juntos, o déjalos todos sin especificar.')
+        from .contexto import preparar
+        self.datos_contexto = {c: datos[c] for c in campos}
+        try:
+            preparar(self.datos_contexto)
+        except forms.ValidationError as exc:
+            self.datos_contexto = None
+            raise forms.ValidationError(exc.messages) from None
+        return datos
 
     plato = forms.ModelChoiceField(
         queryset=Plato.objects.filter(activo=True),

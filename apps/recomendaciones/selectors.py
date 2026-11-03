@@ -41,6 +41,8 @@ def seleccionar(filtros):
             resultados=sorted([dict(id=str(r.pk), porcentaje=r.porcentaje, confianza=r.confianza,
                 umbral=r.umbral_aplicado, criterio=r.criterio, aprobado=r.configuracion_aprobada,
                 estado=r.estado, motivo=r.motivo) for r in dato['resultados']], key=lambda r:r['id'])))
+        if servicio.contexto_snapshot:
+            fuentes[-1]['contexto_snapshot'] = servicio.contexto_snapshot
     firma = huella(dict(filtros=filtros, fuentes=sorted(fuentes, key=lambda f:f['servicio']),
                         grupos=resumen['grupos'], resumen=resumen['resumen'],
                         presencia=criterio_presencia(), criterios=criterios_actuales()))
@@ -77,6 +79,13 @@ def evaluar(datos, resumen, filtros, criterios):
     aptos = [d for d in datos if d['motivo'] is None]
     n_min = numero(reglas, 'muestra_minima', 1, entero=True)
     check('MUESTRA', 'Muestra mínima', n_min is not None and len(aptos) >= n_min, len(aptos), n_min)
+    if 'lotes_minimos' in reglas:
+        lotes_minimos = numero(reglas, 'lotes_minimos', 1, entero=True)
+        lotes = {d['servicio'].contexto_snapshot.get('lote_preparacion') for d in aptos
+                 if d.get('contexto_clave') is not None}
+        lotes.discard(None)
+        check('PREPARACIONES', 'Preparaciones distintas', lotes_minimos is not None
+              and len(lotes) >= lotes_minimos, len(lotes), lotes_minimos)
     dias = numero(reglas, 'periodo_dias', 1, entero=True)
     periodos_min = numero(reglas, 'periodos_minimos', 1, entero=True)
     # Persistencia exige muestra mínima en cada bloque temporal completo.

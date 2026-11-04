@@ -76,7 +76,7 @@ EVA_VISUAL_PESOS=/var/lib/eva-modelos/piloto-01.onnx
 EVA_VISUAL_ENDPOINT=http://127.0.0.1:8765/v1/analizar-par
 EVA_VISUAL_VERSION_MODELO=sha256-<primeros 40 caracteres del SHA-256 de los pesos>
 EVA_VISUAL_TOKEN=<secreto interno de al menos 24 caracteres>
-EVA_VISUAL_ORIGEN=REAL
+EVA_VISUAL_ORIGEN=SIMULADO
 EVA_ANALISIS_VERSION_CONFIGURACION=piloto-demo-onnx-v1
 ```
 

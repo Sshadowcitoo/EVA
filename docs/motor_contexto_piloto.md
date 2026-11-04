@@ -1,6 +1,11 @@
 # Motor visual, contexto y criterios experimentales
 
-## Estado real de la entrega
+Estado posterior: se incorpora un adaptador ONNX y un experimento controlado de
+entrenamiento con siete clases. Véase `operacion_motor.md`. La ausencia de fotos
+y pesos descrita abajo corresponde a la entrega inicial, no al estado posterior.
+La precisión real independiente y la comparabilidad siguen pendientes.
+
+## Estado de la entrega inicial (histórico)
 
 Se implementan validación de dataset, exportación YOLO, entrenamiento explícito,
 adaptador de inferencia y endpoint HTTP interno; no se ha entrenado un modelo ni

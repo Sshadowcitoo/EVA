@@ -1,0 +1,36 @@
+{
+  "base_commit": "7615a24",
+  "fecha_ecuador": "2026-11-04",
+  "naturaleza": "Resumen de resultados de ejecución; no es log completo de consola",
+  "suite_base": {
+    "descubiertas": 566,
+    "aprobadas": 553,
+    "omitidas": 13,
+    "fallidas": 0,
+    "segundos": 399.957
+  },
+  "regresiones_nuevas_ejecutadas_aparte": {
+    "descubiertas": 5,
+    "aprobadas": 5,
+    "segundos": 2.82
+  },
+  "javascript": {
+    "aprobadas": 42,
+    "fallidas": 0,
+    "omitidas": 0,
+    "milisegundos": 1462.6872
+  },
+  "check": "sin incidencias",
+  "makemigrations_check_dry_run": "sin cambios",
+  "omisiones": {
+    "visual_service.test_onnx_inference": {
+      "cantidad": 10,
+      "motivo": "Runtime ONNX opcional no instalado"
+    },
+    "visual_service.test_paridad_privada": {
+      "cantidad": 3,
+      "motivo": "Paquete privado ausente"
+    }
+  },
+  "sha256_pruebas_nuevas": "4ab111aa2fa7ed0ad48b6808b9d0cc29d9349d057b3f109dd6df6d67548eda92"
+}

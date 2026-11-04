@@ -60,6 +60,36 @@ class OnnxInferenceTests(unittest.TestCase):
         self.pred[0, 4, 0] = .79
         self.assertEqual(list(PredictorONNX(self.pesos)(Image.new('RGB', (100, 60)))), [])
 
+    def test_umbral_080_es_estricto_como_la_referencia(self):
+        self.pred[0, 4, 0] = .8
+        self.assertEqual(list(PredictorONNX(self.pesos)(Image.new('RGB', (100, 60)))), [])
+        self.pred[0, 4, 0] = np.nextafter(np.float32(.8), np.float32(1))
+        self.assertEqual(len(list(PredictorONNX(self.pesos)(Image.new('RGB', (100, 60))))), 1)
+
+    def test_reduccion_sin_antialias_y_letterbox_rgb_114(self):
+        # Cada bloque 2x2 tiene dos ceros y dos 255: INTER_LINEAR da 128.
+        patron = ((np.indices((64, 128)).sum(axis=0) % 2) * 255).astype(np.uint8)
+        imagen = Image.fromarray(np.repeat(patron[:, :, None], 3, axis=2))
+        with patch.object(self.sesion, 'run', wraps=self.ejecutar) as ejecutar:
+            list(PredictorONNX(self.pesos)(imagen))
+        tensor = ejecutar.call_args.args[1]['images']
+        esperado = np.full((1, 3, 64, 64), 114, dtype=np.float32)
+        esperado[:, :, 16:48] = 128
+        np.testing.assert_array_equal(tensor, esperado / 255)
+
+    def test_padding_impar_no_elimina_una_fila_del_prototipo(self):
+        self.pred[0, :4, 0] = [32, 32, 64, 64]
+        self.proto[:, :, :8] = -1
+        # 768x429 -> prototipo 16x16: alto sin padding round(8.9375)=9.
+        # Se recortan filas [3:12], no [4:12]; la frontera queda en y=238.
+        r = list(PredictorONNX(self.pesos)(Image.new('RGB', (768, 429))))[0]
+        self.assertEqual(r['mascara'].getbbox(), (0, 238, 768, 429))
+
+    def test_recorte_fraccionario_usa_indices_enteros_dentro_de_la_caja(self):
+        self.pred[0, :4, 0] = [32.16, 32.16, 32, 32]
+        r = list(PredictorONNX(self.pesos)(Image.new('RGB', (100, 100))))[0]
+        self.assertEqual(r['mascara'].getbbox(), (26, 26, 76, 76))
+
     def test_rechaza_coco_y_formas_dinamicas(self):
         self.nombres[0] = 'person'
         with self.assertRaises(EntradaInvalida):

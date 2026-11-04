@@ -18,7 +18,7 @@ from apps.analisis import services as analisis_services
 from apps.analisis.models import AnalisisServicio, IntentoAnalisis, ResultadoComponente, RevisionAnalisis
 from apps.captura.models import Servicio, FotografiaServicio
 from apps.captura.protocolo import CRITERIOS, VERSION
-from apps.catalogo.models import Plato, TipoPorcion, Componente
+from apps.catalogo.models import Plato, TipoPorcion, Componente, PlatoComponente
 from . import services, indicadores
 from .contracts import FiltrosInvalidos, ResumenHistorico
 from .testing.fixtures import historico_fixture
@@ -30,6 +30,9 @@ class BaseHistorico(TestCase):
     @classmethod
     def setUpTestData(cls):
         call_command('cargar_catalogo_demo', verbosity=0)
+        # Fixture histórica de tres componentes: no depende del catálogo vigente.
+        maduro, _ = Componente.objects.get_or_create(codigo='maduro', defaults={'nombre':'Maduro'})
+        PlatoComponente.objects.create(plato=Plato.objects.get(codigo='seco_de_pollo'), componente=maduro)
         call_command('configurar_roles', stdout=StringIO())
         cls.cocina = get_user_model().objects.create_user('cocina_fixture')
         cls.cocina.groups.add(Group.objects.get(name='Cocina'))

@@ -168,6 +168,8 @@ EVA_CONTEXTO_SERVICIO = {
 }
 EVA_RECOMENDACIONES_CRITERIOS = {"version": None, "aprobada": False, "reglas": {}}
 EVA_VISUAL_TOKEN = os.environ.get("EVA_VISUAL_TOKEN", "")
+# Referencia explícita y privada de la demo; no permite elegir servicios por URL.
+EVA_DEMO_SERVICIO_ID = os.environ.get("EVA_DEMO_SERVICIO_ID", "")
 EVA_VISUAL_ORIGEN = os.environ.get("EVA_VISUAL_ORIGEN", "REAL")
 
 LOGGING = {

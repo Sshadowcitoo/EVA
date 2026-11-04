@@ -9,7 +9,7 @@ from django.test import Client, TestCase
 from django.urls import reverse
 
 from apps.captura.models import Servicio
-from .models import Componente, Plato, TipoPorcion
+from .models import Componente, Plato, PlatoComponente, TipoPorcion
 from .permissions import ADMINISTRACION, COCINA, REGISTRO
 
 
@@ -127,6 +127,8 @@ class BloqueIntegradoTests(TestCase):
     def test_editar_y_desactivar_plato_conserva_historial(self):
         self.client.force_login(self.usuarios["administracion"])
         plato = Plato.objects.get(codigo="seco_de_pollo")
+        maduro = Componente.objects.create(codigo="maduro", nombre="Maduro")
+        PlatoComponente.objects.create(plato=plato, componente=maduro)
         servicio = Servicio.registrar(plato=plato, porcion=TipoPorcion.objects.get(codigo="estandar"), usuario=self.usuarios["registro"])
         response = self.client.post(reverse("catalogo:plato_editar", args=[plato.pk]), {
             "codigo": "codigo_manipulado", "nombre": "Seco actualizado",

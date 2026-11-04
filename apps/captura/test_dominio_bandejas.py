@@ -209,7 +209,7 @@ class EstadosTests(BaseDominio):
         self.assertEqual(segundo.asignaciones.get().bandeja, self.bandeja)
         primero.refresh_from_db()
         self.assertEqual(primero.fotografias.count(), 2)
-        self.assertEqual(primero.composicion.count(), 3)
+        self.assertEqual(primero.composicion.count(), 2)
         self.assertEqual(primero.asignaciones.get().bandeja, self.bandeja)
 
     def test_retorno_sin_servido_denegado(self):

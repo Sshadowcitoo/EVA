@@ -16,7 +16,7 @@ from apps.analisis.models import (
     ResultadoComponente,
 )
 from apps.captura.models import FotografiaServicio, Servicio
-from apps.catalogo.models import Plato, TipoPorcion
+from apps.catalogo.models import Plato, TipoPorcion, Componente, PlatoComponente
 
 Estado = IntentoAnalisis.Estado
 Res = ResultadoComponente.Estado
@@ -109,6 +109,9 @@ class CalculoTests(SimpleTestCase):
 class BaseAnalisis(TestCase):
     def setUp(self):
         call_command("cargar_catalogo_demo", verbosity=0)
+        # Composición histórica explícita, independiente del catálogo actual.
+        maduro, _ = Componente.objects.get_or_create(codigo="maduro", defaults={"nombre":"Maduro"})
+        PlatoComponente.objects.get_or_create(plato=Plato.objects.get(codigo="seco_de_pollo"), componente=maduro)
         self.usuario = get_user_model().objects.create_user("operador_analisis")
         self.servicio, self.servido, self.retorno = self.crear_par()
         self.comps = list(self.servicio.composicion.all())

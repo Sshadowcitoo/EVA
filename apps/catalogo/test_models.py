@@ -14,9 +14,9 @@ class CargaInicialTests(TestCase):
 
     def test_carga_catalogo_coherente(self):
         self.assertEqual(Plato.objects.count(), 3)
-        self.assertEqual(Componente.objects.count(), 8)
+        self.assertEqual(Componente.objects.count(), 7)
         self.assertEqual(TipoPorcion.objects.count(), 1)
-        self.assertEqual(PlatoComponente.objects.count(), 9)
+        self.assertEqual(PlatoComponente.objects.count(), 8)
 
     def test_arroz_compartido_sin_duplicar(self):
         self.assertEqual(Componente.objects.filter(codigo="arroz").count(), 1)
@@ -36,7 +36,7 @@ class CargaInicialTests(TestCase):
         self.assertEqual(plato.nombre, "Encebollado mixto")
         self.assertFalse(plato.activo)
         self.assertEqual(Plato.objects.count(), 3)
-        self.assertEqual(PlatoComponente.objects.count(), 9)
+        self.assertEqual(PlatoComponente.objects.count(), 8)
         self.assertFalse(PlatoComponente.objects.filter(plato=plato, activo=True).exists())
 
     def test_restablecer_restaura_demostracion(self):
@@ -88,10 +88,12 @@ class ServicioCatalogoTests(TestCase):
         self.assertEqual(servicio.get_plato_display(), "Seco de pollo")
         self.assertEqual(
             set(servicio.composicion.values_list("componente_codigo", flat=True)),
-            {"arroz", "pollo", "maduro"},
+            {"arroz", "pollo"},
         )
 
     def test_editar_catalogo_no_reescribe_servicios_anteriores(self):
+        maduro = Componente.objects.create(codigo="maduro", nombre="Maduro")
+        PlatoComponente.objects.create(plato=self.plato, componente=maduro)
         servicio = Servicio.registrar(plato=self.plato, porcion=self.porcion)
         self.plato.nombre = "Seco renombrado"
         self.plato.save()
@@ -126,11 +128,11 @@ class ServicioCatalogoTests(TestCase):
         self.assertEqual(Servicio.objects.count(), 0)
 
     def test_componente_inactivo_no_entra_en_la_composicion(self):
-        Componente.objects.filter(codigo="maduro").update(activo=False)
+        Componente.objects.filter(codigo="pollo").update(activo=False)
         servicio = Servicio.registrar(plato=self.plato, porcion=self.porcion)
         self.assertEqual(
             set(servicio.composicion.values_list("componente_codigo", flat=True)),
-            {"arroz", "pollo"},
+            {"arroz"},
         )
 
     def test_registro_anterior_sigue_legible(self):

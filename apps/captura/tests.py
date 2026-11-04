@@ -72,7 +72,7 @@ class CapturaViewsTests(TestCase):
         self.assertEqual(servicio.creado_por, self.usuario)
         self.assertSetEqual(
             set(servicio.composicion.values_list("componente_codigo", flat=True)),
-            {"arroz", "pollo", "maduro"},
+            {"arroz", "pollo"},
         )
         self.assertRedirects(
             respuesta,

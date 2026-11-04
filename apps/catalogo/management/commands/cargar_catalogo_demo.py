@@ -8,7 +8,6 @@ COMPONENTES = {
     "pescado": "Pescado",
     "arroz": "Arroz",
     "pollo": "Pollo",
-    "maduro": "Maduro",
     "menestra": "Menestra",
     "carne": "Carne",
     "ensalada": "Ensalada",
@@ -16,7 +15,7 @@ COMPONENTES = {
 
 PLATOS = [
     ("encebollado", "Encebollado", ["yuca", "pescado"]),
-    ("seco_de_pollo", "Seco de pollo", ["arroz", "pollo", "maduro"]),
+    ("seco_de_pollo", "Seco de pollo", ["arroz", "pollo"]),
     (
         "arroz_menestra_carne",
         "Arroz con menestra y carne",

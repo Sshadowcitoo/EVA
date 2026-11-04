@@ -15,12 +15,15 @@ from django.utils import timezone
 from apps.analisis import services
 from apps.analisis.models import ArtefactoAnalisis, IntentoAnalisis, ResultadoComponente
 from apps.captura.models import FotografiaServicio, Servicio
-from apps.catalogo.models import Plato, TipoPorcion
+from apps.catalogo.models import Plato, TipoPorcion, Componente, PlatoComponente
 
 
 class PersistenciaIntentosComplementariaTests(TestCase):
     def setUp(self):
         call_command("cargar_catalogo_demo", verbosity=0)
+        # Composición histórica explícita, independiente del catálogo actual.
+        maduro, _ = Componente.objects.get_or_create(codigo="maduro", defaults={"nombre":"Maduro"})
+        PlatoComponente.objects.get_or_create(plato=Plato.objects.get(codigo="seco_de_pollo"), componente=maduro)
         self.usuario = get_user_model().objects.create_user(username="fixture_analisis")
         self.servicio = Servicio.registrar(
             plato=Plato.objects.get(codigo="seco_de_pollo"),

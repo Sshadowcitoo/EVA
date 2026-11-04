@@ -184,6 +184,8 @@ class ServicioCatalogoComplementarioTests(TestCase):
         self.assertEqual(Servicio.objects.count(), 2)
 
     def test_relacion_inactiva_excluida_solo_de_servicios_nuevos(self):
+        maduro = Componente.objects.create(codigo="maduro", nombre="Maduro")
+        PlatoComponente.objects.create(plato=self.plato, componente=maduro)
         anterior = Servicio.registrar(plato=self.plato, porcion=self.porcion)
         PlatoComponente.objects.filter(
             plato=self.plato, componente__codigo="maduro"
@@ -219,8 +221,8 @@ class CargaDemoComplementariaTests(TestCase):
         self.assertFalse(porcion.activo)
         self.assertTrue(PlatoComponente.objects.filter(pk=relacion.pk).exists())
         self.assertEqual(Plato.objects.count(), 3)
-        self.assertEqual(Componente.objects.count(), 9)
-        self.assertEqual(PlatoComponente.objects.count(), 10)
+        self.assertEqual(Componente.objects.count(), 8)
+        self.assertEqual(PlatoComponente.objects.count(), 9)
         self.assertEqual(TipoPorcion.objects.count(), 1)
 
 

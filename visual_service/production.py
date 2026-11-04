@@ -13,9 +13,9 @@ def configuracion():
     token = os.environ.get('EVA_VISUAL_TOKEN', '')
     pesos = Path(os.environ.get('EVA_VISUAL_PESOS', ''))
     version = os.environ.get('EVA_VISUAL_VERSION_MODELO', '')
-    if (len(token) < 24 or not pesos.is_absolute() or not pesos.is_file() or pesos.suffix.lower() != '.pt'
+    if (len(token) < 24 or not pesos.is_absolute() or not pesos.is_file() or pesos.suffix.lower() not in ('.pt', '.onnx')
             or os.environ.get('EVA_VISUAL_ENDPOINT') != 'http://127.0.0.1:8765/v1/analizar-par'):
-        raise EntradaInvalida('Configura token interno y ruta absoluta a pesos .pt locales.')
+        raise EntradaInvalida('Configura token interno y ruta absoluta a pesos .pt u .onnx locales.')
     digest = hashlib.sha256()
     with pesos.open('rb') as archivo:
         for bloque in iter(lambda: archivo.read(1024 * 1024), b''):
@@ -28,7 +28,12 @@ def configuracion():
 def create_app():
     pesos, token, version = configuracion()
     # Comparabilidad requiere validación explícita del montaje; no se activa aquí.
-    return aplicacion(PredictorYOLO(pesos, device='cpu'), token, version)
+    if pesos.suffix.lower() == '.onnx':
+        from .onnx_inference import PredictorONNX
+        predictor = PredictorONNX(pesos)
+    else:
+        predictor = PredictorYOLO(pesos, device='cpu')
+    return aplicacion(predictor, token, version)
 
 
 def comprobar():

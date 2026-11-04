@@ -149,7 +149,7 @@ EVA_CAPTURE_BASE_URL = os.environ.get("EVA_CAPTURE_BASE_URL", "")
 EVA_CAPTURE_LINK_TTL_SECONDS = 300
 # Sin evaluación local no hay umbrales ni comparabilidad aprobados.
 EVA_ANALISIS_CRITERIOS = {
-    "version": "pendiente-evaluacion",
+    "version": os.environ.get("EVA_ANALISIS_VERSION_CONFIGURACION", "pendiente-evaluacion"),
     "aprobada": False,
     "comparabilidad_aprobada": False,
     "umbrales": {},

@@ -53,6 +53,22 @@ class InferenciaTests(unittest.TestCase):
         dto=self.analizar(predictor,identidad_verificada=True)
         self.assertTrue(all(c['mascaras']==[] and not c['comparable'] for c in dto['componentes']))
 
+    def test_solapamiento_parcial_muestra_zonas_sin_conflicto_y_no_compara(self):
+        import base64
+        from PIL import ImageChops
+        self.metadata['componentes'].append(dict(id=str(uuid4()), codigo='pollo'))
+        def predictor(_):
+            return [dict(codigo='arroz', confianza=.95, mascara=mascara((1, 1, 10, 10))),
+                    dict(codigo='pollo', confianza=.96, mascara=mascara((5, 5, 15, 15)))]
+        dto = self.analizar(predictor, identidad_verificada=True)
+        componentes = dto['componentes']
+        self.assertTrue(all(not c['comparable'] for c in componentes))
+        self.assertTrue(all(len(c['mascaras']) == 2 for c in componentes))
+        self.assertEqual(componentes[0]['area_inicial'], 64)
+        self.assertEqual(componentes[1]['area_inicial'], 85)
+        imagenes = [Image.open(BytesIO(base64.b64decode(c['mascaras'][0]['png_base64']))) for c in componentes]
+        self.assertIsNone(ImageChops.darker(*imagenes).getbbox())
+
     def test_modelo_ajeno_version_invalida_y_numeros_no_finitos(self):
         with self.assertRaises(EntradaInvalida):
             PredictorYOLO(Path('no-existe.pt'))

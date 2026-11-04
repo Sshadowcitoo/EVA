@@ -252,6 +252,20 @@ Integrar Git no actualiza automáticamente el servidor público. Los ajustes ope
 que existen en ese servidor requieren su publicación y revisión separadas. S3 es
 almacenamiento de archivos, no el servidor Django ni la IA.
 
+## QA integral del 4 de noviembre de 2026
+
+Ver [informe de Eduardo, matrices y evidencia](docs/qa_20261104/reporte_eduardo.md).
+Base revisada: `7615a24`. Suite local: 566 pruebas descubiertas, 553 aprobadas y
+13 omitidas por dependencias privadas/ONNX; JavaScript: 42 aprobadas. Se añadieron
+y ejecutaron aparte cinco regresiones QA, todas aprobadas. También se registraron
+65 observaciones HTTPS con roles aislados y 22 capturas de interfaz.
+
+El cierre integral queda **NO APTO PARA DEMO por evidencia pendiente**: faltan
+recorridos físicos propios X01–X04, E08, revisión cruzada y matrices del equipo.
+Las capturas emuladas y las fixtures locales no certifican teléfono, cámara,
+precisión de IA ni operación del servidor. Consultar los
+[pasos restantes](docs/qa_20261104/pendientes_manual.md).
+
 ## Trabajo en equipo
 
 Cada integrante entrega en su rama mediante Pull Request. César revisa e integra;

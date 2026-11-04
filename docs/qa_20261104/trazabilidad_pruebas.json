@@ -1,0 +1,693 @@
+{
+  "E01": {
+    "apps/catalogo/test_integration.py": [
+      "test_login_redirige_a_pantalla_real_permitida_por_rol",
+      "test_login_rechaza_clave_incorrecta_y_usuario_sin_rol",
+      "test_login_conserva_next_local_y_no_admite_redireccion_externa",
+      "test_logout_solo_post_con_csrf_y_sesion_se_cierra",
+      "test_catalogo_real_muestra_datos_y_acciones",
+      "test_crud_componentes_y_porciones_con_codigo_estable",
+      "test_editar_y_desactivar_plato_conserva_historial",
+      "test_crear_plato_y_duplicado_no_deja_relaciones_parciales",
+      "test_permisos_reales_de_catalogo_get_post_y_cocina",
+      "test_catalogo_rechaza_cambio_sin_csrf"
+    ]
+  },
+  "E02": {
+    "apps/recomendaciones/test_qa_integral_eduardo.py": [
+      "test_E02_credenciales_vacias_inexistentes_e_incorrectas_no_abren_sesion",
+      "test_E19_cuatro_cifras_exactas_y_categorias_de_la_guia",
+      "test_E18_get_de_todos_los_escenarios_sin_escritura_SQL",
+      "test_E20_presencia_estrictamente_mayor_que_diez_y_no_deteccion_nula",
+      "test_E25_demo_y_foto_denegadas_anonimo_registro_con_get_y_post"
+    ]
+  },
+  "E03": {
+    "apps/catalogo/tests.py": [
+      "test_login_valido_crea_sesion",
+      "test_login_invalido_no_crea_sesion",
+      "test_login_no_redirige_a_dominio_externo",
+      "test_logout_exige_post_y_csrf_y_cierra_sesion",
+      "test_anonimo_redirigido_get_y_post",
+      "test_roles_get_post_sin_herencia_ni_acceso_staff",
+      "test_dos_grupos_permiten_ambas_funciones",
+      "test_alta_conserva_usuario_creador",
+      "test_fallo_de_composicion_revierte_servicio_e_instantaneas",
+      "test_renombrar_porcion_no_reescribe_etiqueta_previa",
+      "test_relacion_inactiva_excluida_solo_de_servicios_nuevos",
+      "test_repetir_carga_conserva_elementos_y_composicion_personalizados",
+      "test_conserva_servicios_anteriores_sin_remapear_catalogo"
+    ]
+  },
+  "E04": {
+    "apps/catalogo/test_integration.py": [
+      "test_login_redirige_a_pantalla_real_permitida_por_rol",
+      "test_login_rechaza_clave_incorrecta_y_usuario_sin_rol",
+      "test_login_conserva_next_local_y_no_admite_redireccion_externa",
+      "test_logout_solo_post_con_csrf_y_sesion_se_cierra",
+      "test_catalogo_real_muestra_datos_y_acciones",
+      "test_crud_componentes_y_porciones_con_codigo_estable",
+      "test_editar_y_desactivar_plato_conserva_historial",
+      "test_crear_plato_y_duplicado_no_deja_relaciones_parciales",
+      "test_permisos_reales_de_catalogo_get_post_y_cocina",
+      "test_catalogo_rechaza_cambio_sin_csrf"
+    ],
+    "apps/historico/test_web_interfaz.py": [
+      "test_permisos_roles_aislados_y_staff",
+      "test_anonimo_inactivo_y_superusuario",
+      "test_roles_multiples_suman_accesos",
+      "test_metodos_no_escriben_por_get",
+      "test_estados_sin_datos_sin_aptos_y_configuracion",
+      "test_backend_pendiente_no_se_convierte_en_vacio",
+      "test_filtros_invalidos_conservan_entrada",
+      "test_filtros_paginacion_y_totales_de_backend",
+      "test_varios_grupos_sin_promedio_inventado",
+      "test_campos_escapados_y_fechas_de_ecuador",
+      "test_error_servicio_validacion_y_excepcion_inesperada",
+      "test_comparacion_inicial_valida_e_incompatible",
+      "test_comparacion_rechaza_solapamiento_y_periodos_incompletos",
+      "test_comparacion_errores_del_dominio",
+      "test_percepcion_consulta_ausencia_y_no_confirma_query_inventada",
+      "test_percepcion_guardado_prg_usuario_y_servicio_no_manipulables",
+      "test_percepcion_categorias_ausencia_y_validaciones",
+      "test_conflicto_preserva_propuesta_y_actualiza_vigente_sin_reintentar",
+      "test_percepcion_servicio_no_disponible_y_error_guardado",
+      "test_csrf_efectivo_y_flujo_con_token",
+      "test_comparacion_sin_observaciones_no_afirma_cero",
+      "test_opciones_historicas_desactivadas_se_conservan"
+    ],
+    "apps/recomendaciones/test_web_orm_verificacion.py": [
+      "test_evaluacion_repetida_sin_aprobacion_conserva_id_y_no_propone",
+      "test_filtros_y_paginacion_con_conteos_del_conjunto_completo",
+      "test_revision_nueva_invalida_snapshot_sin_borrarlo",
+      "test_formulario_invalido_y_uuid_ajeno_no_fabrican_registros",
+      "test_roles_reales_en_todas_las_rutas_y_csrf_en_cada_post",
+      "test_get_no_escribe_y_respuestas_privadas_con_recursos_existentes",
+      "test_doble_envio_decision_historial_y_conflicto_entre_operadores",
+      "test_prueba_reenvio_historial_versiones_y_aceptacion_sustituida",
+      "test_formularios_invalidos_no_alteran_historial_ni_crean_pruebas",
+      "test_vigencia_rechaza_decision_y_conserva_borrador_sin_reenvio"
+    ]
+  },
+  "E05": {
+    "apps/captura/test_gestion.py": [
+      "test_get_no_anula_ni_reemplaza_y_muestra_datos_y_qr",
+      "test_anular_exige_motivo_confirmacion_y_conserva_foto_auditoria",
+      "test_anulacion_cancela_solicitudes_pendientes",
+      "test_reemplazo_repetido_no_revoca_la_etiqueta_nueva",
+      "test_rol_registro_no_puede_ver_ni_mutar_gestion",
+      "test_admin_sin_permiso_especifico_y_post_sin_csrf_se_rechazan",
+      "test_no_anula_par_completo_y_busqueda_invalida_no_falla"
+    ],
+    "apps/catalogo/test_permissions.py": [
+      "test_repetir_comando_conserva_usuarios_membresias_y_permisos_ajenos",
+      "test_sincroniza_sin_otorgar_borrado_o_registro_a_administracion",
+      "test_modelos_pendientes_se_informan_sin_inventar_permisos",
+      "test_repetir_tras_integrar_catalogo_asigna_solo_permisos_de_cada_rol",
+      "test_rol_no_hereda_otro_y_admite_multiples_funciones_explicitas",
+      "test_staff_no_bypassea_y_superusuario_activo_si",
+      "test_anonimo_no_tiene_rol_y_declaraciones_invalidas_fallan",
+      "test_decorator_redirige_anonimo_con_next",
+      "test_decorator_controla_get_y_post_en_servidor",
+      "test_mixin_redirige_anonimo_deniega_rol_y_admite_autorizado",
+      "test_modelos_ausentes_no_se_crean_y_permisos_quedan_pendientes",
+      "test_tras_migrar_solo_registro_recibe_captura_sin_borrado_ni_edicion",
+      "test_dos_operadores_tienen_el_rol_sin_asignar_otros_usuarios",
+      "test_acciones_privilegiadas_solo_para_administracion"
+    ]
+  },
+  "E06": {
+    "apps/catalogo/test_integration.py": [
+      "test_login_redirige_a_pantalla_real_permitida_por_rol",
+      "test_login_rechaza_clave_incorrecta_y_usuario_sin_rol",
+      "test_login_conserva_next_local_y_no_admite_redireccion_externa",
+      "test_logout_solo_post_con_csrf_y_sesion_se_cierra",
+      "test_catalogo_real_muestra_datos_y_acciones",
+      "test_crud_componentes_y_porciones_con_codigo_estable",
+      "test_editar_y_desactivar_plato_conserva_historial",
+      "test_crear_plato_y_duplicado_no_deja_relaciones_parciales",
+      "test_permisos_reales_de_catalogo_get_post_y_cocina",
+      "test_catalogo_rechaza_cambio_sin_csrf"
+    ]
+  },
+  "E07": {
+    "apps/captura/tests.py": [
+      "test_dos_servicios_reciben_uuid_distintos_y_fecha_automatica",
+      "test_get_muestra_formulario_vacio_sin_crear_servicios",
+      "test_post_valido_crea_un_servicio_y_redirige_a_su_confirmacion",
+      "test_post_invalido_muestra_errores_sin_crear_servicios",
+      "test_confirmacion_muestra_servicio_correcto_y_recarga_no_duplica",
+      "test_uuid_inexistente_devuelve_404_sin_crear_servicios",
+      "test_uuid_mal_formado_devuelve_404_sin_crear_servicios",
+      "test_catalogo_inactivo_no_se_muestra_ni_se_acepta",
+      "test_confirmacion_ajena_o_sin_creador_devuelve_404",
+      "test_captura_exige_sesion_y_rol_registro_en_get_y_post"
+    ],
+    "apps/recomendaciones/test_web_orm_verificacion.py": [
+      "test_evaluacion_repetida_sin_aprobacion_conserva_id_y_no_propone",
+      "test_filtros_y_paginacion_con_conteos_del_conjunto_completo",
+      "test_revision_nueva_invalida_snapshot_sin_borrarlo",
+      "test_formulario_invalido_y_uuid_ajeno_no_fabrican_registros",
+      "test_roles_reales_en_todas_las_rutas_y_csrf_en_cada_post",
+      "test_get_no_escribe_y_respuestas_privadas_con_recursos_existentes",
+      "test_doble_envio_decision_historial_y_conflicto_entre_operadores",
+      "test_prueba_reenvio_historial_versiones_y_aceptacion_sustituida",
+      "test_formularios_invalidos_no_alteran_historial_ni_crean_pruebas",
+      "test_vigencia_rechaza_decision_y_conserva_borrador_sin_reenvio"
+    ],
+    "apps/historico/test_web_interfaz.py": [
+      "test_permisos_roles_aislados_y_staff",
+      "test_anonimo_inactivo_y_superusuario",
+      "test_roles_multiples_suman_accesos",
+      "test_metodos_no_escriben_por_get",
+      "test_estados_sin_datos_sin_aptos_y_configuracion",
+      "test_backend_pendiente_no_se_convierte_en_vacio",
+      "test_filtros_invalidos_conservan_entrada",
+      "test_filtros_paginacion_y_totales_de_backend",
+      "test_varios_grupos_sin_promedio_inventado",
+      "test_campos_escapados_y_fechas_de_ecuador",
+      "test_error_servicio_validacion_y_excepcion_inesperada",
+      "test_comparacion_inicial_valida_e_incompatible",
+      "test_comparacion_rechaza_solapamiento_y_periodos_incompletos",
+      "test_comparacion_errores_del_dominio",
+      "test_percepcion_consulta_ausencia_y_no_confirma_query_inventada",
+      "test_percepcion_guardado_prg_usuario_y_servicio_no_manipulables",
+      "test_percepcion_categorias_ausencia_y_validaciones",
+      "test_conflicto_preserva_propuesta_y_actualiza_vigente_sin_reintentar",
+      "test_percepcion_servicio_no_disponible_y_error_guardado",
+      "test_csrf_efectivo_y_flujo_con_token",
+      "test_comparacion_sin_observaciones_no_afirma_cero",
+      "test_opciones_historicas_desactivadas_se_conservan"
+    ],
+    "apps/captura/test_integracion_bloques.py": [
+      "test_png_no_conserva_exif_y_respeta_orientacion",
+      "test_validador_usa_limite_de_settings",
+      "test_recorrido_dos_operadores_con_lectura_privada_y_liberacion",
+      "test_retorno_sin_servido_no_muestra_formulario_ni_acepta_foto",
+      "test_duplicado_no_sobrescribe",
+      "test_error_de_storage_no_avanza_estado",
+      "test_rechazo_de_bd_elimina_archivo_huerfano",
+      "test_limpieza_fallida_se_registra_para_reintentar",
+      "test_csrf_y_roles_se_comprueban_en_post",
+      "test_fallo_s3_no_escribe_en_local",
+      "test_sesion_respeta_ttl_configurado",
+      "test_expiracion_entre_consulta_y_consumo_revierte_la_captura"
+    ],
+    "apps/captura/test_vinculacion_http.py": [
+      "test_pc_telefono_checklist_persistido_y_reintento_no_duplica",
+      "test_checklist_obligatorio_en_ambos_recorridos",
+      "test_cancelar_caducar_regenerar_y_captura_directa_invalidan",
+      "test_login_rol_csrf_y_token_invalido",
+      "test_fallo_bd_compensa_archivo_y_no_consume_enlace",
+      "test_datos_historicos_no_reciben_confirmaciones_inventadas",
+      "test_retorno_vinculado_por_otro_operador_libera_bandeja",
+      "test_log_no_expone_token_en_url_ni_next_codificado",
+      "test_buscar_retorno_sin_servido_explains_y_permite_continuar",
+      "test_buscar_servido_pendiente_retoma_sin_duplicar",
+      "test_retorno_de_bandeja_libre_muestra_mensaje_sin_404"
+    ]
+  },
+  "E08": {},
+  "E09": {
+    "apps/historico/test_dominio_historico.py": [
+      "test_formulas_ceros_muestra_y_exclusion_sin_leer_archivos",
+      "test_limite_de_presencia_es_estrictamente_mayor",
+      "test_sin_aprobacion_o_valor_valido_no_inventa_t",
+      "test_componentes_no_duplican_servicios_ni_se_promedian_juntos",
+      "test_catalogo_editado_no_cambia_registros_y_opciones_historicas",
+      "test_filtros_codigos_desconocidos_o_incompatibles",
+      "test_otro_modelo_o_configuracion_no_se_mezcla",
+      "test_paginacion_no_recorta_los_indicadores",
+      "test_numero_de_consultas_no_crece_por_servicio",
+      "test_rechazo_posterior_se_refleja_sin_borrar_resultado",
+      "test_intento_nuevo_no_hereda_aprobacion",
+      "test_ultimo_simulado_no_reutiliza_resultados_reales_anteriores",
+      "test_falta_componente_no_habilita_indicador_parcial",
+      "test_protocolo_o_numero_invalido_no_superan_aprobacion",
+      "test_retencion_posterior_no_borra_historia_ni_usa_criterios_actuales",
+      "test_anulado_tiene_prioridad_y_sin_revision_queda_fuera",
+      "test_fecha_hora_local_y_limite_exclusivo",
+      "test_sin_fecha_no_se_asigna_a_un_periodo",
+      "test_comparacion_no_inventa_contexto_historico",
+      "test_periodos_superpuestos_abiertos_o_filtros_distintos_se_rechazan",
+      "test_diferencias_en_puntos_y_cero_no_es_sin_datos"
+    ],
+    "apps/historico/test_web_conexion.py": [
+      "test_historico_lee_orm_y_actualiza_exclusiones_tras_rechazo",
+      "test_percepcion_guarda_reenvia_y_rechaza_version_obsoleta",
+      "test_comparacion_informa_contexto_ausente_sin_fabricar_diferencias"
+    ]
+  },
+  "E10": {
+    "apps/historico/test_contrato_b6.py": [
+      "test_limites_inclusivos_de_fecha_se_convierten_a_fin_exclusivo_local",
+      "test_acepta_valores_limpiados_por_formulario",
+      "test_errores_por_campo_y_sin_conversion_silenciosa",
+      "test_esqueleto_registrado_sin_dependencias_nuevas",
+      "test_fixtures_respetan_dto_y_ejemplo_manual_de_indicadores",
+      "test_no_confunde_falta_de_datos_con_cero",
+      "test_configuracion_pendiente_no_inventa_t",
+      "test_comparacion_incompatible_no_inventa_diferencias",
+      "test_no_informado_y_copias_independientes",
+      "test_backend_vacio_no_devuelve_datos_sinteticos"
+    ],
+    "apps/historico/test_dominio_historico.py": [
+      "test_formulas_ceros_muestra_y_exclusion_sin_leer_archivos",
+      "test_limite_de_presencia_es_estrictamente_mayor",
+      "test_sin_aprobacion_o_valor_valido_no_inventa_t",
+      "test_componentes_no_duplican_servicios_ni_se_promedian_juntos",
+      "test_catalogo_editado_no_cambia_registros_y_opciones_historicas",
+      "test_filtros_codigos_desconocidos_o_incompatibles",
+      "test_otro_modelo_o_configuracion_no_se_mezcla",
+      "test_paginacion_no_recorta_los_indicadores",
+      "test_numero_de_consultas_no_crece_por_servicio",
+      "test_rechazo_posterior_se_refleja_sin_borrar_resultado",
+      "test_intento_nuevo_no_hereda_aprobacion",
+      "test_ultimo_simulado_no_reutiliza_resultados_reales_anteriores",
+      "test_falta_componente_no_habilita_indicador_parcial",
+      "test_protocolo_o_numero_invalido_no_superan_aprobacion",
+      "test_retencion_posterior_no_borra_historia_ni_usa_criterios_actuales",
+      "test_anulado_tiene_prioridad_y_sin_revision_queda_fuera",
+      "test_fecha_hora_local_y_limite_exclusivo",
+      "test_sin_fecha_no_se_asigna_a_un_periodo",
+      "test_comparacion_no_inventa_contexto_historico",
+      "test_periodos_superpuestos_abiertos_o_filtros_distintos_se_rechazan",
+      "test_diferencias_en_puntos_y_cero_no_es_sin_datos"
+    ]
+  },
+  "E11": {
+    "apps/historico/test_dominio_historico.py": [
+      "test_formulas_ceros_muestra_y_exclusion_sin_leer_archivos",
+      "test_limite_de_presencia_es_estrictamente_mayor",
+      "test_sin_aprobacion_o_valor_valido_no_inventa_t",
+      "test_componentes_no_duplican_servicios_ni_se_promedian_juntos",
+      "test_catalogo_editado_no_cambia_registros_y_opciones_historicas",
+      "test_filtros_codigos_desconocidos_o_incompatibles",
+      "test_otro_modelo_o_configuracion_no_se_mezcla",
+      "test_paginacion_no_recorta_los_indicadores",
+      "test_numero_de_consultas_no_crece_por_servicio",
+      "test_rechazo_posterior_se_refleja_sin_borrar_resultado",
+      "test_intento_nuevo_no_hereda_aprobacion",
+      "test_ultimo_simulado_no_reutiliza_resultados_reales_anteriores",
+      "test_falta_componente_no_habilita_indicador_parcial",
+      "test_protocolo_o_numero_invalido_no_superan_aprobacion",
+      "test_retencion_posterior_no_borra_historia_ni_usa_criterios_actuales",
+      "test_anulado_tiene_prioridad_y_sin_revision_queda_fuera",
+      "test_fecha_hora_local_y_limite_exclusivo",
+      "test_sin_fecha_no_se_asigna_a_un_periodo",
+      "test_comparacion_no_inventa_contexto_historico",
+      "test_periodos_superpuestos_abiertos_o_filtros_distintos_se_rechazan",
+      "test_diferencias_en_puntos_y_cero_no_es_sin_datos"
+    ]
+  },
+  "E12": {
+    "apps/historico/test_dominio_historico.py": [
+      "test_formulas_ceros_muestra_y_exclusion_sin_leer_archivos",
+      "test_limite_de_presencia_es_estrictamente_mayor",
+      "test_sin_aprobacion_o_valor_valido_no_inventa_t",
+      "test_componentes_no_duplican_servicios_ni_se_promedian_juntos",
+      "test_catalogo_editado_no_cambia_registros_y_opciones_historicas",
+      "test_filtros_codigos_desconocidos_o_incompatibles",
+      "test_otro_modelo_o_configuracion_no_se_mezcla",
+      "test_paginacion_no_recorta_los_indicadores",
+      "test_numero_de_consultas_no_crece_por_servicio",
+      "test_rechazo_posterior_se_refleja_sin_borrar_resultado",
+      "test_intento_nuevo_no_hereda_aprobacion",
+      "test_ultimo_simulado_no_reutiliza_resultados_reales_anteriores",
+      "test_falta_componente_no_habilita_indicador_parcial",
+      "test_protocolo_o_numero_invalido_no_superan_aprobacion",
+      "test_retencion_posterior_no_borra_historia_ni_usa_criterios_actuales",
+      "test_anulado_tiene_prioridad_y_sin_revision_queda_fuera",
+      "test_fecha_hora_local_y_limite_exclusivo",
+      "test_sin_fecha_no_se_asigna_a_un_periodo",
+      "test_comparacion_no_inventa_contexto_historico",
+      "test_periodos_superpuestos_abiertos_o_filtros_distintos_se_rechazan",
+      "test_diferencias_en_puntos_y_cero_no_es_sin_datos"
+    ]
+  },
+  "E13": {
+    "apps/historico/test_dominio_historico.py": [
+      "test_formulas_ceros_muestra_y_exclusion_sin_leer_archivos",
+      "test_limite_de_presencia_es_estrictamente_mayor",
+      "test_sin_aprobacion_o_valor_valido_no_inventa_t",
+      "test_componentes_no_duplican_servicios_ni_se_promedian_juntos",
+      "test_catalogo_editado_no_cambia_registros_y_opciones_historicas",
+      "test_filtros_codigos_desconocidos_o_incompatibles",
+      "test_otro_modelo_o_configuracion_no_se_mezcla",
+      "test_paginacion_no_recorta_los_indicadores",
+      "test_numero_de_consultas_no_crece_por_servicio",
+      "test_rechazo_posterior_se_refleja_sin_borrar_resultado",
+      "test_intento_nuevo_no_hereda_aprobacion",
+      "test_ultimo_simulado_no_reutiliza_resultados_reales_anteriores",
+      "test_falta_componente_no_habilita_indicador_parcial",
+      "test_protocolo_o_numero_invalido_no_superan_aprobacion",
+      "test_retencion_posterior_no_borra_historia_ni_usa_criterios_actuales",
+      "test_anulado_tiene_prioridad_y_sin_revision_queda_fuera",
+      "test_fecha_hora_local_y_limite_exclusivo",
+      "test_sin_fecha_no_se_asigna_a_un_periodo",
+      "test_comparacion_no_inventa_contexto_historico",
+      "test_periodos_superpuestos_abiertos_o_filtros_distintos_se_rechazan",
+      "test_diferencias_en_puntos_y_cero_no_es_sin_datos"
+    ],
+    "apps/recomendaciones/test_integracion_contexto_historico.py": [
+      "test_contexto_capturado_llega_a_grupos_y_evaluacion_sin_aprobar_criterios",
+      "test_lotes_compatibles_no_mezclan_desconocidos_sedes_modalidades_o_franjas",
+      "test_registros_sin_contexto_son_descriptivos_y_no_habilitan_propuestas",
+      "test_comparacion_periodos_con_lotes_distintos_y_contexto_igual",
+      "test_revision_rectificada_invalida_evaluacion_y_recalcula_indicadores",
+      "test_analisis_nuevo_pendiente_no_hereda_revision_y_desactualiza_evaluacion",
+      "test_anular_servicio_incompleto_desactualiza_evaluacion_sin_reescribir_historia",
+      "test_cambio_de_lote_invalida_evaluacion_aunque_no_cambie_grupo",
+      "test_retencion_de_fotos_no_borra_medicion_ni_invalida_snapshot_confirmado"
+    ]
+  },
+  "E14": {
+    "apps/historico/test_dominio_percepcion.py": [
+      "test_no_informado_no_es_adecuado_y_no_crea_filas_al_consultar",
+      "test_tres_categorias_correccion_y_auditoria_conservada",
+      "test_otro_operador_de_registro_no_necesita_ser_creador",
+      "test_reenvio_identico_no_duplica_y_version_obsoleta_no_sobrescribe",
+      "test_roles_aislados_inactivos_y_staff_no_registran",
+      "test_servicio_anulado_inexistente_o_uuid_invalido_no_se_modifica",
+      "test_validaciones_no_dependen_del_formulario",
+      "test_fallo_de_insercion_revierte_cambio_de_vigencia",
+      "test_restricciones_de_base_de_datos",
+      "test_no_modifica_captura_resultados_ni_indicadores",
+      "test_dos_operadores_no_crean_dos_versiones_iniciales_vigentes"
+    ],
+    "apps/historico/test_web_conexion.py": [
+      "test_historico_lee_orm_y_actualiza_exclusiones_tras_rechazo",
+      "test_percepcion_guarda_reenvia_y_rechaza_version_obsoleta",
+      "test_comparacion_informa_contexto_ausente_sin_fabricar_diferencias"
+    ]
+  },
+  "E15": {
+    "apps/historico/test_dominio_percepcion.py": [
+      "test_no_informado_no_es_adecuado_y_no_crea_filas_al_consultar",
+      "test_tres_categorias_correccion_y_auditoria_conservada",
+      "test_otro_operador_de_registro_no_necesita_ser_creador",
+      "test_reenvio_identico_no_duplica_y_version_obsoleta_no_sobrescribe",
+      "test_roles_aislados_inactivos_y_staff_no_registran",
+      "test_servicio_anulado_inexistente_o_uuid_invalido_no_se_modifica",
+      "test_validaciones_no_dependen_del_formulario",
+      "test_fallo_de_insercion_revierte_cambio_de_vigencia",
+      "test_restricciones_de_base_de_datos",
+      "test_no_modifica_captura_resultados_ni_indicadores",
+      "test_dos_operadores_no_crean_dos_versiones_iniciales_vigentes"
+    ],
+    "apps/historico/test_web_interfaz.py": [
+      "test_permisos_roles_aislados_y_staff",
+      "test_anonimo_inactivo_y_superusuario",
+      "test_roles_multiples_suman_accesos",
+      "test_metodos_no_escriben_por_get",
+      "test_estados_sin_datos_sin_aptos_y_configuracion",
+      "test_backend_pendiente_no_se_convierte_en_vacio",
+      "test_filtros_invalidos_conservan_entrada",
+      "test_filtros_paginacion_y_totales_de_backend",
+      "test_varios_grupos_sin_promedio_inventado",
+      "test_campos_escapados_y_fechas_de_ecuador",
+      "test_error_servicio_validacion_y_excepcion_inesperada",
+      "test_comparacion_inicial_valida_e_incompatible",
+      "test_comparacion_rechaza_solapamiento_y_periodos_incompletos",
+      "test_comparacion_errores_del_dominio",
+      "test_percepcion_consulta_ausencia_y_no_confirma_query_inventada",
+      "test_percepcion_guardado_prg_usuario_y_servicio_no_manipulables",
+      "test_percepcion_categorias_ausencia_y_validaciones",
+      "test_conflicto_preserva_propuesta_y_actualiza_vigente_sin_reintentar",
+      "test_percepcion_servicio_no_disponible_y_error_guardado",
+      "test_csrf_efectivo_y_flujo_con_token",
+      "test_comparacion_sin_observaciones_no_afirma_cero",
+      "test_opciones_historicas_desactivadas_se_conservan"
+    ]
+  },
+  "E16": {
+    "apps/recomendaciones/test_integracion_contexto_historico.py": [
+      "test_contexto_capturado_llega_a_grupos_y_evaluacion_sin_aprobar_criterios",
+      "test_lotes_compatibles_no_mezclan_desconocidos_sedes_modalidades_o_franjas",
+      "test_registros_sin_contexto_son_descriptivos_y_no_habilitan_propuestas",
+      "test_comparacion_periodos_con_lotes_distintos_y_contexto_igual",
+      "test_revision_rectificada_invalida_evaluacion_y_recalcula_indicadores",
+      "test_analisis_nuevo_pendiente_no_hereda_revision_y_desactualiza_evaluacion",
+      "test_anular_servicio_incompleto_desactualiza_evaluacion_sin_reescribir_historia",
+      "test_cambio_de_lote_invalida_evaluacion_aunque_no_cambie_grupo",
+      "test_retencion_de_fotos_no_borra_medicion_ni_invalida_snapshot_confirmado"
+    ],
+    "apps/recomendaciones/test_dominio_recomendaciones.py": [
+      "test_sin_configuracion_guarda_insuficiencia_idempotente_y_tipos",
+      "test_fuente_completa_supera_paginacion",
+      "test_contexto_ausente_no_se_inventa",
+      "test_sin_datos_no_ceros_y_get_no_escribe",
+      "test_roles_staff_inactivo_y_responsables",
+      "test_version_desconocida_y_uuid_invalido",
+      "test_revision_rechazada_o_intento_nuevo_obsoleta",
+      "test_flujo_positivo_auditado_sin_tocar_catalogo",
+      "test_justificacion_invalida_sin_escritura",
+      "test_prueba_idempotente_no_evaluable_y_reevaluacion_versionada",
+      "test_aceptacion_sustituida_bloquea_prueba",
+      "test_responsable_y_periodos_se_validan_en_dominio",
+      "test_lista_filtra_y_cuenta_evaluaciones_no_servicios",
+      "test_configuracion_cambia_vigencia",
+      "test_nuevo_intento_bloquea_decision_sin_borrar_snapshot",
+      "test_reglas_malformadas_no_aprueban_evidencia",
+      "test_json_preserva_cero_y_none",
+      "test_comparacion_con_contexto_hipotetico_y_datos_orm",
+      "test_dos_decisiones_simultaneas_no_pisan_el_historial"
+    ]
+  },
+  "E17": {
+    "apps/recomendaciones/test_dominio_recomendaciones.py": [
+      "test_sin_configuracion_guarda_insuficiencia_idempotente_y_tipos",
+      "test_fuente_completa_supera_paginacion",
+      "test_contexto_ausente_no_se_inventa",
+      "test_sin_datos_no_ceros_y_get_no_escribe",
+      "test_roles_staff_inactivo_y_responsables",
+      "test_version_desconocida_y_uuid_invalido",
+      "test_revision_rechazada_o_intento_nuevo_obsoleta",
+      "test_flujo_positivo_auditado_sin_tocar_catalogo",
+      "test_justificacion_invalida_sin_escritura",
+      "test_prueba_idempotente_no_evaluable_y_reevaluacion_versionada",
+      "test_aceptacion_sustituida_bloquea_prueba",
+      "test_responsable_y_periodos_se_validan_en_dominio",
+      "test_lista_filtra_y_cuenta_evaluaciones_no_servicios",
+      "test_configuracion_cambia_vigencia",
+      "test_nuevo_intento_bloquea_decision_sin_borrar_snapshot",
+      "test_reglas_malformadas_no_aprueban_evidencia",
+      "test_json_preserva_cero_y_none",
+      "test_comparacion_con_contexto_hipotetico_y_datos_orm",
+      "test_dos_decisiones_simultaneas_no_pisan_el_historial"
+    ],
+    "apps/recomendaciones/test_web_orm_verificacion.py": [
+      "test_evaluacion_repetida_sin_aprobacion_conserva_id_y_no_propone",
+      "test_filtros_y_paginacion_con_conteos_del_conjunto_completo",
+      "test_revision_nueva_invalida_snapshot_sin_borrarlo",
+      "test_formulario_invalido_y_uuid_ajeno_no_fabrican_registros",
+      "test_roles_reales_en_todas_las_rutas_y_csrf_en_cada_post",
+      "test_get_no_escribe_y_respuestas_privadas_con_recursos_existentes",
+      "test_doble_envio_decision_historial_y_conflicto_entre_operadores",
+      "test_prueba_reenvio_historial_versiones_y_aceptacion_sustituida",
+      "test_formularios_invalidos_no_alteran_historial_ni_crean_pruebas",
+      "test_vigencia_rechaza_decision_y_conserva_borrador_sin_reenvio"
+    ]
+  },
+  "E18": {
+    "apps/recomendaciones/test_qa_integral_eduardo.py": [
+      "test_E02_credenciales_vacias_inexistentes_e_incorrectas_no_abren_sesion",
+      "test_E19_cuatro_cifras_exactas_y_categorias_de_la_guia",
+      "test_E18_get_de_todos_los_escenarios_sin_escritura_SQL",
+      "test_E20_presencia_estrictamente_mayor_que_diez_y_no_deteccion_nula",
+      "test_E25_demo_y_foto_denegadas_anonimo_registro_con_get_y_post"
+    ]
+  },
+  "E19": {
+    "apps/recomendaciones/test_qa_integral_eduardo.py": [
+      "test_E02_credenciales_vacias_inexistentes_e_incorrectas_no_abren_sesion",
+      "test_E19_cuatro_cifras_exactas_y_categorias_de_la_guia",
+      "test_E18_get_de_todos_los_escenarios_sin_escritura_SQL",
+      "test_E20_presencia_estrictamente_mayor_que_diez_y_no_deteccion_nula",
+      "test_E25_demo_y_foto_denegadas_anonimo_registro_con_get_y_post"
+    ]
+  },
+  "E20": {
+    "apps/recomendaciones/test_qa_integral_eduardo.py": [
+      "test_E02_credenciales_vacias_inexistentes_e_incorrectas_no_abren_sesion",
+      "test_E19_cuatro_cifras_exactas_y_categorias_de_la_guia",
+      "test_E18_get_de_todos_los_escenarios_sin_escritura_SQL",
+      "test_E20_presencia_estrictamente_mayor_que_diez_y_no_deteccion_nula",
+      "test_E25_demo_y_foto_denegadas_anonimo_registro_con_get_y_post"
+    ],
+    "apps/historico/test_dominio_historico.py": [
+      "test_formulas_ceros_muestra_y_exclusion_sin_leer_archivos",
+      "test_limite_de_presencia_es_estrictamente_mayor",
+      "test_sin_aprobacion_o_valor_valido_no_inventa_t",
+      "test_componentes_no_duplican_servicios_ni_se_promedian_juntos",
+      "test_catalogo_editado_no_cambia_registros_y_opciones_historicas",
+      "test_filtros_codigos_desconocidos_o_incompatibles",
+      "test_otro_modelo_o_configuracion_no_se_mezcla",
+      "test_paginacion_no_recorta_los_indicadores",
+      "test_numero_de_consultas_no_crece_por_servicio",
+      "test_rechazo_posterior_se_refleja_sin_borrar_resultado",
+      "test_intento_nuevo_no_hereda_aprobacion",
+      "test_ultimo_simulado_no_reutiliza_resultados_reales_anteriores",
+      "test_falta_componente_no_habilita_indicador_parcial",
+      "test_protocolo_o_numero_invalido_no_superan_aprobacion",
+      "test_retencion_posterior_no_borra_historia_ni_usa_criterios_actuales",
+      "test_anulado_tiene_prioridad_y_sin_revision_queda_fuera",
+      "test_fecha_hora_local_y_limite_exclusivo",
+      "test_sin_fecha_no_se_asigna_a_un_periodo",
+      "test_comparacion_no_inventa_contexto_historico",
+      "test_periodos_superpuestos_abiertos_o_filtros_distintos_se_rechazan",
+      "test_diferencias_en_puntos_y_cero_no_es_sin_datos"
+    ]
+  },
+  "E21": {
+    "apps/recomendaciones/test_integracion_bloque_7.py": [
+      "test_evaluar_guardar_recuperar_insuficiente_sin_mocks",
+      "test_get_roles_navegacion_y_no_escritura",
+      "test_post_csrf_sin_token_no_escribe",
+      "test_generar_decidir_y_registrar_prueba_con_persistencia_real",
+      "test_conflicto_http_conserva_borrador_y_no_sobrescribe"
+    ],
+    "apps/recomendaciones/test_dominio_recomendaciones.py": [
+      "test_sin_configuracion_guarda_insuficiencia_idempotente_y_tipos",
+      "test_fuente_completa_supera_paginacion",
+      "test_contexto_ausente_no_se_inventa",
+      "test_sin_datos_no_ceros_y_get_no_escribe",
+      "test_roles_staff_inactivo_y_responsables",
+      "test_version_desconocida_y_uuid_invalido",
+      "test_revision_rechazada_o_intento_nuevo_obsoleta",
+      "test_flujo_positivo_auditado_sin_tocar_catalogo",
+      "test_justificacion_invalida_sin_escritura",
+      "test_prueba_idempotente_no_evaluable_y_reevaluacion_versionada",
+      "test_aceptacion_sustituida_bloquea_prueba",
+      "test_responsable_y_periodos_se_validan_en_dominio",
+      "test_lista_filtra_y_cuenta_evaluaciones_no_servicios",
+      "test_configuracion_cambia_vigencia",
+      "test_nuevo_intento_bloquea_decision_sin_borrar_snapshot",
+      "test_reglas_malformadas_no_aprueban_evidencia",
+      "test_json_preserva_cero_y_none",
+      "test_comparacion_con_contexto_hipotetico_y_datos_orm",
+      "test_dos_decisiones_simultaneas_no_pisan_el_historial"
+    ]
+  },
+  "E22": {
+    "apps/recomendaciones/test_dominio_recomendaciones.py": [
+      "test_sin_configuracion_guarda_insuficiencia_idempotente_y_tipos",
+      "test_fuente_completa_supera_paginacion",
+      "test_contexto_ausente_no_se_inventa",
+      "test_sin_datos_no_ceros_y_get_no_escribe",
+      "test_roles_staff_inactivo_y_responsables",
+      "test_version_desconocida_y_uuid_invalido",
+      "test_revision_rechazada_o_intento_nuevo_obsoleta",
+      "test_flujo_positivo_auditado_sin_tocar_catalogo",
+      "test_justificacion_invalida_sin_escritura",
+      "test_prueba_idempotente_no_evaluable_y_reevaluacion_versionada",
+      "test_aceptacion_sustituida_bloquea_prueba",
+      "test_responsable_y_periodos_se_validan_en_dominio",
+      "test_lista_filtra_y_cuenta_evaluaciones_no_servicios",
+      "test_configuracion_cambia_vigencia",
+      "test_nuevo_intento_bloquea_decision_sin_borrar_snapshot",
+      "test_reglas_malformadas_no_aprueban_evidencia",
+      "test_json_preserva_cero_y_none",
+      "test_comparacion_con_contexto_hipotetico_y_datos_orm",
+      "test_dos_decisiones_simultaneas_no_pisan_el_historial"
+    ],
+    "apps/recomendaciones/test_web_orm_verificacion.py": [
+      "test_evaluacion_repetida_sin_aprobacion_conserva_id_y_no_propone",
+      "test_filtros_y_paginacion_con_conteos_del_conjunto_completo",
+      "test_revision_nueva_invalida_snapshot_sin_borrarlo",
+      "test_formulario_invalido_y_uuid_ajeno_no_fabrican_registros",
+      "test_roles_reales_en_todas_las_rutas_y_csrf_en_cada_post",
+      "test_get_no_escribe_y_respuestas_privadas_con_recursos_existentes",
+      "test_doble_envio_decision_historial_y_conflicto_entre_operadores",
+      "test_prueba_reenvio_historial_versiones_y_aceptacion_sustituida",
+      "test_formularios_invalidos_no_alteran_historial_ni_crean_pruebas",
+      "test_vigencia_rechaza_decision_y_conserva_borrador_sin_reenvio"
+    ]
+  },
+  "E23": {
+    "apps/recomendaciones/test_dominio_recomendaciones.py": [
+      "test_sin_configuracion_guarda_insuficiencia_idempotente_y_tipos",
+      "test_fuente_completa_supera_paginacion",
+      "test_contexto_ausente_no_se_inventa",
+      "test_sin_datos_no_ceros_y_get_no_escribe",
+      "test_roles_staff_inactivo_y_responsables",
+      "test_version_desconocida_y_uuid_invalido",
+      "test_revision_rechazada_o_intento_nuevo_obsoleta",
+      "test_flujo_positivo_auditado_sin_tocar_catalogo",
+      "test_justificacion_invalida_sin_escritura",
+      "test_prueba_idempotente_no_evaluable_y_reevaluacion_versionada",
+      "test_aceptacion_sustituida_bloquea_prueba",
+      "test_responsable_y_periodos_se_validan_en_dominio",
+      "test_lista_filtra_y_cuenta_evaluaciones_no_servicios",
+      "test_configuracion_cambia_vigencia",
+      "test_nuevo_intento_bloquea_decision_sin_borrar_snapshot",
+      "test_reglas_malformadas_no_aprueban_evidencia",
+      "test_json_preserva_cero_y_none",
+      "test_comparacion_con_contexto_hipotetico_y_datos_orm",
+      "test_dos_decisiones_simultaneas_no_pisan_el_historial"
+    ],
+    "apps/recomendaciones/test_web_orm_verificacion.py": [
+      "test_evaluacion_repetida_sin_aprobacion_conserva_id_y_no_propone",
+      "test_filtros_y_paginacion_con_conteos_del_conjunto_completo",
+      "test_revision_nueva_invalida_snapshot_sin_borrarlo",
+      "test_formulario_invalido_y_uuid_ajeno_no_fabrican_registros",
+      "test_roles_reales_en_todas_las_rutas_y_csrf_en_cada_post",
+      "test_get_no_escribe_y_respuestas_privadas_con_recursos_existentes",
+      "test_doble_envio_decision_historial_y_conflicto_entre_operadores",
+      "test_prueba_reenvio_historial_versiones_y_aceptacion_sustituida",
+      "test_formularios_invalidos_no_alteran_historial_ni_crean_pruebas",
+      "test_vigencia_rechaza_decision_y_conserva_borrador_sin_reenvio"
+    ]
+  },
+  "E24": {
+    "apps/recomendaciones/test_integracion_bloque_7.py": [
+      "test_evaluar_guardar_recuperar_insuficiente_sin_mocks",
+      "test_get_roles_navegacion_y_no_escritura",
+      "test_post_csrf_sin_token_no_escribe",
+      "test_generar_decidir_y_registrar_prueba_con_persistencia_real",
+      "test_conflicto_http_conserva_borrador_y_no_sobrescribe"
+    ],
+    "apps/recomendaciones/test_dominio_recomendaciones.py": [
+      "test_sin_configuracion_guarda_insuficiencia_idempotente_y_tipos",
+      "test_fuente_completa_supera_paginacion",
+      "test_contexto_ausente_no_se_inventa",
+      "test_sin_datos_no_ceros_y_get_no_escribe",
+      "test_roles_staff_inactivo_y_responsables",
+      "test_version_desconocida_y_uuid_invalido",
+      "test_revision_rechazada_o_intento_nuevo_obsoleta",
+      "test_flujo_positivo_auditado_sin_tocar_catalogo",
+      "test_justificacion_invalida_sin_escritura",
+      "test_prueba_idempotente_no_evaluable_y_reevaluacion_versionada",
+      "test_aceptacion_sustituida_bloquea_prueba",
+      "test_responsable_y_periodos_se_validan_en_dominio",
+      "test_lista_filtra_y_cuenta_evaluaciones_no_servicios",
+      "test_configuracion_cambia_vigencia",
+      "test_nuevo_intento_bloquea_decision_sin_borrar_snapshot",
+      "test_reglas_malformadas_no_aprueban_evidencia",
+      "test_json_preserva_cero_y_none",
+      "test_comparacion_con_contexto_hipotetico_y_datos_orm",
+      "test_dos_decisiones_simultaneas_no_pisan_el_historial"
+    ]
+  },
+  "E25": {
+    "apps/recomendaciones/test_qa_integral_eduardo.py": [
+      "test_E02_credenciales_vacias_inexistentes_e_incorrectas_no_abren_sesion",
+      "test_E19_cuatro_cifras_exactas_y_categorias_de_la_guia",
+      "test_E18_get_de_todos_los_escenarios_sin_escritura_SQL",
+      "test_E20_presencia_estrictamente_mayor_que_diez_y_no_deteccion_nula",
+      "test_E25_demo_y_foto_denegadas_anonimo_registro_con_get_y_post"
+    ],
+    "apps/recomendaciones/test_web_orm_verificacion.py": [
+      "test_evaluacion_repetida_sin_aprobacion_conserva_id_y_no_propone",
+      "test_filtros_y_paginacion_con_conteos_del_conjunto_completo",
+      "test_revision_nueva_invalida_snapshot_sin_borrarlo",
+      "test_formulario_invalido_y_uuid_ajeno_no_fabrican_registros",
+      "test_roles_reales_en_todas_las_rutas_y_csrf_en_cada_post",
+      "test_get_no_escribe_y_respuestas_privadas_con_recursos_existentes",
+      "test_doble_envio_decision_historial_y_conflicto_entre_operadores",
+      "test_prueba_reenvio_historial_versiones_y_aceptacion_sustituida",
+      "test_formularios_invalidos_no_alteran_historial_ni_crean_pruebas",
+      "test_vigencia_rechaza_decision_y_conserva_borrador_sin_reenvio"
+    ]
+  }
+}

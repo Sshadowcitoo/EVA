@@ -1,0 +1,720 @@
+{
+  "fecha": "2026-11-04T23:19:38.445Z",
+  "base": "7615a24",
+  "entorno": "https://18.225.245.214",
+  "navegador": {
+    "protocolVersion": "1.3",
+    "product": "Chrome/157.0.8103.39",
+    "revision": "@9a31f0acec1854d44e49a73fbf8017598151a583",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36",
+    "jsVersion": "15.7.112.23"
+  },
+  "nota": "HTTPS sin omitir certificado; viewport emulado no es dispositivo físico",
+  "casos": [
+    {
+      "id": "E03/E25",
+      "rol": "Anonimo",
+      "url": "/captura/bandeja/",
+      "status": 0,
+      "type": "opaqueredirect",
+      "cache": null,
+      "destino": "/cuentas/login/"
+    },
+    {
+      "id": "E03/E25",
+      "rol": "Anonimo",
+      "url": "/catalogo/platos/",
+      "status": 0,
+      "type": "opaqueredirect",
+      "cache": null,
+      "destino": "/cuentas/login/"
+    },
+    {
+      "id": "E03/E25",
+      "rol": "Anonimo",
+      "url": "/analisis/",
+      "status": 0,
+      "type": "opaqueredirect",
+      "cache": null,
+      "destino": "/cuentas/login/"
+    },
+    {
+      "id": "E03/E25",
+      "rol": "Anonimo",
+      "url": "/historico/",
+      "status": 0,
+      "type": "opaqueredirect",
+      "cache": null,
+      "destino": "/cuentas/login/"
+    },
+    {
+      "id": "E03/E25",
+      "rol": "Anonimo",
+      "url": "/recomendaciones/",
+      "status": 0,
+      "type": "opaqueredirect",
+      "cache": null,
+      "destino": "/cuentas/login/"
+    },
+    {
+      "id": "E03/E25",
+      "rol": "Anonimo",
+      "url": "/recomendaciones/demostracion/",
+      "status": 0,
+      "type": "opaqueredirect",
+      "cache": null,
+      "destino": "/cuentas/login/"
+    },
+    {
+      "id": "E01-login",
+      "rol": "Registro",
+      "destino": "/captura/nueva/"
+    },
+    {
+      "id": "E04/E25",
+      "rol": "Registro",
+      "url": "/captura/bandeja/",
+      "status": 200,
+      "type": "basic",
+      "cache": null
+    },
+    {
+      "id": "E04/E25",
+      "rol": "Registro",
+      "url": "/catalogo/platos/",
+      "status": 403,
+      "type": "basic",
+      "cache": null
+    },
+    {
+      "id": "E04/E25",
+      "rol": "Registro",
+      "url": "/analisis/",
+      "status": 403,
+      "type": "basic",
+      "cache": null
+    },
+    {
+      "id": "E04/E25",
+      "rol": "Registro",
+      "url": "/historico/",
+      "status": 403,
+      "type": "basic",
+      "cache": null
+    },
+    {
+      "id": "E04/E25",
+      "rol": "Registro",
+      "url": "/recomendaciones/",
+      "status": 403,
+      "type": "basic",
+      "cache": null
+    },
+    {
+      "id": "E04/E25",
+      "rol": "Registro",
+      "url": "/recomendaciones/demostracion/",
+      "status": 403,
+      "type": "basic",
+      "cache": null
+    },
+    {
+      "id": "E05",
+      "rol": "Registro",
+      "url": "/catalogo/platos/nuevo/",
+      "method": "POST",
+      "status": 403,
+      "type": "basic",
+      "cache": null
+    },
+    {
+      "id": "J02-cruzada",
+      "rol": "Registro",
+      "page": "/captura/bandeja/",
+      "evidencia": "registro-captura-bandeja-1440.png",
+      "width": 1440,
+      "height": 900,
+      "scroll": 1440,
+      "overflow": false,
+      "passwords": false
+    },
+    {
+      "id": "J02-cruzada",
+      "rol": "Registro",
+      "page": "/captura/bandeja/",
+      "evidencia": "registro-captura-bandeja-390.png",
+      "width": 390,
+      "height": 844,
+      "scroll": 375,
+      "overflow": false,
+      "passwords": false
+    },
+    {
+      "id": "J02-cruzada",
+      "rol": "Registro",
+      "page": "/captura/bandeja/",
+      "evidencia": "registro-captura-bandeja-820.png",
+      "width": 820,
+      "height": 900,
+      "scroll": 820,
+      "overflow": false,
+      "passwords": false
+    },
+    {
+      "id": "E06-logoutGET",
+      "rol": "Registro",
+      "status": 405,
+      "type": "basic",
+      "cache": "max-age=0, no-cache, no-store, must-revalidate, private"
+    },
+    {
+      "id": "E01-logout",
+      "rol": "Registro",
+      "protegido": {
+        "status": 0,
+        "type": "opaqueredirect",
+        "cache": null
+      },
+      "destino": "/cuentas/login/"
+    },
+    {
+      "id": "E01-login",
+      "rol": "Cocina",
+      "destino": "/analisis/revision/"
+    },
+    {
+      "id": "E04/E25",
+      "rol": "Cocina",
+      "url": "/captura/bandeja/",
+      "status": 403,
+      "type": "basic",
+      "cache": null
+    },
+    {
+      "id": "E04/E25",
+      "rol": "Cocina",
+      "url": "/catalogo/platos/",
+      "status": 403,
+      "type": "basic",
+      "cache": null
+    },
+    {
+      "id": "E04/E25",
+      "rol": "Cocina",
+      "url": "/analisis/",
+      "status": 200,
+      "type": "basic",
+      "cache": "max-age=0, no-cache, no-store, must-revalidate, private"
+    },
+    {
+      "id": "E04/E25",
+      "rol": "Cocina",
+      "url": "/historico/",
+      "status": 200,
+      "type": "basic",
+      "cache": null
+    },
+    {
+      "id": "E04/E25",
+      "rol": "Cocina",
+      "url": "/recomendaciones/",
+      "status": 200,
+      "type": "basic",
+      "cache": "max-age=0, no-cache, no-store, must-revalidate, private"
+    },
+    {
+      "id": "E04/E25",
+      "rol": "Cocina",
+      "url": "/recomendaciones/demostracion/",
+      "status": 200,
+      "type": "basic",
+      "cache": "max-age=0, no-cache, no-store, must-revalidate, private"
+    },
+    {
+      "id": "E05",
+      "rol": "Cocina",
+      "url": "/captura/bandeja/",
+      "method": "POST",
+      "status": 403,
+      "type": "basic",
+      "cache": null
+    },
+    {
+      "id": "J02-cruzada",
+      "rol": "Cocina",
+      "page": "/historico/",
+      "evidencia": "cocina-historico-1440.png",
+      "width": 1440,
+      "height": 900,
+      "scroll": 1425,
+      "overflow": false,
+      "passwords": false
+    },
+    {
+      "id": "J02-cruzada",
+      "rol": "Cocina",
+      "page": "/historico/",
+      "evidencia": "cocina-historico-390.png",
+      "width": 390,
+      "height": 844,
+      "scroll": 375,
+      "overflow": false,
+      "passwords": false
+    },
+    {
+      "id": "J02-cruzada",
+      "rol": "Cocina",
+      "page": "/historico/",
+      "evidencia": "cocina-historico-820.png",
+      "width": 820,
+      "height": 900,
+      "scroll": 805,
+      "overflow": false,
+      "passwords": false
+    },
+    {
+      "id": "J02-cruzada",
+      "rol": "Cocina",
+      "page": "/recomendaciones/",
+      "evidencia": "cocina-recomendaciones-1440.png",
+      "width": 1440,
+      "height": 900,
+      "scroll": 1425,
+      "overflow": false,
+      "passwords": false
+    },
+    {
+      "id": "J02-cruzada",
+      "rol": "Cocina",
+      "page": "/recomendaciones/",
+      "evidencia": "cocina-recomendaciones-390.png",
+      "width": 390,
+      "height": 844,
+      "scroll": 375,
+      "overflow": false,
+      "passwords": false
+    },
+    {
+      "id": "J02-cruzada",
+      "rol": "Cocina",
+      "page": "/recomendaciones/",
+      "evidencia": "cocina-recomendaciones-820.png",
+      "width": 820,
+      "height": 900,
+      "scroll": 805,
+      "overflow": false,
+      "passwords": false
+    },
+    {
+      "id": "J02-cruzada",
+      "rol": "Cocina",
+      "page": "/recomendaciones/demostracion/?escenario=prueba",
+      "evidencia": "cocina-demo-1440.png",
+      "width": 1440,
+      "height": 900,
+      "scroll": 1425,
+      "overflow": false,
+      "passwords": false
+    },
+    {
+      "id": "J02-cruzada",
+      "rol": "Cocina",
+      "page": "/recomendaciones/demostracion/?escenario=prueba",
+      "evidencia": "cocina-demo-390.png",
+      "width": 390,
+      "height": 844,
+      "scroll": 375,
+      "overflow": false,
+      "passwords": false
+    },
+    {
+      "id": "J02-cruzada",
+      "rol": "Cocina",
+      "page": "/recomendaciones/demostracion/?escenario=prueba",
+      "evidencia": "cocina-demo-820.png",
+      "width": 820,
+      "height": 900,
+      "scroll": 805,
+      "overflow": false,
+      "passwords": false
+    },
+    {
+      "id": "E18/E19",
+      "rol": "Cocina",
+      "escenario": "mantener",
+      "datosEjemplo": true,
+      "noPrediccion": true,
+      "recomendacion": "Recomendación de demostración: Mantener",
+      "indicadores": [
+        {
+          "nombre": "Muestra ficticia",
+          "valor": "10"
+        },
+        {
+          "nombre": "Sobrante medio",
+          "valor": "4,00 %"
+        },
+        {
+          "nombre": "Servicios con más del 10 %",
+          "valor": "0,00 %"
+        }
+      ]
+    },
+    {
+      "id": "E18/E19",
+      "rol": "Cocina",
+      "escenario": "porcion",
+      "datosEjemplo": true,
+      "noPrediccion": true,
+      "recomendacion": "Recomendación de demostración: Revisar porción",
+      "indicadores": [
+        {
+          "nombre": "Muestra ficticia",
+          "valor": "10"
+        },
+        {
+          "nombre": "Sobrante medio",
+          "valor": "30,00 %"
+        },
+        {
+          "nombre": "Servicios con más del 10 %",
+          "valor": "100,00 %"
+        }
+      ]
+    },
+    {
+      "id": "E18/E19",
+      "rol": "Cocina",
+      "escenario": "prueba",
+      "datosEjemplo": true,
+      "noPrediccion": true,
+      "recomendacion": "Recomendación de demostración: Realizar prueba controlada",
+      "indicadores": [
+        {
+          "nombre": "Muestra ficticia",
+          "valor": "10"
+        },
+        {
+          "nombre": "Sobrante medio",
+          "valor": "12,00 %"
+        },
+        {
+          "nombre": "Servicios con más del 10 %",
+          "valor": "20,00 %"
+        }
+      ]
+    },
+    {
+      "id": "E18/E19",
+      "rol": "Cocina",
+      "escenario": "insuficiente",
+      "datosEjemplo": true,
+      "noPrediccion": true,
+      "recomendacion": "Recomendación de demostración: Evidencia insuficiente",
+      "indicadores": [
+        {
+          "nombre": "Muestra ficticia",
+          "valor": "2"
+        },
+        {
+          "nombre": "Sobrante medio",
+          "valor": "35,00 %"
+        },
+        {
+          "nombre": "Servicios con más del 10 %",
+          "valor": "100,00 %"
+        }
+      ]
+    },
+    {
+      "id": "E06-logoutGET",
+      "rol": "Cocina",
+      "status": 405,
+      "type": "basic",
+      "cache": "max-age=0, no-cache, no-store, must-revalidate, private"
+    },
+    {
+      "id": "E01-logout",
+      "rol": "Cocina",
+      "protegido": {
+        "status": 0,
+        "type": "opaqueredirect",
+        "cache": null
+      },
+      "destino": "/cuentas/login/"
+    },
+    {
+      "id": "E01-login",
+      "rol": "Administracion",
+      "destino": "/catalogo/platos/"
+    },
+    {
+      "id": "E04/E25",
+      "rol": "Administracion",
+      "url": "/captura/bandeja/",
+      "status": 403,
+      "type": "basic",
+      "cache": null
+    },
+    {
+      "id": "E04/E25",
+      "rol": "Administracion",
+      "url": "/catalogo/platos/",
+      "status": 200,
+      "type": "basic",
+      "cache": null
+    },
+    {
+      "id": "E04/E25",
+      "rol": "Administracion",
+      "url": "/analisis/",
+      "status": 403,
+      "type": "basic",
+      "cache": null
+    },
+    {
+      "id": "E04/E25",
+      "rol": "Administracion",
+      "url": "/historico/",
+      "status": 200,
+      "type": "basic",
+      "cache": null
+    },
+    {
+      "id": "E04/E25",
+      "rol": "Administracion",
+      "url": "/recomendaciones/",
+      "status": 200,
+      "type": "basic",
+      "cache": "max-age=0, no-cache, no-store, must-revalidate, private"
+    },
+    {
+      "id": "E04/E25",
+      "rol": "Administracion",
+      "url": "/recomendaciones/demostracion/",
+      "status": 200,
+      "type": "basic",
+      "cache": "max-age=0, no-cache, no-store, must-revalidate, private"
+    },
+    {
+      "id": "E05",
+      "rol": "Administracion",
+      "url": "/analisis/servicio/00000000-0000-0000-0000-000000000001/solicitar/",
+      "method": "POST",
+      "status": 403,
+      "type": "basic",
+      "cache": null
+    },
+    {
+      "id": "J02-cruzada",
+      "rol": "Administracion",
+      "page": "/historico/",
+      "evidencia": "administracion-historico-1440.png",
+      "width": 1440,
+      "height": 900,
+      "scroll": 1425,
+      "overflow": false,
+      "passwords": false
+    },
+    {
+      "id": "J02-cruzada",
+      "rol": "Administracion",
+      "page": "/historico/",
+      "evidencia": "administracion-historico-390.png",
+      "width": 390,
+      "height": 844,
+      "scroll": 375,
+      "overflow": false,
+      "passwords": false
+    },
+    {
+      "id": "J02-cruzada",
+      "rol": "Administracion",
+      "page": "/historico/",
+      "evidencia": "administracion-historico-820.png",
+      "width": 820,
+      "height": 900,
+      "scroll": 805,
+      "overflow": false,
+      "passwords": false
+    },
+    {
+      "id": "J02-cruzada",
+      "rol": "Administracion",
+      "page": "/recomendaciones/",
+      "evidencia": "administracion-recomendaciones-1440.png",
+      "width": 1440,
+      "height": 900,
+      "scroll": 1425,
+      "overflow": false,
+      "passwords": false
+    },
+    {
+      "id": "J02-cruzada",
+      "rol": "Administracion",
+      "page": "/recomendaciones/",
+      "evidencia": "administracion-recomendaciones-390.png",
+      "width": 390,
+      "height": 844,
+      "scroll": 375,
+      "overflow": false,
+      "passwords": false
+    },
+    {
+      "id": "J02-cruzada",
+      "rol": "Administracion",
+      "page": "/recomendaciones/",
+      "evidencia": "administracion-recomendaciones-820.png",
+      "width": 820,
+      "height": 900,
+      "scroll": 805,
+      "overflow": false,
+      "passwords": false
+    },
+    {
+      "id": "J02-cruzada",
+      "rol": "Administracion",
+      "page": "/recomendaciones/demostracion/?escenario=prueba",
+      "evidencia": "administracion-demo-1440.png",
+      "width": 1440,
+      "height": 900,
+      "scroll": 1425,
+      "overflow": false,
+      "passwords": false
+    },
+    {
+      "id": "J02-cruzada",
+      "rol": "Administracion",
+      "page": "/recomendaciones/demostracion/?escenario=prueba",
+      "evidencia": "administracion-demo-390.png",
+      "width": 390,
+      "height": 844,
+      "scroll": 375,
+      "overflow": false,
+      "passwords": false
+    },
+    {
+      "id": "J02-cruzada",
+      "rol": "Administracion",
+      "page": "/recomendaciones/demostracion/?escenario=prueba",
+      "evidencia": "administracion-demo-820.png",
+      "width": 820,
+      "height": 900,
+      "scroll": 805,
+      "overflow": false,
+      "passwords": false
+    },
+    {
+      "id": "E18/E19",
+      "rol": "Administracion",
+      "escenario": "mantener",
+      "datosEjemplo": true,
+      "noPrediccion": true,
+      "recomendacion": "Recomendación de demostración: Mantener",
+      "indicadores": [
+        {
+          "nombre": "Muestra ficticia",
+          "valor": "10"
+        },
+        {
+          "nombre": "Sobrante medio",
+          "valor": "4,00 %"
+        },
+        {
+          "nombre": "Servicios con más del 10 %",
+          "valor": "0,00 %"
+        }
+      ]
+    },
+    {
+      "id": "E18/E19",
+      "rol": "Administracion",
+      "escenario": "porcion",
+      "datosEjemplo": true,
+      "noPrediccion": true,
+      "recomendacion": "Recomendación de demostración: Revisar porción",
+      "indicadores": [
+        {
+          "nombre": "Muestra ficticia",
+          "valor": "10"
+        },
+        {
+          "nombre": "Sobrante medio",
+          "valor": "30,00 %"
+        },
+        {
+          "nombre": "Servicios con más del 10 %",
+          "valor": "100,00 %"
+        }
+      ]
+    },
+    {
+      "id": "E18/E19",
+      "rol": "Administracion",
+      "escenario": "prueba",
+      "datosEjemplo": true,
+      "noPrediccion": true,
+      "recomendacion": "Recomendación de demostración: Realizar prueba controlada",
+      "indicadores": [
+        {
+          "nombre": "Muestra ficticia",
+          "valor": "10"
+        },
+        {
+          "nombre": "Sobrante medio",
+          "valor": "12,00 %"
+        },
+        {
+          "nombre": "Servicios con más del 10 %",
+          "valor": "20,00 %"
+        }
+      ]
+    },
+    {
+      "id": "E18/E19",
+      "rol": "Administracion",
+      "escenario": "insuficiente",
+      "datosEjemplo": true,
+      "noPrediccion": true,
+      "recomendacion": "Recomendación de demostración: Evidencia insuficiente",
+      "indicadores": [
+        {
+          "nombre": "Muestra ficticia",
+          "valor": "2"
+        },
+        {
+          "nombre": "Sobrante medio",
+          "valor": "35,00 %"
+        },
+        {
+          "nombre": "Servicios con más del 10 %",
+          "valor": "100,00 %"
+        }
+      ]
+    },
+    {
+      "id": "E06-logoutGET",
+      "rol": "Administracion",
+      "status": 405,
+      "type": "basic",
+      "cache": "max-age=0, no-cache, no-store, must-revalidate, private"
+    },
+    {
+      "id": "E01-logout",
+      "rol": "Administracion",
+      "protegido": {
+        "status": 0,
+        "type": "opaqueredirect",
+        "cache": null
+      },
+      "destino": "/cuentas/login/"
+    }
+  ],
+  "login_publico": {
+    "width": 1440,
+    "height": 900,
+    "scroll": 1440,
+    "overflow": false,
+    "passwords": false
+  }
+}

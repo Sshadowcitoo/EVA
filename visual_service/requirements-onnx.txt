@@ -1,3 +1,4 @@
 # Runtime ligero; no instala PyTorch ni Ultralytics en el servidor.
 onnxruntime>=1.20,<2
 Pillow>=12.3,<13
+opencv-python-headless>=4.10,<6

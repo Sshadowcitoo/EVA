@@ -2,6 +2,7 @@
 import ast
 from pathlib import Path
 
+import cv2
 import numpy as np
 from PIL import Image
 
@@ -69,7 +70,9 @@ class PredictorONNX:
         nw, nh = round(ancho * ratio), round(alto * ratio)
         izquierda, arriba = (self.lado - nw) // 2, (self.lado - nh) // 2
         cuadrada = Image.new('RGB', (self.lado, self.lado), (114, 114, 114))
-        cuadrada.paste(imagen.resize((nw, nh), Image.Resampling.BILINEAR), (izquierda, arriba))
+        # Pillow reduce con antialias; YOLO usa INTER_LINEAR sin ese filtro.
+        reducida = cv2.resize(np.asarray(imagen), (nw, nh), interpolation=cv2.INTER_LINEAR)
+        cuadrada.paste(Image.fromarray(reducida), (izquierda, arriba))
         tensor = np.asarray(cuadrada, dtype=np.float32).transpose(2, 0, 1)[None] / 255
         salidas = self.sesion.run(None, {self.entrada: tensor})
         if len(salidas) != 2:
@@ -86,7 +89,7 @@ class PredictorONNX:
         filas = pred[0].T
         scores = filas[:, 4:4 + nc].max(axis=1)
         clases = filas[:, 4:4 + nc].argmax(axis=1)
-        validos = (scores >= .8) & (scores <= 1) & (filas[:, 2] > 0) & (filas[:, 3] > 0)
+        validos = (scores > .8) & (scores <= 1) & (filas[:, 2] > 0) & (filas[:, 3] > 0)
         filas, scores, clases = filas[validos], scores[validos], clases[validos]
         cajas = np.concatenate((filas[:, :2] - filas[:, 2:4] / 2, filas[:, :2] + filas[:, 2:4] / 2), axis=1)
         cajas[:, [0, 2]] = (cajas[:, [0, 2]] - izquierda) / ratio
@@ -95,8 +98,9 @@ class PredictorONNX:
         cajas[:, [1, 3]] = cajas[:, [1, 3]].clip(0, alto)
         mh, mw = proto.shape[2:]
         gain = min(mh / alto, mw / ancho)
-        px, py = (mw - ancho * gain) / 2, (mh - alto * gain) / 2
-        corte = (round(px - .1), round(py - .1), round(mw - px + .1), round(mh - py + .1))
+        # scale_masks calcula primero el tamaño entero sin padding.
+        px, py = (mw - round(ancho * gain)) / 2, (mh - round(alto * gain)) / 2
+        corte = (round(px - .1), round(py - .1), mw - round(px + .1), mh - round(py + .1))
         # Limitar los intermedios float; el contrato conserva tamaño original y máscara binaria L.
         factor = min(1, 1280 / max(ancho, alto))
         trabajo = (max(1, round(ancho * factor)), max(1, round(alto * factor)))
@@ -104,7 +108,8 @@ class PredictorONNX:
             logits = (filas[i, 4 + nc:] @ proto[0].reshape(nm, -1)).reshape(mh, mw)
             flotante = Image.fromarray(logits.astype(np.float32)).crop(corte).resize(trabajo, Image.Resampling.BILINEAR)
             binaria = np.asarray(flotante) > 0
-            x1, y1, x2, y2 = np.rint(cajas[i] * np.array([factor, factor, factor, factor])).astype(int)
+            # crop_mask conserva los índices enteros >= mínimo y < máximo.
+            x1, y1, x2, y2 = np.ceil(cajas[i] * np.array([factor, factor, factor, factor])).astype(int)
             binaria[:y1] = False
             binaria[y2:] = False
             binaria[:, :x1] = False

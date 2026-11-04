@@ -30,7 +30,7 @@ class PredictorYOLO:
 
     def __call__(self, imagen):
         resultado = self.modelo.predict(imagen, imgsz=self.imgsz, device=self.device,
-            conf=0.01, retina_masks=True, max_det=64, verbose=False, save=False)[0]
+            conf=0.8, retina_masks=True, max_det=64, verbose=False, save=False)[0]
         if resultado.masks is None:
             return []
         salidas = []
@@ -110,10 +110,18 @@ def _segmentar(imagen, predictor, codigos):
             continue
         uniones[codigo] = ImageChops.lighter(uniones[codigo], mascara) if codigo in uniones else mascara.copy()
         confianzas[codigo] = min(confianzas.get(codigo, 1), confianza)
+    compartidos = None
     for i, codigo in enumerate(uniones):
         for otro in list(uniones)[i+1:]:
-            if ImageChops.darker(uniones[codigo], uniones[otro]).getbbox():
+            interseccion = ImageChops.darker(uniones[codigo], uniones[otro])
+            if interseccion.getbbox():
                 ambiguos.update([codigo, otro])
+                compartidos = ImageChops.lighter(compartidos, interseccion) if compartidos is not None else interseccion
+    if compartidos is not None:
+        # No asignar al ganador: quitar los píxeles ambiguos de todas las clases.
+        # Las zonas restantes sirven para revisión, nunca como porcentaje válido.
+        for codigo in uniones:
+            uniones[codigo] = ImageChops.subtract(uniones[codigo], compartidos)
     return uniones, confianzas, ambiguos, ajenos
 
 
@@ -131,7 +139,7 @@ def analizar(metadata, servido, retorno, predictor, *, version_modelo, identidad
         mascaras, areas, confianza = [], {}, []
         ambiguo = any(codigo in s[2] for s in segmentaciones.values())
         for etapa, (uniones, confianzas, _, _) in segmentaciones.items():
-            if ambiguo or codigo not in uniones:
+            if codigo not in uniones or not uniones[codigo].getbbox():
                 continue
             mascara = uniones[codigo]
             salida = BytesIO()
@@ -145,7 +153,7 @@ def analizar(metadata, servido, retorno, predictor, *, version_modelo, identidad
         completo = len(mascaras) == 2
         componentes_salida.append(dict(id=comp['id'], area_inicial=areas.get('SERVIDO'),
             area_residual=areas.get('RETORNO'), confianza=min(confianza) if completo else None,
-            comparable=bool(identidad and completo and not any(s[3] for s in segmentaciones.values())),
+            comparable=bool(identidad and completo and not ambiguo and not any(s[3] for s in segmentaciones.values())),
             oculto=False, mascaras=mascaras))
     return dict(schema_version=1, request_id=metadata['request_id'], version_modelo=version_modelo,
         version_configuracion=metadata['version_configuracion'], origen=metadata['origen'],

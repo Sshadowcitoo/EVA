@@ -1,5 +1,46 @@
 # Preparación operativa del motor visual
 
+## Runtime ONNX para la demostración
+
+La factory admite `.onnx` además de `.pt`, con la misma comprobación SHA-256 y
+autenticación. Para ONNX solo se carga `onnxruntime`, NumPy (dependencia del runtime)
+y Pillow; el servidor no necesita PyTorch, OpenCV ni Ultralytics. Dependencias en
+`visual_service/requirements-onnx.txt`. El entrenamiento y la exportación ocurren
+en el equipo local, nunca en EC2.
+
+El adaptador admite la salida estática de YOLO11-seg sin NMS incorporado, nombres
+de clase explícitos del catálogo y un único RGB de hasta 1024 px de lado de entrada
+del modelo. Las fotos mantienen los límites de carga del proyecto. Para fotografías
+grandes, los intermedios float se limitan a 1280 px de lado y la máscara binaria se
+alinea después al tamaño original. Esto no certifica precisión geométrica. Se
+conservan máscaras ausentes y el tratamiento no concluyente; no hay cero inventado.
+
+La unidad limita memoria a 384 MiB (umbral blando 256 MiB) para proteger la web ante
+un consumo inesperado. Medir memoria y tiempo del par en la instancia antes de
+habilitar el worker. Si no cabe o excede el plazo, mantenerlo detenido y revisar
+la causa: no crear otra instancia ni aumentar costos automáticamente.
+
+El primer modelo es experimental, sin ejemplos de maduro, entrenado con una
+preparación real del seco y fuentes sintéticas de los otros platos. Las variantes
+de cada fuente permanecen en entrenamiento. No hay prueba real independiente:
+los diagnósticos sobre esas fuentes no equivalen a precisión generalizable.
+El validador estricto de datasets de producción no se modifica ni admite declarar
+fuentes sintéticas como reales. La ruta de demostración conserva esa procedencia
+y no publica mAP de entrenamiento como validación independiente.
+
+Las ejecuciones de QA con material sintético usan origen SIMULADO, sin promoverlo
+a evidencia real de histórico/recomendaciones. La comparabilidad y las aprobaciones
+operativas permanecen desactivadas hasta validación independiente del montaje y
+del modelo; la aprobación documental de los valores del perfil es otra decisión.
+
+Los dos adaptadores filtran detecciones por puntuación 0.80, conforme al perfil
+experimental aprobado. No es una probabilidad calibrada de acierto. El 03/11/2026
+se ratificó retirar los píxeles compartidos entre clases de todas sus máscaras y
+mostrar solo zonas sin conflicto, conservando comparable=False en los componentes
+afectados. No se elige una clase ganadora ni se habilitan porcentajes concluyentes.
+`EVA_ANALISIS_VERSION_CONFIGURACION` permite identificar esta configuración en cada
+intento sin aprobar umbrales operativos ni alterar instantáneas anteriores.
+
 Esta entrega prepara archivos y verificaciones; no instala dependencias ni activa
 el motor/worker en AWS. No incluye pesos ni demuestra latencia o precisión real.
 El motor usa un proceso CPU, privado en 127.0.0.1:8765. No abrir ese puerto en EC2
@@ -31,11 +72,12 @@ por ejemplo `/var/lib/eva-modelos/piloto-01.pt`. No reutilizar un nombre modific
 su contenido durante la ejecución. En `/etc/eva/eva.env`, sin imprimir secretos:
 
 ```text
-EVA_VISUAL_PESOS=/var/lib/eva-modelos/piloto-01.pt
+EVA_VISUAL_PESOS=/var/lib/eva-modelos/piloto-01.onnx
 EVA_VISUAL_ENDPOINT=http://127.0.0.1:8765/v1/analizar-par
 EVA_VISUAL_VERSION_MODELO=sha256-<primeros 40 caracteres del SHA-256 de los pesos>
 EVA_VISUAL_TOKEN=<secreto interno de al menos 24 caracteres>
-EVA_VISUAL_ORIGEN=REAL
+EVA_VISUAL_ORIGEN=SIMULADO
+EVA_ANALISIS_VERSION_CONFIGURACION=piloto-demo-onnx-v1
 ```
 
 El prefijo tiene 40 dígitos hexadecimales, además de `sha256-`. Ambos procesos usan
@@ -48,7 +90,7 @@ necesita acceder a S3: recibe bytes desde Django.
 
 1. Respaldar configuración y registrar SHA del código, pesos y versiones de
    dependencias. Mantener el worker detenido mientras se cambia la configuración.
-2. Verificar pesos entrenados para las ocho clases, evaluación independiente y
+2. Verificar pesos entrenados para las clases disponibles (maduro sigue pendiente), evaluación independiente y
    recursos disponibles. No usar COCO ni predicciones de tests como modelo final.
 3. Revisar/copiar las unidades de `ops/analisis/` al administrador de servicios.
    Ejecutar `systemd-analyze verify` y `systemctl daemon-reload` en Linux. Verificar

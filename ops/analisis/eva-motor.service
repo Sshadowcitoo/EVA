@@ -23,6 +23,8 @@ ProtectSystem=strict
 ProtectHome=true
 ReadWritePaths=/var/lib/eva-motor
 UMask=0077
+MemoryHigh=256M
+MemoryMax=384M
 
 [Install]
 WantedBy=multi-user.target

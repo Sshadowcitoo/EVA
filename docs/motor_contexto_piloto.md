@@ -1,6 +1,11 @@
 # Motor visual, contexto y criterios experimentales
 
-## Estado real de la entrega
+Estado posterior: se incorpora un adaptador ONNX y un experimento controlado de
+entrenamiento con siete clases. Véase `operacion_motor.md`. La ausencia de fotos
+y pesos descrita abajo corresponde a la entrega inicial, no al estado posterior.
+La precisión real independiente y la comparabilidad siguen pendientes.
+
+## Estado de la entrega inicial (histórico)
 
 Se implementan validación de dataset, exportación YOLO, entrenamiento explícito,
 adaptador de inferencia y endpoint HTTP interno; no se ha entrenado un modelo ni
@@ -72,8 +77,12 @@ https://docs.ultralytics.com/tasks/segment/ (consultadas 03/11/2026).
 El modelo entrenado debe usar las clases del piloto. El adaptador rechaza pesos
 COCO genéricos presentados como modelo final. No descarga .pt si falta el archivo.
 Une instancias de la misma clase y conserva máscaras binarias con las dimensiones
-originales. Solapamientos entre clases dejan los componentes ambiguos sin máscaras;
-una detección ausente produce área None y resultado no concluyente, nunca cero.
+originales. Regla ratificada el 03/11/2026: los píxeles compartidos entre clases se
+quitan de todas las máscaras; se muestran solo las zonas sin conflicto. Los
+componentes afectados permanecen no comparables y no concluyentes, incluso si la
+identidad estuviera verificada. Si no queda región visible no se publica una máscara
+vacía ni un cero. Una detección ausente conserva área None. El umbral de detección
+experimental es 0.80; no representa precisión medida ni activa la comparabilidad.
 La puntuación del detector no equivale a una probabilidad de acierto calibrada.
 
 Endpoint POST /v1/analizar-par, multipart metadata/servido/retorno, Bearer interno,

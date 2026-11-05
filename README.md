@@ -260,6 +260,11 @@ Base revisada: `7615a24`. Suite local: 566 pruebas descubiertas, 553 aprobadas y
 y ejecutaron aparte cinco regresiones QA, todas aprobadas. También se registraron
 65 observaciones HTTPS con roles aislados y 22 capturas de interfaz.
 
+Una auditoría posterior de entradas y mensajes registró
+[49 observaciones y siete incidencias de validación/usabilidad](docs/qa_20261104/hallazgos_validaciones.md),
+incluidos errores 500 locales en servido y retorno. No están corregidos: la
+suite aprobada anterior no implica ausencia de defectos.
+
 El cierre integral queda **NO APTO PARA DEMO por evidencia pendiente**: faltan
 recorridos físicos propios X01–X04, E08, revisión cruzada y matrices del equipo.
 Las capturas emuladas y las fixtures locales no certifican teléfono, cámara,

@@ -102,7 +102,12 @@ de S3 desde acceso operativo. La evidencia de Lino e Isaac debe cubrirlos.
 No se midió precisión independiente de IA ni comparabilidad física. El origen
 SIMULADO y los criterios pendientes deben seguir bloqueando métricas operativas.
 
-No hubo fallos en las pruebas ejecutadas. La observación de caché no demuestra
+La suite original terminó sin fallos. Una auditoría posterior de entradas y
+mensajes **sí encontró defectos**, incluidos cuatro HTTP 500 locales por dos
+causas en las rutas de servido/retorno. Ver el
+[inventario adicional con 49 observaciones](hallazgos_validaciones.md).
+Los resultados de la suite no equivalen a ausencia de defectos del producto.
+La observación de caché no demuestra
 filtración y sigue abierta para investigación. No hay PR de corrección ni reensayo
 de un fallo corregido que se pueda declarar aquí.
 

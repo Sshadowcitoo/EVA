@@ -1,0 +1,782 @@
+{
+  "base": "7615a24",
+  "entorno": "SQLite temporal, DEBUG=False; sin AWS; Client sin enforcement CSRF para aislar validacion de formularios",
+  "observaciones": [
+    {
+      "caso": "inicial",
+      "ruta": "/captura/bandeja/",
+      "metodo": "GET",
+      "status": 200,
+      "cache_control": null,
+      "error_visible_contexto": null,
+      "formulario_bound": null,
+      "formulario_errores": null,
+      "excepcion": null,
+      "numero_conservado": null,
+      "ayuda_bandeja_pendiente_en_servido": true,
+      "servicios_creados": 0
+    },
+    {
+      "caso": "vacio",
+      "ruta": "/captura/bandeja/",
+      "metodo": "GET",
+      "status": 200,
+      "cache_control": null,
+      "error_visible_contexto": null,
+      "formulario_bound": null,
+      "formulario_errores": null,
+      "excepcion": null,
+      "numero_conservado": null,
+      "ayuda_bandeja_pendiente_en_servido": true,
+      "servicios_creados": 0
+    },
+    {
+      "caso": "espacios",
+      "ruta": "/captura/bandeja/",
+      "metodo": "GET",
+      "status": 200,
+      "cache_control": null,
+      "error_visible_contexto": null,
+      "formulario_bound": null,
+      "formulario_errores": null,
+      "excepcion": null,
+      "numero_conservado": null,
+      "ayuda_bandeja_pendiente_en_servido": true,
+      "servicios_creados": 0
+    },
+    {
+      "caso": "letras",
+      "ruta": "/captura/bandeja/",
+      "metodo": "GET",
+      "status": 200,
+      "cache_control": null,
+      "error_visible_contexto": "El número de bandeja solo puede contener dígitos.",
+      "formulario_bound": null,
+      "formulario_errores": null,
+      "excepcion": null,
+      "numero_conservado": false,
+      "ayuda_bandeja_pendiente_en_servido": true,
+      "servicios_creados": 0
+    },
+    {
+      "caso": "inexistente",
+      "ruta": "/captura/bandeja/",
+      "metodo": "GET",
+      "status": 404,
+      "cache_control": null,
+      "error_visible_contexto": null,
+      "formulario_bound": null,
+      "formulario_errores": null,
+      "excepcion": null,
+      "numero_conservado": null,
+      "ayuda_bandeja_pendiente_en_servido": false,
+      "servicios_creados": 0
+    },
+    {
+      "caso": "cero",
+      "ruta": "/captura/bandeja/",
+      "metodo": "GET",
+      "status": 404,
+      "cache_control": null,
+      "error_visible_contexto": null,
+      "formulario_bound": null,
+      "formulario_errores": null,
+      "excepcion": null,
+      "numero_conservado": null,
+      "ayuda_bandeja_pendiente_en_servido": false,
+      "servicios_creados": 0
+    },
+    {
+      "caso": "negativo",
+      "ruta": "/captura/bandeja/",
+      "metodo": "GET",
+      "status": 200,
+      "cache_control": null,
+      "error_visible_contexto": "El número de bandeja solo puede contener dígitos.",
+      "formulario_bound": null,
+      "formulario_errores": null,
+      "excepcion": null,
+      "numero_conservado": null,
+      "ayuda_bandeja_pendiente_en_servido": true,
+      "servicios_creados": 0
+    },
+    {
+      "caso": "decimal",
+      "ruta": "/captura/bandeja/",
+      "metodo": "GET",
+      "status": 200,
+      "cache_control": null,
+      "error_visible_contexto": "El número de bandeja solo puede contener dígitos.",
+      "formulario_bound": null,
+      "formulario_errores": null,
+      "excepcion": null,
+      "numero_conservado": null,
+      "ayuda_bandeja_pendiente_en_servido": true,
+      "servicios_creados": 0
+    },
+    {
+      "caso": "digito_superindice",
+      "ruta": "/captura/bandeja/",
+      "metodo": "GET",
+      "status": 500,
+      "cache_control": null,
+      "error_visible_contexto": null,
+      "formulario_bound": null,
+      "formulario_errores": null,
+      "excepcion": "ValueError",
+      "numero_conservado": null,
+      "ayuda_bandeja_pendiente_en_servido": false,
+      "servicios_creados": 0
+    },
+    {
+      "caso": "entero_64_digitos",
+      "ruta": "/captura/bandeja/",
+      "metodo": "GET",
+      "status": 404,
+      "cache_control": null,
+      "error_visible_contexto": null,
+      "formulario_bound": null,
+      "formulario_errores": null,
+      "excepcion": null,
+      "numero_conservado": null,
+      "ayuda_bandeja_pendiente_en_servido": false,
+      "servicios_creados": 0
+    },
+    {
+      "caso": "entero_5000_digitos",
+      "ruta": "/captura/bandeja/",
+      "metodo": "GET",
+      "status": 500,
+      "cache_control": null,
+      "error_visible_contexto": null,
+      "formulario_bound": null,
+      "formulario_errores": null,
+      "excepcion": "ValueError",
+      "numero_conservado": null,
+      "ayuda_bandeja_pendiente_en_servido": false,
+      "servicios_creados": 0
+    },
+    {
+      "caso": "numero_y_etiqueta",
+      "ruta": "/captura/bandeja/",
+      "metodo": "GET",
+      "status": 200,
+      "cache_control": null,
+      "error_visible_contexto": "Escribe el número o escanea la etiqueta, no ambos.",
+      "formulario_bound": null,
+      "formulario_errores": null,
+      "excepcion": null,
+      "numero_conservado": null,
+      "ayuda_bandeja_pendiente_en_servido": true,
+      "servicios_creados": 0
+    },
+    {
+      "caso": "etiqueta_invalida",
+      "ruta": "/captura/bandeja/",
+      "metodo": "GET",
+      "status": 404,
+      "cache_control": null,
+      "error_visible_contexto": null,
+      "formulario_bound": null,
+      "formulario_errores": null,
+      "excepcion": null,
+      "numero_conservado": null,
+      "ayuda_bandeja_pendiente_en_servido": false,
+      "servicios_creados": 0
+    },
+    {
+      "caso": "bandeja_libre",
+      "ruta": "/captura/bandeja/",
+      "metodo": "GET",
+      "status": 200,
+      "cache_control": null,
+      "error_visible_contexto": null,
+      "formulario_bound": false,
+      "formulario_errores": {},
+      "excepcion": null,
+      "numero_conservado": null,
+      "ayuda_bandeja_pendiente_en_servido": false,
+      "servicios_creados": 0
+    },
+    {
+      "caso": "inicial",
+      "ruta": "/captura/retorno/",
+      "metodo": "GET",
+      "status": 200,
+      "cache_control": null,
+      "error_visible_contexto": null,
+      "formulario_bound": null,
+      "formulario_errores": null,
+      "excepcion": null,
+      "numero_conservado": null,
+      "ayuda_bandeja_pendiente_en_servido": null,
+      "servicios_creados": 0
+    },
+    {
+      "caso": "vacio",
+      "ruta": "/captura/retorno/",
+      "metodo": "GET",
+      "status": 200,
+      "cache_control": null,
+      "error_visible_contexto": null,
+      "formulario_bound": null,
+      "formulario_errores": null,
+      "excepcion": null,
+      "numero_conservado": null,
+      "ayuda_bandeja_pendiente_en_servido": null,
+      "servicios_creados": 0
+    },
+    {
+      "caso": "espacios",
+      "ruta": "/captura/retorno/",
+      "metodo": "GET",
+      "status": 200,
+      "cache_control": null,
+      "error_visible_contexto": null,
+      "formulario_bound": null,
+      "formulario_errores": null,
+      "excepcion": null,
+      "numero_conservado": null,
+      "ayuda_bandeja_pendiente_en_servido": null,
+      "servicios_creados": 0
+    },
+    {
+      "caso": "letras",
+      "ruta": "/captura/retorno/",
+      "metodo": "GET",
+      "status": 200,
+      "cache_control": null,
+      "error_visible_contexto": "El número de bandeja solo puede contener dígitos.",
+      "formulario_bound": null,
+      "formulario_errores": null,
+      "excepcion": null,
+      "numero_conservado": false,
+      "ayuda_bandeja_pendiente_en_servido": null,
+      "servicios_creados": 0
+    },
+    {
+      "caso": "inexistente",
+      "ruta": "/captura/retorno/",
+      "metodo": "GET",
+      "status": 404,
+      "cache_control": null,
+      "error_visible_contexto": null,
+      "formulario_bound": null,
+      "formulario_errores": null,
+      "excepcion": null,
+      "numero_conservado": null,
+      "ayuda_bandeja_pendiente_en_servido": null,
+      "servicios_creados": 0
+    },
+    {
+      "caso": "cero",
+      "ruta": "/captura/retorno/",
+      "metodo": "GET",
+      "status": 404,
+      "cache_control": null,
+      "error_visible_contexto": null,
+      "formulario_bound": null,
+      "formulario_errores": null,
+      "excepcion": null,
+      "numero_conservado": null,
+      "ayuda_bandeja_pendiente_en_servido": null,
+      "servicios_creados": 0
+    },
+    {
+      "caso": "negativo",
+      "ruta": "/captura/retorno/",
+      "metodo": "GET",
+      "status": 200,
+      "cache_control": null,
+      "error_visible_contexto": "El número de bandeja solo puede contener dígitos.",
+      "formulario_bound": null,
+      "formulario_errores": null,
+      "excepcion": null,
+      "numero_conservado": null,
+      "ayuda_bandeja_pendiente_en_servido": null,
+      "servicios_creados": 0
+    },
+    {
+      "caso": "decimal",
+      "ruta": "/captura/retorno/",
+      "metodo": "GET",
+      "status": 200,
+      "cache_control": null,
+      "error_visible_contexto": "El número de bandeja solo puede contener dígitos.",
+      "formulario_bound": null,
+      "formulario_errores": null,
+      "excepcion": null,
+      "numero_conservado": null,
+      "ayuda_bandeja_pendiente_en_servido": null,
+      "servicios_creados": 0
+    },
+    {
+      "caso": "digito_superindice",
+      "ruta": "/captura/retorno/",
+      "metodo": "GET",
+      "status": 500,
+      "cache_control": null,
+      "error_visible_contexto": null,
+      "formulario_bound": null,
+      "formulario_errores": null,
+      "excepcion": "ValueError",
+      "numero_conservado": null,
+      "ayuda_bandeja_pendiente_en_servido": null,
+      "servicios_creados": 0
+    },
+    {
+      "caso": "entero_64_digitos",
+      "ruta": "/captura/retorno/",
+      "metodo": "GET",
+      "status": 404,
+      "cache_control": null,
+      "error_visible_contexto": null,
+      "formulario_bound": null,
+      "formulario_errores": null,
+      "excepcion": null,
+      "numero_conservado": null,
+      "ayuda_bandeja_pendiente_en_servido": null,
+      "servicios_creados": 0
+    },
+    {
+      "caso": "entero_5000_digitos",
+      "ruta": "/captura/retorno/",
+      "metodo": "GET",
+      "status": 500,
+      "cache_control": null,
+      "error_visible_contexto": null,
+      "formulario_bound": null,
+      "formulario_errores": null,
+      "excepcion": "ValueError",
+      "numero_conservado": null,
+      "ayuda_bandeja_pendiente_en_servido": null,
+      "servicios_creados": 0
+    },
+    {
+      "caso": "numero_y_etiqueta",
+      "ruta": "/captura/retorno/",
+      "metodo": "GET",
+      "status": 200,
+      "cache_control": null,
+      "error_visible_contexto": "Escribe el número o escanea la etiqueta, no ambos.",
+      "formulario_bound": null,
+      "formulario_errores": null,
+      "excepcion": null,
+      "numero_conservado": null,
+      "ayuda_bandeja_pendiente_en_servido": null,
+      "servicios_creados": 0
+    },
+    {
+      "caso": "etiqueta_invalida",
+      "ruta": "/captura/retorno/",
+      "metodo": "GET",
+      "status": 404,
+      "cache_control": null,
+      "error_visible_contexto": null,
+      "formulario_bound": null,
+      "formulario_errores": null,
+      "excepcion": null,
+      "numero_conservado": null,
+      "ayuda_bandeja_pendiente_en_servido": null,
+      "servicios_creados": 0
+    },
+    {
+      "caso": "bandeja_libre",
+      "ruta": "/captura/retorno/",
+      "metodo": "GET",
+      "status": 200,
+      "cache_control": null,
+      "error_visible_contexto": "La bandeja no tiene un servicio esperando retorno. Puede estar libre o su servicio ya fue cerrado.",
+      "formulario_bound": null,
+      "formulario_errores": null,
+      "excepcion": null,
+      "numero_conservado": null,
+      "ayuda_bandeja_pendiente_en_servido": null,
+      "servicios_creados": 0
+    },
+    {
+      "caso": "post_vacio_bandeja_libre",
+      "ruta": "/captura/bandeja/?numero=1",
+      "metodo": "POST",
+      "status": 200,
+      "cache_control": null,
+      "error_visible_contexto": null,
+      "formulario_bound": false,
+      "formulario_errores": {},
+      "excepcion": null,
+      "numero_conservado": null,
+      "ayuda_bandeja_pendiente_en_servido": null,
+      "servicios_creados": 0
+    },
+    {
+      "caso": "post_foto_sin_archivo_ni_checklist",
+      "ruta": "/captura/19753422-c02e-412c-9e2d-7b2b03c4ab24/foto-servido/",
+      "metodo": "POST",
+      "status": 200,
+      "cache_control": null,
+      "error_visible_contexto": null,
+      "formulario_bound": false,
+      "formulario_errores": {},
+      "excepcion": null,
+      "numero_conservado": null,
+      "ayuda_bandeja_pendiente_en_servido": null,
+      "servicios_creados": 0
+    },
+    {
+      "caso": "post_basico_vacio",
+      "ruta": "/captura/nueva/",
+      "metodo": "POST",
+      "status": 200,
+      "cache_control": null,
+      "error_visible_contexto": null,
+      "formulario_bound": true,
+      "formulario_errores": {
+        "plato": [
+          "Este campo es obligatorio."
+        ],
+        "tipo_porcion": [
+          "Este campo es obligatorio."
+        ]
+      },
+      "excepcion": null,
+      "numero_conservado": null,
+      "ayuda_bandeja_pendiente_en_servido": null,
+      "servicios_creados": 0
+    },
+    {
+      "caso": "pagina_letras",
+      "ruta": "/historico/",
+      "metodo": "GET",
+      "status": 400,
+      "cache_control": null,
+      "error_visible_contexto": null,
+      "formulario_bound": true,
+      "formulario_errores": {
+        "page": [
+          "Introduzca un número entero."
+        ]
+      },
+      "excepcion": null,
+      "numero_conservado": null,
+      "ayuda_bandeja_pendiente_en_servido": null,
+      "servicios_creados": 0
+    },
+    {
+      "caso": "pagina_negativa",
+      "ruta": "/historico/",
+      "metodo": "GET",
+      "status": 400,
+      "cache_control": null,
+      "error_visible_contexto": null,
+      "formulario_bound": true,
+      "formulario_errores": {
+        "page": [
+          "Asegúrese de que este valor es mayor o igual a 1."
+        ]
+      },
+      "excepcion": null,
+      "numero_conservado": null,
+      "ayuda_bandeja_pendiente_en_servido": null,
+      "servicios_creados": 0
+    },
+    {
+      "caso": "fecha_invalida",
+      "ruta": "/historico/",
+      "metodo": "GET",
+      "status": 400,
+      "cache_control": null,
+      "error_visible_contexto": null,
+      "formulario_bound": true,
+      "formulario_errores": {
+        "desde": [
+          "Introduzca una fecha válida."
+        ]
+      },
+      "excepcion": null,
+      "numero_conservado": null,
+      "ayuda_bandeja_pendiente_en_servido": null,
+      "servicios_creados": 0
+    },
+    {
+      "caso": "fechas_invertidas",
+      "ruta": "/historico/",
+      "metodo": "GET",
+      "status": 400,
+      "cache_control": null,
+      "error_visible_contexto": null,
+      "formulario_bound": true,
+      "formulario_errores": {
+        "hasta": [
+          "La fecha final no puede ser anterior a la inicial."
+        ]
+      },
+      "excepcion": null,
+      "numero_conservado": null,
+      "ayuda_bandeja_pendiente_en_servido": null,
+      "servicios_creados": 0
+    },
+    {
+      "caso": "horas_invertidas",
+      "ruta": "/historico/",
+      "metodo": "GET",
+      "status": 400,
+      "cache_control": null,
+      "error_visible_contexto": null,
+      "formulario_bound": true,
+      "formulario_errores": {
+        "hora_hasta": [
+          "El rango debe avanzar dentro del mismo día; divide los horarios nocturnos."
+        ]
+      },
+      "excepcion": null,
+      "numero_conservado": null,
+      "ayuda_bandeja_pendiente_en_servido": null,
+      "servicios_creados": 0
+    },
+    {
+      "caso": "plato_desconocido",
+      "ruta": "/historico/",
+      "metodo": "GET",
+      "status": 400,
+      "cache_control": null,
+      "error_visible_contexto": null,
+      "formulario_bound": true,
+      "formulario_errores": {
+        "plato": [
+          "Escoja una opción válida. QA-invalido no es una de las opciones disponibles."
+        ]
+      },
+      "excepcion": null,
+      "numero_conservado": null,
+      "ayuda_bandeja_pendiente_en_servido": null,
+      "servicios_creados": 0
+    },
+    {
+      "caso": "pagina_letras",
+      "ruta": "/recomendaciones/",
+      "metodo": "GET",
+      "status": 400,
+      "cache_control": "max-age=0, no-cache, no-store, must-revalidate, private",
+      "error_visible_contexto": null,
+      "formulario_bound": true,
+      "formulario_errores": {
+        "page": [
+          "Introduzca un número entero."
+        ]
+      },
+      "excepcion": null,
+      "numero_conservado": null,
+      "ayuda_bandeja_pendiente_en_servido": null,
+      "servicios_creados": 0
+    },
+    {
+      "caso": "pagina_negativa",
+      "ruta": "/recomendaciones/",
+      "metodo": "GET",
+      "status": 400,
+      "cache_control": "max-age=0, no-cache, no-store, must-revalidate, private",
+      "error_visible_contexto": null,
+      "formulario_bound": true,
+      "formulario_errores": {
+        "page": [
+          "Asegúrese de que este valor es mayor o igual a 1."
+        ]
+      },
+      "excepcion": null,
+      "numero_conservado": null,
+      "ayuda_bandeja_pendiente_en_servido": null,
+      "servicios_creados": 0
+    },
+    {
+      "caso": "fecha_invalida",
+      "ruta": "/recomendaciones/",
+      "metodo": "GET",
+      "status": 400,
+      "cache_control": "max-age=0, no-cache, no-store, must-revalidate, private",
+      "error_visible_contexto": null,
+      "formulario_bound": true,
+      "formulario_errores": {
+        "desde": [
+          "Introduzca una fecha válida."
+        ]
+      },
+      "excepcion": null,
+      "numero_conservado": null,
+      "ayuda_bandeja_pendiente_en_servido": null,
+      "servicios_creados": 0
+    },
+    {
+      "caso": "fechas_invertidas",
+      "ruta": "/recomendaciones/",
+      "metodo": "GET",
+      "status": 400,
+      "cache_control": "max-age=0, no-cache, no-store, must-revalidate, private",
+      "error_visible_contexto": null,
+      "formulario_bound": true,
+      "formulario_errores": {
+        "hasta": [
+          "La fecha final no puede ser anterior a la inicial."
+        ]
+      },
+      "excepcion": null,
+      "numero_conservado": null,
+      "ayuda_bandeja_pendiente_en_servido": null,
+      "servicios_creados": 0
+    },
+    {
+      "caso": "horas_invertidas",
+      "ruta": "/recomendaciones/",
+      "metodo": "GET",
+      "status": 400,
+      "cache_control": "max-age=0, no-cache, no-store, must-revalidate, private",
+      "error_visible_contexto": null,
+      "formulario_bound": true,
+      "formulario_errores": {
+        "hora_hasta": [
+          "El rango debe avanzar dentro del mismo día; divide los horarios nocturnos."
+        ]
+      },
+      "excepcion": null,
+      "numero_conservado": null,
+      "ayuda_bandeja_pendiente_en_servido": null,
+      "servicios_creados": 0
+    },
+    {
+      "caso": "plato_desconocido",
+      "ruta": "/recomendaciones/",
+      "metodo": "GET",
+      "status": 400,
+      "cache_control": "max-age=0, no-cache, no-store, must-revalidate, private",
+      "error_visible_contexto": null,
+      "formulario_bound": true,
+      "formulario_errores": {
+        "plato": [
+          "Escoja una opción válida. QA-invalido no es una de las opciones disponibles."
+        ]
+      },
+      "excepcion": null,
+      "numero_conservado": null,
+      "ayuda_bandeja_pendiente_en_servido": null,
+      "servicios_creados": 0
+    },
+    {
+      "caso": "comparacion_sin_fechas",
+      "ruta": "/historico/comparar/",
+      "metodo": "GET",
+      "status": 400,
+      "cache_control": null,
+      "error_visible_contexto": null,
+      "formulario_bound": true,
+      "formulario_errores": {
+        "referencia_desde": [
+          "Este campo es obligatorio."
+        ],
+        "referencia_hasta": [
+          "Este campo es obligatorio."
+        ],
+        "comparado_desde": [
+          "Este campo es obligatorio."
+        ],
+        "comparado_hasta": [
+          "Este campo es obligatorio."
+        ]
+      },
+      "excepcion": null,
+      "numero_conservado": null,
+      "ayuda_bandeja_pendiente_en_servido": null,
+      "servicios_creados": 0
+    },
+    {
+      "caso": "demo_escenario_desconocido",
+      "ruta": "/recomendaciones/demostracion/",
+      "metodo": "GET",
+      "status": 404,
+      "cache_control": null,
+      "error_visible_contexto": null,
+      "formulario_bound": null,
+      "formulario_errores": null,
+      "excepcion": null,
+      "numero_conservado": null,
+      "ayuda_bandeja_pendiente_en_servido": null,
+      "servicios_creados": 0
+    },
+    {
+      "caso": "alta_catalogo_vacia",
+      "ruta": "/catalogo/platos/nuevo/",
+      "metodo": "POST",
+      "status": 200,
+      "cache_control": null,
+      "error_visible_contexto": null,
+      "formulario_bound": true,
+      "formulario_errores": {
+        "codigo": [
+          "Este campo es obligatorio."
+        ],
+        "nombre": [
+          "Este campo es obligatorio."
+        ]
+      },
+      "excepcion": null,
+      "numero_conservado": null,
+      "ayuda_bandeja_pendiente_en_servido": null,
+      "servicios_creados": 0
+    },
+    {
+      "caso": "alta_catalogo_vacia",
+      "ruta": "/catalogo/componentes/nuevo/",
+      "metodo": "POST",
+      "status": 200,
+      "cache_control": null,
+      "error_visible_contexto": null,
+      "formulario_bound": true,
+      "formulario_errores": {
+        "codigo": [
+          "Este campo es obligatorio."
+        ],
+        "nombre": [
+          "Este campo es obligatorio."
+        ]
+      },
+      "excepcion": null,
+      "numero_conservado": null,
+      "ayuda_bandeja_pendiente_en_servido": null,
+      "servicios_creados": 0
+    },
+    {
+      "caso": "alta_catalogo_vacia",
+      "ruta": "/catalogo/porciones/nuevo/",
+      "metodo": "POST",
+      "status": 200,
+      "cache_control": null,
+      "error_visible_contexto": null,
+      "formulario_bound": true,
+      "formulario_errores": {
+        "codigo": [
+          "Este campo es obligatorio."
+        ],
+        "nombre": [
+          "Este campo es obligatorio."
+        ]
+      },
+      "excepcion": null,
+      "numero_conservado": null,
+      "ayuda_bandeja_pendiente_en_servido": null,
+      "servicios_creados": 0
+    },
+    {
+      "caso": "evaluacion_sin_campos",
+      "ruta": "/recomendaciones/evaluar/",
+      "metodo": "POST",
+      "status": 400,
+      "cache_control": "max-age=0, no-cache, no-store, must-revalidate, private",
+      "error_visible_contexto": null,
+      "formulario_bound": false,
+      "formulario_errores": {},
+      "excepcion": null,
+      "numero_conservado": null,
+      "ayuda_bandeja_pendiente_en_servido": null,
+      "servicios_creados": 0
+    }
+  ],
+  "fecha_ecuador": "2026-11-04T21:50:13.648661-05:00"
+}

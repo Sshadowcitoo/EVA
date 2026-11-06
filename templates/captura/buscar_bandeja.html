@@ -1,21 +1,24 @@
 {% extends "captura/base_operacion.html" %}
 {% load static %}
 {% block title %}Localizar bandeja | EVA{% endblock %}
-{% block heading %}{% if es_retorno %}Registrar retorno{% else %}Identificar bandeja{% endif %}{% endblock %}
+{% block heading %}{% if es_retorno %}Registrar retorno{% else %}Registrar servido{% endif %}{% endblock %}
 {% block subtitle %}Escanea la etiqueta o escribe el número visible de la bandeja.{% endblock %}
 {% block captura_content %}
 <section class="capture-lookup">
+  {% if busqueda.non_field_errors %}<div class="error-summary" role="alert">{{ busqueda.non_field_errors }}</div>{% endif %}
   <form method="get" {% if buscar_url %}action="{{ buscar_url }}"{% endif %} data-lookup>
     <div class="capture-search-field">
-    <label for="numero-bandeja">Número de bandeja</label>
-    <input id="numero-bandeja" name="numero" type="text" maxlength="64" autocomplete="off" placeholder="Ejemplo: 001">
+      {{ busqueda.numero.label_tag }}
+      {{ busqueda.numero }}
+      {{ busqueda.numero.errors }}
     </div>
-    <button class="button primary-button" {% if not operacion_habilitada or not buscar_url %}disabled{% endif %}>Buscar registro</button>
+    <button class="button primary-button" {% if not operacion_habilitada or not buscar_url %}disabled{% endif %}>Buscar bandeja</button>
     {% if lector_habilitado %}
     <div class="capture-scanner" data-qr-reader>
-      <details><summary>Escanear etiqueta QR</summary>
-        <label for="codigo-etiqueta">Código de etiqueta</label>
-        <input id="codigo-etiqueta" name="etiqueta" type="text" maxlength="2048" autocomplete="off" data-qr-value>
+      <details{% if busqueda.etiqueta.errors or busqueda.etiqueta.value %} open{% endif %}><summary>Escanear etiqueta QR</summary>
+        {{ busqueda.etiqueta.label_tag }}
+        {{ busqueda.etiqueta }}
+        {{ busqueda.etiqueta.errors }}
         <button type="button" class="button secondary-button" data-qr-start>Activar cámara</button>
         <button type="button" class="button secondary-button" data-qr-stop hidden>Detener cámara</button>
         <video class="capture-image" data-qr-video autoplay playsinline muted hidden aria-label="Cámara para escanear la etiqueta"></video>
@@ -27,8 +30,13 @@
   </form>
   {% if not bandeja %}
   <div class="info-box capture-search-help">
-    <h2>Busca una bandeja pendiente</h2>
-    <p>Introduce el número visible o escanea su etiqueta. Solo tras encontrarla se muestran plato, porción y foto inicial para confirmar la correspondencia.</p>
+    {% if es_retorno %}
+    <h2>Busca la bandeja que regresó</h2>
+    <p>Usa la misma bandeja del servido. Revisa el plato, la porción y la foto inicial, si está disponible, antes de confirmar el retorno.</p>
+    {% else %}
+    <h2>Busca una bandeja libre</h2>
+    <p>Selecciona el plato y la porción después de localizar la bandeja. Luego toma la fotografía antes de entregar el plato.</p>
+    {% endif %}
     <p>El código identifica la bandeja; debes tener una sesión con rol Registro.</p>
   </div>
   {% endif %}
@@ -43,9 +51,17 @@
   {% endif %}
   {% if form and confirmar_url and operacion_habilitada %}
   <form method="post" action="{{ confirmar_url }}">
-    {% csrf_token %}{{ form.as_p }}
+    {% csrf_token %}
+    {% if es_retorno %}
+    <div class="capture-fields">
+      {{ form.confirmar.errors }}
+      <label class="capture-check" for="{{ form.confirmar.id_for_label }}">{{ form.confirmar }} <span>{{ form.confirmar.label }}</span></label>
+    </div>
+    {% else %}
+    {{ form.as_p }}
+    {% endif %}
     {% if not es_retorno and form.establecimiento_nombre %}<p class="muted">Establecimiento: {{ form.establecimiento_nombre }}. La franja se fija automáticamente con la foto del servido. Completa sede, modalidad y lote juntos; si omites los tres, el servicio queda sin contexto comparable.</p>{% endif %}
-    <button class="button primary-button">Confirmar bandeja y continuar</button>
+    <button class="button primary-button">{% if es_retorno %}Confirmar y tomar foto del retorno{% else %}Confirmar y tomar foto del servido{% endif %}</button>
   </form>
   {% endif %}
 </section>

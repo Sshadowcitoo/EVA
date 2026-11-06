@@ -1,11 +1,14 @@
 from dataclasses import dataclass
 from io import BytesIO
+import re
 
 from django import forms
 from django.conf import settings
 from PIL import Image, ImageOps, UnidentifiedImageError
 
 from apps.catalogo.models import Plato, TipoPorcion
+
+from .models import Bandeja, Servicio
 
 class ServicioForm(forms.Form):
     sede = forms.ChoiceField(label="Sede", required=False)
@@ -49,8 +52,8 @@ class ServicioForm(forms.Form):
     )
     tipo_porcion = forms.ModelChoiceField(
         queryset=TipoPorcion.objects.filter(activo=True),
-        label= "Tipo de porcion",
-        empty_label="Selecciona una porcion",
+        label="Tipo de porción",
+        empty_label="Selecciona una porción",
     )
 
 #--------- Validación de fotografías ----------
@@ -145,14 +148,50 @@ class ConfirmarRetornoForm(forms.Form):
     )
 
 
+class NumeroBandejaField(forms.IntegerField):
+    def __init__(self, **kwargs):
+        super().__init__(
+            label="Número de bandeja", required=False, min_value=1, max_value=2_147_483_647,
+            widget=forms.TextInput(attrs={"inputmode": "numeric", "maxlength": 10, "autocomplete": "off",
+                                          "placeholder": "Ejemplo: 001"}),
+            **kwargs,
+        )
+
+    def to_python(self, value):
+        if value not in self.empty_values and not re.fullmatch(r"[0-9]{1,10}", str(value).strip()):
+            raise forms.ValidationError("Escribe un número de bandeja de hasta 10 dígitos (0–9).")
+        return super().to_python(value)
+
+
+class BuscarBandejaForm(forms.Form):
+    numero = NumeroBandejaField()
+    etiqueta = forms.CharField(
+        label="Código de etiqueta", max_length=32, required=False,
+        widget=forms.TextInput(attrs={"autocomplete": "off", "data-qr-value": ""}),
+    )
+
+    def clean(self):
+        data = super().clean()
+        if not self.errors and bool(data.get("numero")) == bool(data.get("etiqueta")):
+            raise forms.ValidationError("Escribe el número de bandeja o escanea su etiqueta, solo uno.")
+        return data
+
+
 class BuscarGestionForm(forms.Form):
-    numero = forms.IntegerField(label="Número de bandeja", min_value=1, required=False)
+    numero = NumeroBandejaField()
     servicio = forms.UUIDField(label="ID del servicio", required=False)
 
     def clean(self):
         data = super().clean()
-        if bool(data.get("numero")) == bool(data.get("servicio")):
+        if self.errors:
+            return data
+        numero, servicio = data.get("numero"), data.get("servicio")
+        if bool(numero) == bool(servicio):
             raise forms.ValidationError("Indica el número de bandeja o el ID del servicio, solo uno.")
+        if numero and not Bandeja.objects.filter(numero=numero).exists():
+            self.add_error("numero", "No se encontró una bandeja con ese número.")
+        if servicio and not Servicio.objects.filter(pk=servicio).exists():
+            self.add_error("servicio", "No se encontró un servicio con ese ID.")
         return data
 
 

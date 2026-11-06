@@ -4,7 +4,7 @@
 {% block navigation %}
 <a class="nav-link" href="{% url 'catalogo:platos' %}">Catálogo</a>
 <a class="nav-link active" href="{% url 'captura:gestion' %}">Bandejas y servicios</a>
-{% if puede_registrar %}<a class="nav-link" href="{% url 'captura:resolver_bandeja' %}">Capturar con bandeja</a>{% endif %}
+{% include 'includes/captura_nav.html' %}
 {% include 'includes/historico_nav.html' %}
 {% endblock %}
 {% block content %}

@@ -1,17 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
-{% block navigation %}
-{% if puede_registrar %}
-<a class="nav-link {% if not es_retorno %}active{% endif %}" href="{% url 'captura:resolver_bandeja' %}">Nueva bandeja</a>
-{% if retorno_url %}<a class="nav-link {% if es_retorno %}active{% endif %}" href="{{ retorno_url }}">Registrar retorno</a>{% else %}<span class="nav-link unavailable">Registrar retorno<small>Pendiente de conexión</small></span>{% endif %}
-{% endif %}
-{% if puede_administrar_catalogo %}<a class="nav-link" href="{% url 'catalogo:platos' %}">Catálogo</a>{% endif %}
-{% if puede_administrar_catalogo %}<a class="nav-link" href="{% url 'captura:gestion' %}">Bandejas y servicios</a>{% endif %}
-{% if puede_cocina %}<a class="nav-link" href="{% url 'cuentas:cocina_pendiente' %}">Cocina</a>{% endif %}
-{% include 'includes/historico_nav.html' %}
-{% endblock %}
 {% block content %}
-<link rel="stylesheet" href="{% static 'css/captura.css' %}?v=20261101-camara">
+<link rel="stylesheet" href="{% static 'css/captura.css' %}?v=20261105-qa">
 {% if error %}<div class="error-summary" role="alert">{{ error }}</div>{% endif %}
 {% if not operacion_habilitada %}
 <p class="info-box" role="status">Esta operación aún no está disponible. No se ha guardado ninguna fotografía.</p>

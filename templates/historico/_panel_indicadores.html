@@ -1,0 +1,70 @@
+{% if datos.solo_pruebas %}<p class="historico-aviso"><strong>Datos de prueba</strong> · No corresponden a servicios reales ni a parámetros aprobados.</p>{% endif %}
+{% for aviso in datos.advertencias %}<p class="historico-aviso">{{ aviso }}</p>{% endfor %}
+{% with resumen=datos.resumen indicadores=datos.indicadores %}
+<section class="eva-metrics" aria-label="Resumen de indicadores">
+  <article class="panel eva-metric"><h2>Candidatos</h2><strong>{{ resumen.candidatos }}</strong><p>Servicios únicos en la consulta</p></article>
+  <article class="panel eva-metric"><h2>Aptos</h2><strong>{{ resumen.aptos }}</strong><p>Servicios con evidencia apta</p></article>
+  <article class="panel eva-metric"><h2>Excluidos</h2><strong>{{ resumen.excluidos }}</strong><p>{% if resumen.proporcion_excluidos is not None %}{{ resumen.proporcion_excluidos|floatformat:2 }} % de candidatos{% else %}Sin proporción disponible{% endif %}</p></article>
+  <article class="panel eva-metric"><h2>Intensidad</h2><strong{% if indicadores.intensidad is None %} class="eva-metric-unavailable"{% endif %}>{% if indicadores.intensidad is not None %}{{ indicadores.intensidad|floatformat:2 }} %{% else %}No disponible{% endif %}</strong><p>Promedio de sobrante visual</p></article>
+</section>
+
+<section class="eva-charts" aria-label="Gráficos de la consulta">
+  <article class="panel eva-chart">
+    <h2>Cobertura de la muestra</h2>
+    <p class="muted">Servicios únicos de toda la consulta.</p>
+    {% if resumen.candidatos %}
+    <p class="eva-chart-scale">Escala: 0–{{ resumen.candidatos }} servicios</p>
+    {% include 'historico/_barra_indicador.html' with barra_id='barra-aptos' etiqueta='Aptos' valor=resumen.aptos maximo=resumen.candidatos only %}
+    {% include 'historico/_barra_indicador.html' with barra_id='barra-excluidos' etiqueta='Excluidos' valor=resumen.excluidos maximo=resumen.candidatos only %}
+    {% else %}
+    <div class="eva-empty"><strong>Sin registros en la consulta</strong><p>No hay registros para los filtros elegidos. Esto no significa cero sobrantes.</p></div>
+    {% endif %}
+  </article>
+  <article class="panel eva-chart">
+    <h2>Motivos de exclusión</h2>
+    <p class="muted">Servicios únicos por motivo. Un servicio puede aparecer en más de un motivo.</p>
+    {% if resumen.motivos and resumen.excluidos %}
+    <p class="eva-chart-scale">Escala: 0–{{ resumen.excluidos }} servicios excluidos</p>
+    {% for motivo, cantidad in resumen.motivos.items %}
+    {% with indice=forloop.counter|stringformat:'s' %}
+    {% include 'historico/_barra_indicador.html' with barra_id='motivo-'|add:indice etiqueta=motivo valor=cantidad maximo=resumen.excluidos es_motivo=True only %}
+    {% endwith %}
+    {% endfor %}
+    {% else %}
+    <div class="eva-empty"><strong>{% if resumen.excluidos %}Motivos no disponibles{% else %}Sin exclusiones registradas{% endif %}</strong><p>Los motivos se muestran cuando están disponibles para la consulta.</p></div>
+    {% endif %}
+  </article>
+  <article class="panel eva-chart">
+    <h2>Intensidad del sobrante visual</h2>
+    <p class="muted">Promedio por servicio, incluidos los ceros confirmados.</p>
+    {% if indicadores.intensidad is not None %}
+    <p class="eva-chart-scale">Escala: 0–100 % · n = {{ indicadores.n }}</p>
+    {% include 'historico/_barra_indicador.html' with barra_id='barra-intensidad' etiqueta='Intensidad' valor=indicadores.intensidad maximo=100 porcentaje=True only %}
+    {% elif not resumen.aptos %}
+    <div class="eva-empty eva-empty-warning"><strong>Evidencia insuficiente</strong><p>No hay servicios aptos para calcular indicadores.</p></div>
+    {% else %}
+    <div class="eva-empty"><strong>Intensidad no disponible</strong><p>Consulta los grupos y los motivos de la muestra.</p></div>
+    {% endif %}
+  </article>
+  <article class="panel eva-chart">
+    <h2>Prevalencia del sobrante visual</h2>
+    <p class="muted">Proporción de servicios que superan el umbral aprobado.</p>
+    {% if indicadores.prevalencia is not None %}
+    <p class="eva-chart-scale">Escala: 0–100 % · n = {{ indicadores.n }}</p>
+    {% include 'historico/_barra_indicador.html' with barra_id='barra-prevalencia' etiqueta='Prevalencia' valor=indicadores.prevalencia maximo=100 porcentaje=True only %}
+    {% else %}
+    <div class="eva-empty eva-empty-warning"><strong>Prevalencia no disponible</strong><p>Requiere una muestra apta y un umbral aprobado.</p></div>
+    {% endif %}
+    <p class="eva-chart-scale">Umbral: {% if indicadores.t is not None %}{{ indicadores.t|floatformat:2 }} puntos porcentuales{% else %}Pendiente de aprobación{% endif %} · Versión: {{ indicadores.version_criterio|default_if_none:'No disponible' }}</p>
+  </article>
+</section>
+{% if datos.grupos|length > 1 %}<p class="historico-aviso">Hay varios grupos: no se combinan sus medias. Consulta la muestra e indicadores de cada grupo por separado.</p>{% endif %}
+{% if indicadores.motivos_no_disponible %}
+<details class="panel eva-group-details">
+  <summary>Motivos de indicadores no disponibles</summary>
+  <ul class="historico-motivos">
+    {% for motivo in indicadores.motivos_no_disponible %}<li>{{ motivo }}</li>{% endfor %}
+  </ul>
+</details>
+{% endif %}
+{% endwith %}

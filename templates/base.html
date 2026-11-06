@@ -6,8 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{% block title %}EVA{% endblock %}</title>
     <link rel="stylesheet" href="{% static 'css/eva.css' %}" />
+    {% block page_styles %}{% endblock %}
   </head>
-  <body>
+  <body{% block body_attributes %}{% endblock %}>
     <div class="app-layout">
       <aside class="sidebar">
         <button type="button" class="mobile-menu-toggle" aria-expanded="false" aria-controls="navegacion-principal" aria-label="Mostrar u ocultar navegación">
@@ -73,6 +74,7 @@
                     Crea un ID y registra el plato del servicio.
                     {% endblock %}
                 </p>
+                {% block header_action %}{% endblock %}
             </header>
 
             <main class="page-content">

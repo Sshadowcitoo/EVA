@@ -89,6 +89,22 @@ class HistoricoWebTests(TestCase):
         with patch('apps.historico.services.consultar_historico', return_value=historico_fixture('configuracion_pendiente')):
             self.assertContains(self.client.get('/historico/'), '25,00 %')
 
+    def test_graficos_preservan_cero_y_omiten_indicadores_no_disponibles(self):
+        datos = historico_fixture('configuracion_pendiente')
+        datos['indicadores']['intensidad'] = Decimal('0.00')
+        with patch('apps.historico.services.consultar_historico', return_value=datos):
+            response = self.client.get('/historico/')
+        self.assertContains(response, 'aria-labelledby="barra-intensidad" min="0" max="100" value="0.00"')
+        self.assertContains(response, 'aria-labelledby="barra-aptos" min="0" max="5" value="4"')
+        self.assertNotContains(response, 'aria-labelledby="barra-prevalencia"')
+        self.assertContains(response, 'Prevalencia no disponible')
+
+    def test_consulta_vacia_no_dibuja_barras_ficticias(self):
+        with patch('apps.historico.services.consultar_historico', return_value=historico_fixture('sin_datos')):
+            response = self.client.get('/historico/')
+        self.assertContains(response, 'Sin registros en la consulta')
+        self.assertNotContains(response, '<meter')
+
     def test_backend_pendiente_no_se_convierte_en_vacio(self):
         self.opciones.side_effect = BackendHistoricoNoDisponible()
         for url in ('/historico/', '/historico/comparar/'):

@@ -53,3 +53,9 @@ compartidos entre ambas entregas.
 Verificación conjunta: 214 pruebas de captura y catálogo aprobadas, 42 de
 frontend aprobadas y migraciones sin cambios. Las pruebas físicas de cámara
 y QR siguen pendientes.
+
+## Actualización del 6 de noviembre
+
+Los PR #62 y #63 fueron integrados y desplegados. El estado actual y las pruebas
+físicas y de respaldo se detallan en [el cierre de QA](qa_cierre_2026_11_06.md).
+Las notas anteriores describen el estado de cada verificación antes de integrar.

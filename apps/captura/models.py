@@ -9,6 +9,8 @@ from django.utils import timezone
 
 from apps.catalogo import models as catalogo
 
+from .transacciones import rechazar_bloqueo_sqlite
+
 
 class Servicio(models.Model):
     # Etiquetas del primer avance. Solo sirven para leer registros históricos;
@@ -91,6 +93,7 @@ class Servicio(models.Model):
         return self.porcion_nombre or self.tipo_porcion
 
     @classmethod
+    @rechazar_bloqueo_sqlite
     def registrar(cls, *, plato, porcion, usuario=None, bandeja=None, datos_contexto=None):
         """Crea un servicio con su instantánea de catálogo en una sola transacción.
 
@@ -114,6 +117,12 @@ class Servicio(models.Model):
                     "El tipo de porción no está activo en el catálogo."
                 )
 
+            relaciones = list(catalogo.PlatoComponente.objects.filter(
+                plato=plato_actual, activo=True, componente__activo=True
+            ).select_related("componente"))
+            if not relaciones:
+                raise ValidationError("El plato debe tener al menos un componente activo.")
+
             servicio = cls.objects.create(
                 plato=plato_actual.codigo,
                 plato_nombre=plato_actual.nombre,
@@ -128,9 +137,6 @@ class Servicio(models.Model):
                 ),
             )
 
-            relaciones = catalogo.PlatoComponente.objects.filter(
-                plato=plato_actual, activo=True, componente__activo=True
-            ).select_related("componente")
             ServicioComponente.objects.bulk_create(
                 ServicioComponente(
                     servicio=servicio,

@@ -35,6 +35,9 @@ class PanelHistoricoTests(BaseHistorico):
         self.assertEqual(panel['grupo']['indicadores']['n'], 31)
         self.assertEqual([(s['n'], s['intensidad']) for s in panel['semanas']], [(30, 0), (0, None), (1, 93)])
         self.assertContains(primera, 'Sin evidencia')
+        self.assertContains(primera, '<details class="eva-week-details" open>')
+        self.assertContains(primera, '<th scope="col">Intensidad</th>')
+        self.assertContains(primera, '<td>0,00 %</td>')
 
     def test_semana_final_vacia_y_limites_parciales(self):
         self.caso(0, fecha=fecha(7), contexto=CONTEXTO)

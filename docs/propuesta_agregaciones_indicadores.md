@@ -61,5 +61,5 @@ Chromium verificó la selección y los cuatro paneles, las escalas, la composici
 ## Pruebas
 
 - Cuatro regresiones de panel cubren la agregación antes de paginar, la media por registro, el cero confirmado, semanas parciales y vacías, versiones, contexto incompatible, perfiles separados y exclusión de simulaciones.
-- 73 pruebas de histórico correctas y 42 de frontend correctas.
+- 73 pruebas de histórico correctas y 46 de frontend correctas. Las cuatro pruebas de `indicadores.js` verifican el cero, el hueco entre semanas, el punto único y el SVG oculto cuando no hay valores aptos. La tabla semanal se entrega abierta desde el servidor y sigue disponible tras dibujar el gráfico.
 - Suite completa: 583 casos, 579 correctos, tres omitidos por el paquete ONNX privado y el fallo de texto de captura vinculada previamente reproducido en `main`.

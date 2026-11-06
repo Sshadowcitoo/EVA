@@ -28,5 +28,4 @@
     crear('circle', {cx: x(i), cy: y(semana.intensidad), r: 4, class: semana.parcial ? 'eva-trend-point eva-trend-partial' : 'eva-trend-point'});
   });
   svg.removeAttribute('hidden');
-  svg.nextElementSibling.open = false;
 })();

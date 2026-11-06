@@ -2,6 +2,16 @@
 
 Proyecto de Construcción de Software, Ingeniería de Software, UNEMI.
 
+## Entrega y QA — 6 de noviembre de 2026
+
+La demo de AWS incluye las correcciones de captura e integridad de los PR #62 y
+#63. Consulta la [documentación del software](docs/documentacion_software.md), el
+[manual de usuario](docs/manual_usuario.md), las
+[características técnicas](docs/caracteristicas_tecnicas.md) y el
+[cierre de QA](docs/qa_cierre_2026_11_06.md).
+El motor ONNX está conectado en modo de demostración SIMULADO; esto no certifica
+precisión real. Las secciones fechadas más abajo son antecedentes del desarrollo.
+
 ## Preparación del motor y contexto
 
 [Motor, fotografías, contexto y propuesta experimental](docs/motor_contexto_piloto.md).

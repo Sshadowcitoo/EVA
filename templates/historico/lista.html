@@ -1,10 +1,7 @@
 {% extends 'historico/base.html' %}
 {% load static %}
 {% block title %}Indicadores y estadísticas | EVA{% endblock %}
-{% block body_attributes %} class="eva-pastel eva-indicadores"{% endblock %}
-{% block page_styles %}
-<link rel="stylesheet" href="{% static 'css/eva_pastel.css' %}">
-{% endblock %}
+{% block body_classes %} eva-indicadores{% endblock %}
 {% block heading %}Indicadores y estadísticas{% endblock %}
 {% block subtitle %}Consulta la muestra y los indicadores de sobrante visual por componente y periodo.{% endblock %}
 {% block header_action %}

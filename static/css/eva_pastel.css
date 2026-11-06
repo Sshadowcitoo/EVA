@@ -1,4 +1,4 @@
-/* Piloto optativo. Los tokens se activan con .eva-pastel en el cuerpo. */
+/* Sistema visual compartido. Los colores de máscaras y estados conservan su semántica. */
 .eva-pastel {
   --eva-canvas: #edf5ef;
   --eva-surface: #f7fbf7;
@@ -141,3 +141,98 @@
 @media (max-width: 640px) {
   .eva-indicadores .eva-group-picker { flex-direction: column; align-items: stretch; }
 }
+
+
+/* Aplicación común: captura, catálogo, Cocina, histórico y recomendaciones. */
+.eva-pastel { min-height: 100vh; }
+.eva-pastel .workspace { background: var(--eva-canvas); }
+.eva-pastel .page-header { border-color: var(--eva-border); }
+.eva-pastel .panel { box-shadow: 0 2px 8px rgb(22 45 35 / 3%); }
+.eva-pastel :is(.form-field, .capture-search-field, .revision-acciones select) {
+  background: var(--eva-surface); border-color: var(--eva-border);
+}
+.eva-pastel :is(input, select, textarea) { color: var(--eva-ink); accent-color: var(--eva-action); }
+.eva-pastel :is(.capture-fields, .capture-operation, .rec-campo, .historico-campo) :is(input, select, textarea) {
+  background: var(--eva-surface); border-color: #7d9b86;
+}
+.eva-pastel :is(.form-field label, .capture-search-field label, .revision-acciones label, .form-field-group legend) { color: var(--eva-muted); }
+.eva-pastel :is(.form-field:focus-within, .login-card .form-field:focus-within) { outline: 2px solid var(--eva-action); outline-offset: 3px; }
+.eva-pastel :is(.field-help, .capture-fields .helptext, .capture-details dt, .record-details dt, .analisis-dato, .analisis-modelo, .analisis-servicio, .analisis-foto figcaption, .data-table td small) { color: var(--eva-muted); }
+.eva-pastel a:not(.button):not(.nav-link) { color: var(--eva-action); }
+.eva-pastel :is(.capture-scanner summary, .capture-empty, .capture-empty > span) { color: var(--eva-action); }
+.eva-pastel :is(.info-box, .process-panel, .photo-placeholder, .rec-metricas article, .historico-metricas article) {
+  background: var(--eva-emphasis); border-color: var(--eva-border); color: var(--eva-ink);
+}
+.eva-pastel :is(.info-box h3, .info-box p, .rec-metricas strong, .historico-metricas strong) { color: var(--eva-ink); }
+.eva-pastel :is(.capture-photo-panel, .analisis-tarjeta-resaltada) { background: var(--eva-emphasis); border-color: var(--eva-border); }
+.eva-pastel :is(.capture-image, .recomendaciones pre) { background: var(--eva-emphasis); }
+.eva-pastel :is(.data-table, .analisis-tabla, .recomendaciones) :is(th, td) { border-color: var(--eva-border); }
+.eva-pastel .data-table th { color: var(--eva-muted); background: var(--eva-emphasis); }
+.eva-pastel .data-table tbody tr { background: var(--eva-surface); }
+.eva-pastel :is(.revision-datos > div, .capture-history article + article) { border-color: var(--eva-border); }
+.eva-pastel :is(.recomendaciones caption, .recomendaciones td small) { color: var(--eva-muted); }
+.eva-pastel :is(.rec-metricas strong, .recomendaciones .historico-metricas strong) { color: var(--eva-ink); }
+.eva-pastel .button,
+.eva-pastel .recomendaciones button {
+  min-height: 44px; background: var(--eva-action); color: var(--eva-surface); border-color: var(--eva-action);
+}
+.eva-pastel .button:hover,
+.eva-pastel .recomendaciones button:hover { background: var(--eva-action-hover); color: var(--eva-surface); }
+.eva-pastel :is(.secondary-button, .button-secundario) { background: var(--eva-surface); color: var(--eva-action); border: 1px solid var(--eva-action); }
+.eva-pastel :is(.secondary-button, .button-secundario):hover { background: var(--eva-emphasis); color: var(--eva-ink); }
+.eva-pastel .nav-button { background: transparent; color: var(--eva-muted); }
+.eva-pastel .nav-button:hover { background: var(--eva-emphasis); color: var(--eva-ink); }
+.eva-pastel .process-steps .current { color: var(--eva-action); }
+.eva-pastel .rec-aviso { background: var(--eva-warning-bg); color: var(--eva-warning); border-color: #d4b769; }
+.eva-pastel :is(.error-summary, .analisis-fallo) { background: var(--eva-error-bg); color: var(--eva-error); border-color: #d5a09c; }
+.eva-pastel :is(.rec-error, .error-texto, .errorlist, [data-photo-status][data-error="true"]) { color: var(--eva-error); }
+.eva-pastel :is(input, select, textarea)[aria-invalid="true"] { border-color: var(--eva-error); }
+.eva-pastel .danger-button { background: var(--eva-error); color: var(--eva-surface); border-color: var(--eva-error); }
+.eva-pastel .danger-button:hover { background: #702020; }
+.eva-pastel :is(.button, .historico button, .recomendaciones button):disabled,
+.eva-pastel :is(.button, .historico button, .recomendaciones button):disabled:hover {
+  background: #dfe8e1; color: #486052; border-color: #c5d5ca; cursor: not-allowed;
+}
+/* No teñir QR, fotografías ni leyendas de componentes: son evidencia. */
+.eva-pastel .login-layout { grid-template-columns: minmax(0, .95fr) minmax(0, 1.05fr); }
+.eva-pastel :is(.login-presentation, .login-access) { min-height: 100vh; }
+.eva-pastel .login-presentation { background: var(--eva-emphasis); color: var(--eva-ink); }
+.eva-pastel .login-presentation h1 { color: var(--eva-ink); }
+.eva-pastel .login-brand { color: var(--eva-action); }
+.eva-pastel .login-access { background: var(--eva-canvas); }
+.eva-pastel .login-card { background: var(--eva-surface); border: 1px solid var(--eva-border); }
+.eva-pastel .login-card h2 { color: var(--eva-ink); }
+.eva-pastel .login-card > p { color: var(--eva-muted); }
+.eva-pastel .login-card .form-field input { background: transparent; color: var(--eva-ink); }
+@media (min-width: 1000px) {
+  .eva-pastel .app-layout { grid-template-columns: 240px minmax(0, 1fr); }
+}
+@media (max-width: 900px) {
+  .eva-pastel .login-layout { grid-template-columns: minmax(0, 1fr); }
+  .eva-pastel :is(.login-presentation, .login-access) { min-height: auto; }
+}
+@media (max-width: 640px) {
+  .eva-pastel .sidebar { background: var(--eva-surface); }
+  .eva-pastel .mobile-menu-toggle { min-height: 44px; color: var(--eva-action); }
+  .eva-pastel .page-header { background: var(--eva-emphasis); padding: 20px; }
+  .eva-pastel .page-content { padding-inline: 16px; }
+}
+
+.eva-pastel :is(.historico, .recomendaciones) :focus-visible { outline: 3px solid var(--eva-action); outline-offset: 3px; }
+@media (max-width: 640px) {
+  .eva-pastel .login-presentation { padding: 24px 24px 28px; }
+  .eva-pastel .login-mascot { height: 88px; margin-top: 12px; }
+  .eva-pastel .login-presentation h1 { font-size: 28px; margin: 16px 0; }
+  .eva-pastel .login-presentation p { font-size: 15px; }
+  .eva-pastel .login-access { padding: 20px 16px 28px; }
+}
+
+.eva-pastel .capture-search-field input { background: var(--eva-surface); color: var(--eva-ink); }
+.eva-pastel .catalog-tabs a { background: var(--eva-surface); color: var(--eva-action); border-color: var(--eva-border); }
+.eva-pastel .catalog-tabs a:hover { background: var(--eva-emphasis); }
+.eva-pastel .catalog-tabs a[aria-current="page"] { background: var(--eva-action); color: var(--eva-surface); border-color: var(--eva-action); }
+.eva-pastel .process-steps li { background: var(--eva-surface); color: var(--eva-muted); }
+.eva-pastel .process-steps li.current { background: #d5e9db; color: var(--eva-action); }
+
+.eva-pastel :is(input, select, textarea) { background-color: var(--eva-surface); border-color: #7d9b86; }
+.eva-pastel .data-table td { color: var(--eva-ink); }

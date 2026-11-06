@@ -2,6 +2,12 @@
 
 Proyecto de Construcción de Software, Ingeniería de Software, UNEMI.
 
+## Interfaz compartida — 6 de noviembre de 2026
+
+Indicadores integra series semanales y perfiles descriptivos por grupo exacto.
+El [sistema visual verde pastel](docs/tema_compartido_2026_11_06.md) se extiende al
+acceso y a los módulos operativos, conservando estados, permisos y colores de máscaras.
+
 ## Entrega y QA — 6 de noviembre de 2026
 
 La demo de AWS incluye las correcciones de captura e integridad de los PR #62 y

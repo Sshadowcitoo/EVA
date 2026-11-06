@@ -11,7 +11,7 @@
 <a class="nav-link{% if request.resolver_match.url_name == 'comparar' %} active{% endif %}" href="{% url 'historico:comparar' %}"{% if request.resolver_match.url_name == 'comparar' %} aria-current="page"{% endif %}>Comparar periodos</a>
 {% endif %}
 {% url 'analisis:lista' as analisis_url %}{% if puede_cocina and analisis_url %}<a class="nav-link" href="{{ analisis_url }}">Revisión de Cocina</a>{% endif %}
-{% url 'captura:nueva_bandeja' as captura_url %}{% if puede_registrar and captura_url %}<a class="nav-link" href="{{ captura_url }}">Registro de servicios</a>{% endif %}
+{% include 'includes/captura_nav.html' %}
 {% url 'catalogo:platos' as catalogo_url %}{% if puede_administrar_catalogo and catalogo_url %}<a class="nav-link" href="{{ catalogo_url }}">Catálogo</a>{% endif %}
 {% endblock %}
 {% block content %}

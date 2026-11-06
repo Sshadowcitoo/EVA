@@ -6,9 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{% block title %}EVA{% endblock %}</title>
     <link rel="stylesheet" href="{% static 'css/eva.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/eva_pastel.css' %}?v=20261106-global" />
     {% block page_styles %}{% endblock %}
   </head>
-  <body{% block body_attributes %}{% endblock %}>
+  <body class="eva-pastel{% block body_classes %}{% endblock %}"{% block body_attributes %}{% endblock %}>
     <div class="app-layout">
       <aside class="sidebar">
         <button type="button" class="mobile-menu-toggle" aria-expanded="false" aria-controls="navegacion-principal" aria-label="Mostrar u ocultar navegación">
@@ -57,7 +58,7 @@
 
         <p class="sidebar-note">
           Prototipo académico<br />
-          Catálogo y registro de servicios
+          Captura, análisis y seguimiento
         </p>
       </aside>
 

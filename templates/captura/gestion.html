@@ -23,6 +23,7 @@
 <p class="label-code">{{ servicio.pk }}</p><p>{{ servicio.get_plato_display }} · {{ servicio.get_tipo_porcion_display }}</p>
 <p><strong>{{ servicio.get_estado_captura_display|default:"Histórico sin captura" }}</strong></p>
 {% if servicio.anulado_en %}<dl class="capture-details"><dt>Motivo</dt><dd>{{ servicio.anulado_motivo }}</dd><dt>Responsable</dt><dd>{{ servicio.anulado_por.get_username }}</dd><dt>Fecha</dt><dd>{{ servicio.anulado_en }}</dd></dl>{% endif %}
+{% include 'captura/_contexto_servicio.html' %}
 {% if permite_anular %}{% if servicio.estado_captura == 'PENDIENTE_SERVIDO' or servicio.estado_captura == 'EN_ESPERA_RETORNO' %}
 <a class="button danger-button" href="{% url 'captura:anular_servicio' servicio.pk %}">Anular servicio</a>
 {% endif %}{% endif %}

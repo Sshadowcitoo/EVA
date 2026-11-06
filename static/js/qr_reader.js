@@ -38,7 +38,7 @@
           const number = root.closest('form').querySelector('[name="numero"]');
           if (number) number.value = '';
           stop();
-          status.textContent = 'Etiqueta leída. Pulsa Buscar registro para comprobarla en el sistema.';
+          status.textContent = 'Etiqueta leída. Pulsa Buscar bandeja para comprobarla en el sistema.';
           value.focus();
           return;
         }

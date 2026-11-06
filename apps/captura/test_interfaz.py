@@ -2,6 +2,8 @@ from django import forms
 from django.template.loader import render_to_string
 from django.test import SimpleTestCase
 
+from .forms import BuscarBandejaForm
+
 
 class FotoForm(forms.Form):
     fotografia = forms.FileField(label="Fotografía")
@@ -41,7 +43,7 @@ class InterfazCapturaTests(SimpleTestCase):
         self.assertIn('method="post" action="/confirmar/"', html)
 
     def test_lector_solo_se_habilita_con_contrato_y_js_local(self):
-        html = render_to_string("captura/buscar_bandeja.html", {"lector_habilitado": True})
+        html = render_to_string("captura/buscar_bandeja.html", {"lector_habilitado": True, "busqueda": BuscarBandejaForm()})
         self.assertIn('name="etiqueta"', html)
         self.assertIn('/static/vendor/jsqr/jsQR.js', html)
         self.assertNotIn('https://', html)

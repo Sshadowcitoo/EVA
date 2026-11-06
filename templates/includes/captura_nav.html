@@ -1,0 +1,7 @@
+{% if puede_registrar %}
+{% with vista=request.resolver_match.view_name %}
+<a class="nav-link{% if vista == 'captura:nueva_bandeja' or vista == 'captura:confirmacion' %} active{% endif %}" href="{% url 'captura:nueva_bandeja' %}"{% if vista == 'captura:nueva_bandeja' %} aria-current="page"{% endif %}>Registro básico</a>
+<a class="nav-link{% if vista == 'captura:resolver_bandeja' or vista == 'captura:foto_servido' or etapa == 'SERVIDO' %} active{% endif %}" href="{% url 'captura:resolver_bandeja' %}"{% if vista == 'captura:resolver_bandeja' %} aria-current="page"{% endif %}>Registrar servido</a>
+<a class="nav-link{% if vista == 'captura:buscar_retorno' or vista == 'captura:foto_retorno' or etapa == 'RETORNO' %} active{% endif %}" href="{% url 'captura:buscar_retorno' %}"{% if vista == 'captura:buscar_retorno' %} aria-current="page"{% endif %}>Registrar retorno</a>
+{% endwith %}
+{% endif %}

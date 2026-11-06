@@ -1,7 +1,7 @@
 {% if servicio.contexto_snapshot %}
-<section class="panel" aria-label="Contexto histórico del servicio">
+<section class="panel capture-context" aria-label="Contexto histórico del servicio">
 <h2>Contexto del servicio</h2>
-<dl class="record-details">
+<dl class="capture-details record-details">
 <dt>Establecimiento</dt><dd>{{ servicio.contexto_snapshot.establecimiento.nombre }} · {{ servicio.contexto_snapshot.sede.nombre }}</dd>
 <dt>Modalidad</dt><dd>{{ servicio.contexto_snapshot.modalidad.nombre }}</dd>
 <dt>Lote de preparación</dt><dd>{{ servicio.contexto_snapshot.lote_preparacion }}</dd>
@@ -10,7 +10,7 @@
 </dl>
 </section>
 {% else %}
-<section class="panel" aria-label="Contexto histórico del servicio">
+<section class="panel capture-context" aria-label="Contexto histórico del servicio">
 <h2>Sin contexto histórico</h2>
 <p>No se registraron sede, modalidad y lote completos para este servicio. No se reconstruyen con las opciones actuales y este registro no aporta contexto comparable.</p>
 </section>

@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+{% block title %}Servicio no encontrado | EVA{% endblock %}
+{% block heading %}Servicio no encontrado{% endblock %}
+{% block subtitle %}Revisa el enlace o vuelve a buscar la bandeja por su número o etiqueta.{% endblock %}
+{% block content %}
+<a class="button primary-button" href="{% url 'captura:resolver_bandeja' %}">Buscar bandeja para servido</a>
+<a class="button secondary-button" href="{% url 'captura:buscar_retorno' %}">Buscar bandeja para retorno</a>
+{% endblock %}

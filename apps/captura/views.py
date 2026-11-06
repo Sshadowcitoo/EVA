@@ -11,7 +11,7 @@ from django.views.decorators.http import require_GET, require_http_methods
 from apps.catalogo.permissions import REGISTRO, roles_required
 
 from . import limpieza, services, storage
-from .forms import ConfirmarRetornoForm, FotoForm, ServicioForm
+from .forms import BuscarBandejaForm, ConfirmarRetornoForm, FotoForm, ServicioForm
 from .models import (
     AsignacionBandeja,
     Bandeja,
@@ -48,7 +48,9 @@ def nueva_bandeja(request):
 @roles_required(REGISTRO)
 def confirmacion(request, pk):
     # Solo el usuario que creó el servicio puede ver su confirmación.
-    servicio = get_object_or_404(Servicio, pk=pk, creado_por=request.user)
+    servicio = Servicio.objects.filter(pk=pk, creado_por=request.user).first()
+    if servicio is None:
+        return render(request, "captura/servicio_no_encontrado.html", status=404)
     return render(request, "captura/confirmacion.html", {"servicio": servicio})
 
 
@@ -67,37 +69,37 @@ def _contexto_base(**extra):
         "retorno_url": reverse("captura:buscar_retorno"),
         "max_bytes": settings.EVA_CAPTURE_MAX_BYTES,
         "max_pixels": settings.EVA_CAPTURE_MAX_PIXELS,
+        "max_mib": settings.EVA_CAPTURE_MAX_BYTES / 2**20,
+        "max_megapixeles": settings.EVA_CAPTURE_MAX_PIXELS / 10**6,
     }
     contexto.update(extra)
     return contexto
 
 
 def _localizar_bandeja(request):
-    """Lee ?numero= o ?etiqueta= (solo uno). Devuelve (bandeja, consulta, error).
+    """Valida la consulta y conserva los campos enviados en el formulario."""
+    enviada = request.method == "POST" or any(c in request.GET for c in ("numero", "etiqueta"))
+    busqueda = BuscarBandejaForm(request.GET if enviada else None)
+    if not busqueda.is_valid():
+        return busqueda, None, ""
 
-    Sin datos: (None, "", None). Desconocida, inactiva o revocada: 404.
-    """
-    numero = request.GET.get("numero", "").strip()
-    etiqueta = request.GET.get("etiqueta", "").strip()
-    if not numero and not etiqueta:
-        return None, "", None
-    if numero and etiqueta:
-        return None, "", "Escribe el número o escanea la etiqueta, no ambos."
-
+    numero, etiqueta = busqueda.cleaned_data["numero"], busqueda.cleaned_data["etiqueta"]
     if etiqueta:
-        etiqueta_vigente = (
-            EtiquetaBandeja.objects.filter(codigo=etiqueta, revocada_en__isnull=True)
+        vigente = (
+            EtiquetaBandeja.objects.filter(codigo=etiqueta, revocada_en__isnull=True, bandeja__activo=True)
             .select_related("bandeja")
             .first()
         )
-        if etiqueta_vigente is None or not etiqueta_vigente.bandeja.activo:
-            raise Http404("Etiqueta desconocida o revocada.")
-        return etiqueta_vigente.bandeja, urlencode({"etiqueta": etiqueta}), None
+        if vigente is None:
+            busqueda.add_error("etiqueta", "No se encontró una etiqueta vigente. Revisa el código o usa el número de bandeja.")
+            return busqueda, None, ""
+        return busqueda, vigente.bandeja, urlencode({"etiqueta": etiqueta})
 
-    if not numero.isdigit():
-        return None, "", "El número de bandeja solo puede contener dígitos."
-    bandeja = get_object_or_404(Bandeja, numero=int(numero), activo=True)
-    return bandeja, urlencode({"numero": numero}), None
+    bandeja = Bandeja.objects.filter(numero=numero, activo=True).first()
+    if bandeja is None:
+        busqueda.add_error("numero", "No se encontró una bandeja activa con ese número.")
+        return busqueda, None, ""
+    return busqueda, bandeja, urlencode({"numero": numero})
 
 
 def _asignacion_abierta(bandeja):
@@ -123,12 +125,12 @@ def _foto_vigente(servicio, etapa):
 @require_http_methods(["GET", "POST"])
 def resolver_bandeja(request):
     """Servido. GET busca la bandeja; POST crea el servicio y la asigna."""
-    bandeja, consulta, error = _localizar_bandeja(request)
+    busqueda, bandeja, consulta = _localizar_bandeja(request)
     contexto = _contexto_base(
         es_retorno=False,
         buscar_url=reverse("captura:resolver_bandeja"),
         bandeja=bandeja,
-        error=error,
+        busqueda=busqueda,
     )
     if bandeja is None:
         return render(request, "captura/buscar_bandeja.html", contexto)
@@ -144,7 +146,7 @@ def resolver_bandeja(request):
             contexto["error"] = "La bandeja está ocupada por otro servicio. Usa otra bandeja."
         return render(request, "captura/buscar_bandeja.html", contexto)
 
-    form = ServicioForm(request.POST or None)
+    form = ServicioForm(request.POST if request.method == "POST" else None)
     if request.method == "POST" and form.is_valid():
         try:
             servicio = Servicio.registrar(
@@ -170,12 +172,12 @@ def resolver_bandeja(request):
 @require_http_methods(["GET", "POST"])
 def buscar_retorno(request):
     """Retorno. GET localiza el servicio en espera; POST confirma la correspondencia."""
-    bandeja, consulta, error = _localizar_bandeja(request)
+    busqueda, bandeja, consulta = _localizar_bandeja(request)
     contexto = _contexto_base(
         es_retorno=True,
         buscar_url=reverse("captura:buscar_retorno"),
         bandeja=bandeja,
-        error=error,
+        busqueda=busqueda,
     )
     if bandeja is None:
         return render(request, "captura/buscar_bandeja.html", contexto)
@@ -183,8 +185,8 @@ def buscar_retorno(request):
     asignacion = _asignacion_abierta(bandeja)
     if asignacion is None:
         contexto["error"] = "La bandeja no tiene un servicio esperando retorno. Puede estar libre o su servicio ya fue cerrado."
-        contexto["continuar_url"] = reverse("captura:resolver_bandeja")
-        contexto["continuar_texto"] = "Ir al registro de servido"
+        contexto["continuar_url"] = reverse("captura:resolver_bandeja", query={"numero": bandeja.numero})
+        contexto["continuar_texto"] = "Registrar servido en esta bandeja"
         return render(request, "captura/buscar_bandeja.html", contexto)
     if asignacion.servicio.estado_captura != Estado.EN_ESPERA_RETORNO:
         contexto["error"] = "Primero debes guardar la fotografía del servido; todavía no se puede registrar el retorno."
@@ -194,7 +196,7 @@ def buscar_retorno(request):
         return render(request, "captura/buscar_bandeja.html", contexto)
     servicio = asignacion.servicio
 
-    form = ConfirmarRetornoForm(request.POST or None)
+    form = ConfirmarRetornoForm(request.POST if request.method == "POST" else None)
     if request.method == "POST" and form.is_valid():
         return redirect("captura:foto_retorno", pk=servicio.pk)
 
@@ -213,7 +215,9 @@ def buscar_retorno(request):
 
 def _capturar(request, pk, etapa, estado_esperado, sesion=None, token=None):
     """Lógica común de foto_servido y foto_retorno."""
-    servicio = get_object_or_404(Servicio, pk=pk)
+    servicio = Servicio.objects.filter(pk=pk).first()
+    if servicio is None:
+        return render(request, "captura/servicio_no_encontrado.html", status=404)
     bandeja = _bandeja_del_servicio(servicio)
     nombre_vista = "captura:foto_servido" if etapa == Etapa.SERVIDO else "captura:foto_retorno"
     contexto = _contexto_base(
@@ -233,10 +237,15 @@ def _capturar(request, pk, etapa, estado_esperado, sesion=None, token=None):
             contexto["error"] = "Primero debe registrarse la fotografía del servido."
         contexto["estado"] = servicio.estado_captura
         contexto["fotografias_registradas"] = servicio.fotografias.filter(vigente=True)
-        contexto["continuar_url"] = reverse("captura:resolver_bandeja")
+        if servicio.estado_captura == Estado.EN_ESPERA_RETORNO and bandeja:
+            contexto["continuar_url"] = reverse("captura:buscar_retorno", query={"numero": bandeja.numero})
+            contexto["continuar_texto"] = "Buscar retorno de esta bandeja"
+        else:
+            contexto["continuar_url"] = reverse("captura:resolver_bandeja")
+            contexto["continuar_texto"] = "Buscar otra bandeja"
         return render(request, "captura/estado_servicio.html", contexto)
 
-    form = FotoForm(request.POST or None, request.FILES or None)
+    form = FotoForm(request.POST, request.FILES) if request.method == "POST" else FotoForm()
     if request.method == "POST" and form.is_valid():
         imagen = form.cleaned_data["foto"]
         clave = storage.generar_clave(servicio.pk, etapa, imagen.extension)

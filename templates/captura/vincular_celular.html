@@ -12,8 +12,9 @@
       <dt>Bandeja</dt><dd>{{ bandeja.numero }}</dd>
       <dt>Plato</dt><dd>{{ plato_nombre }}</dd>
       <dt>Porción</dt><dd>{{ porcion_nombre }}</dd>
-      <dt>Etapa</dt><dd>{{ etapa }}</dd>
+      <dt>Etapa</dt><dd>{% if etapa == "RETORNO" %}Retorno{% else %}Servido{% endif %}</dd>
     </dl>
+    {% include "captura/_contexto_servicio.html" %}
     <div class="info-box"><h3>Dos códigos diferentes</h3><p>El QR de la bandeja identifica el soporte físico. Este QR temporal permite abrir la captura de este servicio y etapa. Debes iniciar sesión con rol Registro en el teléfono.</p></div>
     <form method="post" {% if crear_url %}action="{{ crear_url }}"{% endif %}>
       {% csrf_token %}

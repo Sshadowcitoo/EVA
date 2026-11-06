@@ -10,7 +10,7 @@
   <body>
     <div class="app-layout">
       <aside class="sidebar">
-        <button type="button" class="mobile-menu-toggle" aria-expanded="false" aria-label="Mostrar u ocultar navegación">
+        <button type="button" class="mobile-menu-toggle" aria-expanded="false" aria-controls="navegacion-principal" aria-label="Mostrar u ocultar navegación">
           EVA <span>Menú ☰</span>
         </button>
         <div class="sidebar-brand">
@@ -18,16 +18,9 @@
           <span class="brand-caption">FOOD WASTE AI</span>
         </div>
 
-        <nav class="sidebar-nav" aria-label="Navegación principal">
+        <nav id="navegacion-principal" class="sidebar-nav" aria-label="Navegación principal">
           {% block navigation %}
-          {% if puede_registrar %}
-          <a class="nav-link active" href="{% url 'captura:nueva_bandeja' %}">
-            Nueva bandeja
-          </a>
-
-          <a class="nav-link" href="{% url 'captura:resolver_bandeja' %}">Capturar con bandeja</a>
-          <a class="nav-link" href="{% url 'captura:buscar_retorno' %}">Registrar retorno</a>
-          {% endif %}
+          {% include 'includes/captura_nav.html' %}
 
           {% if puede_administrar_catalogo %}
           <a class="nav-link" href="{% url 'catalogo:platos' %}">Catálogo</a>

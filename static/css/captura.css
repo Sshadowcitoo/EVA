@@ -12,7 +12,7 @@
 .capture-empty > span { font-size: 42px; color: #2479c9; }
 .capture-empty[hidden], [data-qr-video][hidden] { display: none; }
 .capture-operation form, .capture-fields p { display: grid; gap: 10px; }
-.capture-operation input, .capture-fields input, .capture-fields select {
+.capture-operation input, .capture-operation select, .capture-fields input, .capture-fields select {
   width: 100%; min-width: 0; max-width: 100%; padding: 12px;
   border: 1px solid #cbd5e1; border-radius: 8px; font: inherit;
 }
@@ -36,3 +36,6 @@
   .capture-details dd { margin-bottom: 12px; }
   [data-photo-form] button { width: 100%; margin-right: 0; }
 }
+
+.capture-context { margin-block: 16px; overflow-wrap: anywhere; }
+.capture-lookup .errorlist, .capture-operation .errorlist { color: #a91c30; overflow-wrap: anywhere; }

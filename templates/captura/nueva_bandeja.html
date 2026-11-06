@@ -1,11 +1,11 @@
 {% extends "base.html" %}
 
 {% block title %}
-Nueva bandeja | EVA
+Registro básico | EVA
 {% endblock %}
 
 {% block heading %}
-Nueva bandeja
+Registro básico
 {% endblock %}
 
 {% block subtitle %}
@@ -24,7 +24,7 @@ Registro básico del servicio. Para fotografiar servido y retorno, usa la captur
   <div class="capture-grid">
     <section class="panel" aria-labelledby="datos-servicio">
       <h2 id="datos-servicio">Datos del servicio</h2>
-      <p class="muted">Este formulario crea un registro básico de servicio. Para asociar una bandeja y capturar servido y retorno, usa <a href="{% url 'captura:resolver_bandeja' %}">Capturar con bandeja</a>.</p>
+      <p class="muted">Este formulario crea un registro básico de servicio. Para asociar una bandeja y capturar servido y retorno, usa <a href="{% url 'captura:resolver_bandeja' %}">Registrar servido</a>.</p>
 
       <div class="form-field">
         <label for="{{ form.plato.id_for_label }}">Plato del catálogo</label>
@@ -52,7 +52,7 @@ Registro básico del servicio. Para fotografiar servido y retorno, usa la captur
         <h3>Relación de las fotos</h3>
         <p>
           Este formulario crea un registro sin asignar una bandeja física. Para el
-          recorrido con fotos, escanea o busca una bandeja en Capturar con bandeja.
+          recorrido con fotos, escanea o busca una bandeja en Registrar servido.
         </p>
       </div>
     </section>

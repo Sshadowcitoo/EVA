@@ -19,6 +19,8 @@
 {% include 'includes/captura_nav.html' %}
 {% endblock %}
 {% block historico_content %}
+{% block filtros_indicadores %}
+<p><a href="{% url 'historico:demostracion' %}">Ver interfaz con datos de demostración →</a></p>
 <details class="panel eva-filters"{% if form.errors %} open{% endif %}>
   <summary>
     <strong>Filtros de consulta</strong>
@@ -31,6 +33,7 @@
   </summary>
   {% include 'historico/_filtros_form.html' %}
 </details>
+{% endblock %}
 {% if datos %}
 {% include 'historico/_panel_indicadores.html' %}
 {% if datos.grupos %}

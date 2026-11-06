@@ -60,3 +60,11 @@ identificados; sus porcentajes no se calculan a partir de la foto ilustrativa.
   trazabilidad; no elimina el historial.
 - Al reportar un fallo indica servicio, bandeja, etapa, hora y mensaje. Evita
   compartir contraseñas o enlaces temporales en capturas públicas.
+
+
+## Ver la interfaz con gráficos de ejemplo
+
+Desde Histórico e indicadores, pulsa **Ver interfaz con datos de demostración**.
+Puedes cambiar grupo y escenario. La página lleva un aviso de datos ficticios;
+no altera registros ni acredita precisión de la IA. Usa **Volver al histórico
+real** para consultar la evidencia operativa.

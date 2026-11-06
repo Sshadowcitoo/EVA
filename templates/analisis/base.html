@@ -8,13 +8,11 @@
 {% block navigation %}
   {% url 'analisis:lista' as lista_url %}
 
-  {% if puede_registrar %}
-    <a class="nav-link" href="{% url 'captura:nueva_bandeja' %}">Nueva bandeja</a>
-  {% endif %}
+  {% include 'includes/captura_nav.html' %}
 
   {% if puede_cocina %}
     {% if lista_url %}
-      <a class="nav-link{% if request.resolver_match.view_name == 'analisis:lista' %} active{% endif %}"
+      <a class="nav-link{% if request.resolver_match.namespace == 'analisis' %} active{% endif %}"
          href="{{ lista_url }}"
          {% if request.resolver_match.view_name == 'analisis:lista' %}aria-current="page"{% endif %}>Pendientes</a>
     {% else %}

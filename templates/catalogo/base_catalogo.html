@@ -9,19 +9,12 @@
 {% block navigation %}
   {% url 'catalogo:platos' as platos_url %}
 
-  {% if puede_registrar %}
-    <a class="nav-link" href="{% url 'captura:nueva_bandeja' %}">Nueva bandeja</a>
-  {% endif %}
+  {% include 'includes/captura_nav.html' %}
   {% if puede_cocina %}
     <a class="nav-link" href="{% url 'cuentas:cocina_pendiente' %}">Cocina</a>
   {% endif %}
 
   {% include 'includes/historico_nav.html' %}
-
-  <span class="nav-link unavailable">
-    Recomendación
-    <small>Pendiente</small>
-  </span>
 
   <a class="nav-link active" href="{{ platos_url }}" aria-current="page">
     Catálogo

@@ -17,7 +17,8 @@ class CodigoEstableMixin:
 class PlatoForm(CodigoEstableMixin, forms.ModelForm):
     composicion = forms.ModelMultipleChoiceField(
         queryset=Componente.objects.filter(activo=True),
-        required=False,
+        required=True,
+        error_messages={"required": "Selecciona al menos un componente activo."},
         widget=forms.CheckboxSelectMultiple,
         label="Componentes del plato",
     )

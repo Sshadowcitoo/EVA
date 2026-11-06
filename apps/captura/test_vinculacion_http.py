@@ -57,7 +57,11 @@ class VinculacionHTTPTests(BaseDominio):
         estado = self.client.get(reverse("captura:estado_vinculacion", args=[sesion.pk]))
         self.assertEqual(estado.json()["estado"], "COMPLETADA")
         self.assertIn("no-store", estado["Cache-Control"])
-        self.assertContains(self.telefono.post(url, self.datos()), "Captura ya completada")
+        reintento = self.telefono.post(url, self.datos())
+        self.assertContains(reintento, "Fotografía guardada correctamente")
+        self.assertContains(reintento, "Este enlace quedó cerrado")
+        fotografia.refresh_from_db()
+        self.assertEqual(self.servicio.fotografias.get().pk, fotografia.pk)
         self.assertEqual(self.servicio.fotografias.count(), 1)
         self.assertContains(self.client.get(self.directa), "hora de Ecuador")
 

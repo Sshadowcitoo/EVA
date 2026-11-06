@@ -1,4 +1,5 @@
 """Adaptación HTTP del histórico. Los servicios conservan las reglas de negocio."""
+from django import forms
 from django.contrib import messages
 from django.core.exceptions import ValidationError
 from django.http import Http404
@@ -119,3 +120,22 @@ def percepcion(request, servicio_id):
         else:
             status = 400
     return render(request, 'historico/percepcion.html', dict(form=form, actual=actual, servicio_id=servicio_id, error=error, conflicto=conflicto, bloqueado=bool(error)), status=status)
+
+
+@roles_required(COCINA, ADMINISTRACION)
+@require_GET
+def demostracion(request):
+    """Vista de solo lectura; no consulta ni modifica los servicios operativos."""
+    from .demo import ESCENARIOS, construir
+    escenario = request.GET.get("escenario", "con_datos")
+    try:
+        if escenario not in ESCENARIOS:
+            raise ValidationError("Escenario de demostración desconocido.")
+        pagina = forms.IntegerField(min_value=1).clean(request.GET.get("page", "1"))
+    except ValidationError as exc:
+        return render(request, "historico/demostracion.html", dict(error=" ".join(exc.messages),
+            es_demostracion=True, escenario=escenario), status=400)
+    datos, panel = construir(escenario, request.GET.get("grupo", ""), pagina)
+    return render(request, "historico/demostracion.html", dict(datos=datos, panel=panel,
+        es_demostracion=True, escenario=escenario, filtros_panel=[("escenario", escenario)],
+        enlaces=_enlaces_pagina(request, datos), recomendaciones_url=reverse("recomendaciones:demo")))

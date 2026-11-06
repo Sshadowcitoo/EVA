@@ -1,5 +1,7 @@
+{% if not es_demostracion %}
 {% if datos.solo_pruebas %}<p class="historico-aviso"><strong>Datos de prueba</strong> · No corresponden a servicios reales ni a parámetros aprobados.</p>{% endif %}
 {% for aviso in datos.advertencias %}<p class="historico-aviso">{{ aviso }}</p>{% endfor %}
+{% endif %}
 {% if panel.opciones %}
 <form method="get" class="panel eva-group-picker">
   {% for campo, valor in filtros_panel %}<input type="hidden" name="{{ campo }}" value="{{ valor }}">{% endfor %}
@@ -8,7 +10,7 @@
     <select id="grupo-indicadores" name="grupo" required>
       <option value="">Selecciona un grupo exacto</option>
       {% for grupo in panel.opciones %}
-      <option value="{{ grupo.clave }}"{% if grupo.clave == panel.grupo.clave %} selected{% endif %}>{{ grupo.etiqueta }} · {{ grupo.version_modelo }} / {{ grupo.version_configuracion }} / {{ grupo.protocolo_version }} · Contexto {{ grupo.contexto_corto|default:'desconocido' }}</option>
+      <option value="{{ grupo.clave }}"{% if grupo.clave == panel.grupo.clave %} selected{% endif %}>{{ grupo.etiqueta }}{% if not es_demostracion %} · {{ grupo.version_modelo }} / {{ grupo.version_configuracion }} / {{ grupo.protocolo_version }} · Contexto {{ grupo.contexto_corto|default:'desconocido' }}{% endif %}</option>
       {% endfor %}
     </select>
   </div>
@@ -17,7 +19,7 @@
 {% endif %}
 {% if panel.seleccion_invalida %}<p class="historico-aviso">El grupo solicitado no está disponible con estos filtros.</p>{% endif %}
 {% if panel.grupo %}
-<p class="eva-group-note">{{ panel.grupo.etiqueta }} · Contexto {{ panel.grupo.contexto_corto|default:'desconocido' }} · {{ panel.grupo.version_modelo }} / {{ panel.grupo.version_configuracion }} / {{ panel.grupo.protocolo_version }}</p>
+<p class="eva-group-note">{{ panel.grupo.etiqueta }}{% if not es_demostracion %} · Contexto {{ panel.grupo.contexto_corto|default:'desconocido' }} · {{ panel.grupo.version_modelo }} / {{ panel.grupo.version_configuracion }} / {{ panel.grupo.protocolo_version }}{% endif %}</p>
 {% elif panel.opciones %}
 <p class="historico-aviso">Hay varios grupos: no se combinan sus medias. Selecciona un grupo para ver sus gráficos.</p>
 {% endif %}

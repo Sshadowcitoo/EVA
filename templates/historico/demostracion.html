@@ -1,0 +1,18 @@
+{% extends 'historico/lista.html' %}
+{% block title %}Demostración de Indicadores | EVA{% endblock %}
+{% block heading %}Indicadores · Demostración{% endblock %}
+{% block subtitle %}Vista previa con datos ficticios; separada del histórico real.{% endblock %}
+{% block header_action %}<a class="button eva-primary eva-header-action" href="{% url 'recomendaciones:demo' %}">Ver recomendaciones de ejemplo →</a>{% endblock %}
+{% block filtros_indicadores %}
+<section class="historico-aviso" role="note">
+<h2>Datos de demostración · Sin validez operativa</h2>
+<p>Estos porcentajes son ejemplos ficticios para visualizar la interfaz. No son mediciones de la IA ni modifican el histórico real.</p>
+<a href="{% url 'historico:lista' %}">Volver al histórico real</a>
+</section>
+<section class="panel"><h2>Escenario de ejemplo</h2>
+<form method="get" class="eva-group-picker">
+<div class="historico-campo"><label for="escenario-demo">Evidencia de ejemplo</label>
+<select name="escenario" id="escenario-demo"><option value="con_datos"{% if escenario == 'con_datos' %} selected{% endif %}>Con valores de demostración</option><option value="sin_aptos"{% if escenario == 'sin_aptos' %} selected{% endif %}>Sin evidencia apta</option></select></div>
+<button type="submit">Mostrar ejemplo</button>
+</form></section>
+{% endblock %}

@@ -35,7 +35,9 @@ Los identificadores corresponden a marcos reales dentro del [archivo EVA](https:
 | Gráficos | Dos columnas en escritorio y una en móvil. Barras con escala explícita, valores visibles y unidades. Cada gráfico describe la población y el límite de comparación. |
 | Mensajes y vacíos | Diferenciar consulta vacía, falta de aptos, múltiples grupos, criterio pendiente, error y desconexión. Usar texto explicativo y ofrecer la acción pertinente. |
 
-## Adaptación de W18
+## Adaptación inicial de W18
+
+La [proyección conectada y sus capturas de QA](propuesta_agregaciones_indicadores.md) documentan la iteración posterior. Esta sección registra el piloto inicial.
 
 La acción de cabecera enlaza a Recomendaciones con los permisos vigentes. Las cuatro tarjetas usan candidatos, aptos, excluidos e intensidad del resultado consultado. Los gráficos muestran cobertura de la muestra, motivos de exclusión, intensidad y prevalencia. Los dos últimos representan la consulta tal como la devuelve el histórico. La vista conserva filtros, grupos con sus motivos, paginación y tabla completa.
 

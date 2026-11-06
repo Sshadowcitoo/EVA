@@ -25,8 +25,16 @@ def calcular(valores, criterio):
 
 
 def resumir(datos, advertencias, filtros, pagina):
+    return _resumir(datos, advertencias, filtros, pagina)[0]
+
+
+def resumir_con_panel(datos, advertencias, filtros, pagina, grupo_panel):
+    return _resumir(datos, advertencias, filtros, pagina, grupo_panel=grupo_panel)
+
+
+def _resumir(datos, advertencias, filtros, pagina, *, grupo_panel=None):
     criterio = criterio_presencia()
-    filas, grupos = [], {}
+    filas, grupos, nombres = [], {}, {}
     motivos = Counter(d['motivo'] for d in datos if d['motivo'])
     aptos = sum(d['motivo'] is None for d in datos)
     for dato in datos:
@@ -52,11 +60,17 @@ def resumir(datos, advertencias, filtros, pagina):
             clave = (servicio.plato, codigo, servicio.tipo_porcion, dato.get('contexto_clave'),
                      a.version_modelo, a.version_configuracion, a.foto_servido.protocolo_version)
             grupos.setdefault(clave, {})[str(servicio.pk)] = porcentaje
-    salida_grupos = []
+            if grupo_panel is not None:
+                nombres.setdefault(clave, (filas[-1]['plato_nombre'], comp.componente_nombre,
+                                           filas[-1]['porcion_nombre']))
+    salida_grupos, claves_panel = [], {}
     for clave, valores in sorted(grupos.items(), key=lambda item: repr(item[0])):
         plato, componente, porcion, contexto, modelo, config, protocolo = clave
         identificador = hashlib.sha256(json.dumps(clave, ensure_ascii=True).encode()).hexdigest()[:24]
-        salida_grupos.append(dict(clave='grupo-' + identificador, plato_codigo=plato, componente_codigo=componente,
+        clave_publica = 'grupo-' + identificador
+        if grupo_panel is not None:
+            claves_panel[clave_publica] = clave
+        salida_grupos.append(dict(clave=clave_publica, plato_codigo=plato, componente_codigo=componente,
             porcion_codigo=porcion, contexto_clave=contexto, version_modelo=modelo,
             version_configuracion=config, protocolo_version=protocolo,
             comparable=contexto is not None, motivos=[] if contexto is not None else ['SIN_CONTEXTO_HISTORICO'],
@@ -69,6 +83,10 @@ def resumir(datos, advertencias, filtros, pagina):
             cabecera['motivos_no_disponible'] = ['MULTIPLES_GRUPOS']
         elif not datos:
             cabecera['motivos_no_disponible'] = ['SIN_DATOS'] + (['SIN_CRITERIO_PRESENCIA'] if criterio['t'] is None else [])
+    panel = None
+    if grupo_panel is not None:
+        from .panel import proyectar
+        panel = proyectar(datos, filtros, grupo_panel, grupos, nombres, claves_panel, salida_grupos)
     paginador = Paginator(filas, 30)
     pagina_actual = paginador.get_page(pagina)
     candidatos = len(datos)
@@ -78,7 +96,7 @@ def resumir(datos, advertencias, filtros, pagina):
         resumen=dict(candidatos=candidatos, aptos=aptos, excluidos=candidatos - aptos,
                      proporcion_excluidos=Decimal(100) * (candidatos - aptos) / candidatos if candidatos else None,
                      motivos=dict(motivos)),
-        indicadores=cabecera, grupos=salida_grupos, advertencias=advertencias)
+        indicadores=cabecera, grupos=salida_grupos, advertencias=advertencias), panel
 
 
 def comparar_resumenes(referencia, comparado):

@@ -16,6 +16,7 @@ from django.utils import timezone
 
 from apps.analisis import services as analisis_services
 from apps.analisis.models import AnalisisServicio, IntentoAnalisis, ResultadoComponente, RevisionAnalisis
+from apps.captura.contexto import fijar_servido
 from apps.captura.models import Servicio, FotografiaServicio
 from apps.captura.protocolo import CRITERIOS, VERSION
 from apps.catalogo.models import Plato, TipoPorcion, Componente, PlatoComponente
@@ -39,9 +40,10 @@ class BaseHistorico(TestCase):
         cls.registro = get_user_model().objects.create_user('registro_fixture')
         cls.registro.groups.add(Group.objects.get(name='Registro'))
 
-    def caso(self, porcentaje=25, *, decision='CONFIRMADO', fecha=None, origen='REAL', modelo='fixture-m1', configuracion='fixture-c1'):
-        servicio = Servicio.registrar(plato=Plato.objects.get(codigo='seco_de_pollo'),
-            porcion=TipoPorcion.objects.get(codigo='estandar'), usuario=self.registro)
+    def caso(self, porcentaje=25, *, decision='CONFIRMADO', fecha=None, origen='REAL', modelo='fixture-m1', configuracion='fixture-c1',
+             plato='seco_de_pollo', porcion='estandar', contexto=None, protocolo=VERSION):
+        servicio = Servicio.registrar(plato=Plato.objects.get(codigo=plato),
+            porcion=TipoPorcion.objects.get(codigo=porcion), usuario=self.registro, datos_contexto=contexto)
         Servicio.objects.filter(pk=servicio.pk).update(estado_captura='PAR_COMPLETO')
         servicio.refresh_from_db()
         fecha = fecha or datetime(2026, 10, 3, 12, tzinfo=ZONA)
@@ -49,11 +51,13 @@ class BaseHistorico(TestCase):
         for etapa in ('SERVIDO', 'RETORNO'):
             f = FotografiaServicio.objects.create(servicio=servicio, etapa=etapa,
                 clave_archivo=f'fixture/sin-bytes/{servicio.pk}/{etapa}.png', tipo_contenido='image/png',
-                tamano_bytes=10, ancho=4, alto=4, autor=self.registro, protocolo_version=VERSION,
+                tamano_bytes=10, ancho=4, alto=4, autor=self.registro, protocolo_version=protocolo,
                 checklist=dict.fromkeys(CRITERIOS, True))
             FotografiaServicio.objects.filter(pk=f.pk).update(fecha=fecha)
             f.refresh_from_db()
             fotos[etapa] = f
+        if contexto:
+            fijar_servido(servicio, fotos['SERVIDO'])
         a = AnalisisServicio.objects.create(servicio=servicio, foto_servido=fotos['SERVIDO'], foto_retorno=fotos['RETORNO'],
             version_modelo=modelo, version_configuracion=configuracion, origen=origen, solicitante=self.cocina)
         intento = IntentoAnalisis.objects.create(analisis=a, numero=1, estado='COMPLETADO')

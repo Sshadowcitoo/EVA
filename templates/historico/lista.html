@@ -54,3 +54,5 @@
 <nav class="historico-paginacion" aria-label="Páginas de resultados">{% if enlaces.anterior %}<a href="{{ enlaces.anterior }}">← Anterior</a>{% endif %}<span>Página {{ datos.paginacion.pagina }} de {{ datos.paginacion.paginas }} · {{ datos.paginacion.total_filas }} filas</span>{% if enlaces.siguiente %}<a href="{{ enlaces.siguiente }}">Siguiente →</a>{% endif %}</nav>
 </section>{% endif %}
 {% endblock %}
+
+{% block historico_scripts %}<script src="{% static 'js/indicadores.js' %}" defer></script>{% endblock %}

@@ -15,6 +15,11 @@ PERCEPCION = f'/historico/servicios/{SID}/percepcion/'
 PERIODOS = dict(referencia_desde='2026-10-01', referencia_hasta='2026-10-07', comparado_desde='2026-10-08', comparado_hasta='2026-10-14')
 
 
+def _panel_fixture(datos):
+    grupos = datos['grupos']
+    return datos, {'opciones': grupos, 'grupo': grupos[0] if len(grupos) == 1 else None}
+
+
 @override_settings(ROOT_URLCONF=__name__)
 class HistoricoWebTests(TestCase):
     @classmethod
@@ -37,7 +42,7 @@ class HistoricoWebTests(TestCase):
     def test_permisos_roles_aislados_y_staff(self):
         for rol, user in self.usuarios.items():
             self.client.force_login(user)
-            with patch('apps.historico.services.consultar_historico', return_value=historico_fixture()), patch('apps.historico.services.obtener_percepcion', return_value=percepcion_fixture()):
+            with patch('apps.historico.services.consultar_panel', return_value=_panel_fixture(historico_fixture())), patch('apps.historico.services.obtener_percepcion', return_value=percepcion_fixture()):
                 self.assertEqual(self.client.get('/historico/').status_code, 200 if rol in ('Cocina', 'Administración') else 403)
                 self.assertEqual(self.client.get('/historico/comparar/').status_code, 200 if rol in ('Cocina', 'Administración') else 403)
                 self.assertEqual(self.client.get(PERCEPCION).status_code, 200 if rol == 'Registro' else 403)
@@ -67,7 +72,7 @@ class HistoricoWebTests(TestCase):
         user = self.usuarios['Registro']
         user.groups.add(Group.objects.get(name='Cocina'))
         self.client.force_login(user)
-        with patch('apps.historico.services.consultar_historico', return_value=historico_fixture()), patch('apps.historico.services.obtener_percepcion', return_value=percepcion_fixture()):
+        with patch('apps.historico.services.consultar_panel', return_value=_panel_fixture(historico_fixture())), patch('apps.historico.services.obtener_percepcion', return_value=percepcion_fixture()):
             self.assertEqual(self.client.get('/historico/').status_code, 200)
             self.assertEqual(self.client.get(PERCEPCION).status_code, 200)
 
@@ -82,28 +87,12 @@ class HistoricoWebTests(TestCase):
 
     def test_estados_sin_datos_sin_aptos_y_configuracion(self):
         for escenario, texto in [('con_datos', '0,00 %'), ('sin_datos', 'Esto no significa cero sobrantes'), ('sin_aptos', 'No hay servicios aptos'), ('configuracion_pendiente', 'Pendiente de aprobación')]:
-            with self.subTest(escenario=escenario), patch('apps.historico.services.consultar_historico', return_value=historico_fixture(escenario)):
+            with self.subTest(escenario=escenario), patch('apps.historico.services.consultar_panel', return_value=_panel_fixture(historico_fixture(escenario))):
                 response = self.client.get('/historico/')
                 self.assertContains(response, texto)
                 self.assertContains(response, 'Datos de prueba')
-        with patch('apps.historico.services.consultar_historico', return_value=historico_fixture('configuracion_pendiente')):
+        with patch('apps.historico.services.consultar_panel', return_value=_panel_fixture(historico_fixture('configuracion_pendiente'))):
             self.assertContains(self.client.get('/historico/'), '25,00 %')
-
-    def test_graficos_preservan_cero_y_omiten_indicadores_no_disponibles(self):
-        datos = historico_fixture('configuracion_pendiente')
-        datos['indicadores']['intensidad'] = Decimal('0.00')
-        with patch('apps.historico.services.consultar_historico', return_value=datos):
-            response = self.client.get('/historico/')
-        self.assertContains(response, 'aria-labelledby="barra-intensidad" min="0" max="100" value="0.00"')
-        self.assertContains(response, 'aria-labelledby="barra-aptos" min="0" max="5" value="4"')
-        self.assertNotContains(response, 'aria-labelledby="barra-prevalencia"')
-        self.assertContains(response, 'Prevalencia no disponible')
-
-    def test_consulta_vacia_no_dibuja_barras_ficticias(self):
-        with patch('apps.historico.services.consultar_historico', return_value=historico_fixture('sin_datos')):
-            response = self.client.get('/historico/')
-        self.assertContains(response, 'Sin registros en la consulta')
-        self.assertNotContains(response, '<meter')
 
     def test_backend_pendiente_no_se_convierte_en_vacio(self):
         self.opciones.side_effect = BackendHistoricoNoDisponible()
@@ -118,7 +107,7 @@ class HistoricoWebTests(TestCase):
 
     def test_filtros_invalidos_conservan_entrada(self):
         for datos in [dict(desde='2026-02-30'), dict(desde='2026-10-08', hasta='2026-10-01'), dict(hora_desde='23:00', hora_hasta='01:00'), dict(hora_desde='12:00'), dict(page='0'), dict(page='nada'), dict(plato='inexistente'), dict(origen='SIMULADO')]:
-            with self.subTest(datos=datos), patch('apps.historico.services.consultar_historico') as consulta:
+            with self.subTest(datos=datos), patch('apps.historico.services.consultar_panel') as consulta:
                 response = self.client.get('/historico/', datos)
                 self.assertEqual(response.status_code, 400)
                 self.assertTrue(response.context['form'].errors)
@@ -129,13 +118,13 @@ class HistoricoWebTests(TestCase):
     def test_filtros_paginacion_y_totales_de_backend(self):
         datos = historico_fixture()
         datos['paginacion'].update(pagina=2, paginas=3, total_filas=75)
-        with patch('apps.historico.services.consultar_historico', return_value=datos) as consulta:
+        with patch('apps.historico.services.consultar_panel', return_value=_panel_fixture(datos)) as consulta:
             response = self.client.get('/historico/', dict(page=2, plato='seco_de_pollo', componente='arroz', porcion='estandar', desde='2026-10-01', hasta='2026-10-07', hora_desde='12:00', hora_hasta='14:00'))
             self.assertEqual(response.status_code, 200)
             filtro = consulta.call_args.args[0]
             self.assertEqual(filtro['inicio'].hour, 0)
             self.assertEqual(filtro['fin'].day, 8)
-            self.assertEqual(consulta.call_args.kwargs, {'pagina': 2})
+            self.assertEqual(consulta.call_args.kwargs, {'pagina': 2, 'grupo': ''})
             self.assertEqual(response.context['datos']['indicadores']['n'], 4)
             self.assertIn('plato=seco_de_pollo', response.context['enlaces']['siguiente'])
             self.assertIn('page=3', response.context['enlaces']['siguiente'])
@@ -145,15 +134,15 @@ class HistoricoWebTests(TestCase):
         datos = historico_fixture()
         datos['grupos'].append({**datos['grupos'][0], 'componente_codigo': 'pollo'})
         datos['indicadores'].update(n=0, intensidad=None, prevalencia=None, motivos_no_disponible=['MULTIPLES_GRUPOS'])
-        with patch('apps.historico.services.consultar_historico', return_value=datos):
+        with patch('apps.historico.services.consultar_panel', return_value=_panel_fixture(datos)):
             response = self.client.get('/historico/')
-            self.assertContains(response, 'MULTIPLES_GRUPOS')
+            self.assertContains(response, 'Hay varios grupos: no se combinan sus medias.')
             self.assertContains(response, 'n = 4', count=2)
 
     def test_campos_escapados_y_fechas_de_ecuador(self):
         datos = historico_fixture()
         datos['filas'][0]['plato_nombre'] = '<script>alert(1)</script>'
-        with patch('apps.historico.services.consultar_historico', return_value=datos):
+        with patch('apps.historico.services.consultar_panel', return_value=_panel_fixture(datos)):
             response = self.client.get('/historico/')
             self.assertContains(response, '&lt;script&gt;')
             self.assertNotContains(response, '<script>alert(1)</script>')
@@ -161,13 +150,13 @@ class HistoricoWebTests(TestCase):
 
     def test_error_servicio_validacion_y_excepcion_inesperada(self):
         for exc in [FiltrosInvalidos({'desde': 'Fecha rechazada'}), ValidationError({'plato': '<error>'})]:
-            with patch('apps.historico.services.consultar_historico', side_effect=exc):
+            with patch('apps.historico.services.consultar_panel', side_effect=exc):
                 self.assertEqual(self.client.get('/historico/').status_code, 400)
-        with patch('apps.historico.services.consultar_historico', side_effect=BackendHistoricoNoDisponible()):
+        with patch('apps.historico.services.consultar_panel', side_effect=BackendHistoricoNoDisponible()):
             self.assertEqual(self.client.get('/historico/').status_code, 503)
-        with patch('apps.historico.services.consultar_historico', side_effect=PermissionDenied()):
+        with patch('apps.historico.services.consultar_panel', side_effect=PermissionDenied()):
             self.assertEqual(self.client.get('/historico/').status_code, 403)
-        with patch('apps.historico.services.consultar_historico', side_effect=RuntimeError('fallo')):
+        with patch('apps.historico.services.consultar_panel', side_effect=RuntimeError('fallo')):
             with self.assertRaises(RuntimeError):
                 self.client.get('/historico/')
 
@@ -260,7 +249,7 @@ class HistoricoWebTests(TestCase):
         opciones = opciones_fixture()
         opciones['platos'].append(dict(codigo='plato_anterior', nombre='Plato anterior (retirado)'))
         self.opciones.return_value = opciones
-        with patch('apps.historico.services.consultar_historico', return_value=historico_fixture()) as consulta:
+        with patch('apps.historico.services.consultar_panel', return_value=_panel_fixture(historico_fixture())) as consulta:
             response = self.client.get('/historico/', dict(plato='plato_anterior'))
             self.assertContains(response, 'Plato anterior (retirado)')
             self.assertEqual(consulta.call_args.args[0]['plato'], 'plato_anterior')

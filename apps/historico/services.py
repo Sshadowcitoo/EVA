@@ -22,6 +22,16 @@ def consultar_historico(filtros: FiltrosHistorico, pagina: int = 1) -> ResumenHi
         return indicadores.resumir(datos, advertencias, filtros, pagina)
 
 
+def consultar_panel(filtros: FiltrosHistorico, pagina: int = 1, grupo: str = ''):
+    """Consulta de Indicadores y tabla v1 sobre la misma población."""
+    filtros = normalizar_filtros(filtros)
+    if type(pagina) is not int or pagina < 1:
+        raise FiltrosInvalidos({'page': 'La página debe ser un entero positivo.'})
+    with transaction.atomic():
+        datos, advertencias = selectors.seleccionar(filtros)
+        return indicadores.resumir_con_panel(datos, advertencias, filtros, pagina, grupo)
+
+
 def comparar_periodos(filtros_a: FiltrosHistorico, filtros_b: FiltrosHistorico) -> Comparacion:
     a, b = normalizar_filtros(filtros_a), normalizar_filtros(filtros_b)
     if any(f[c] is None for f in (a, b) for c in ('inicio', 'fin')):

@@ -1,0 +1,16 @@
+{% load l10n %}
+<article class="panel eva-chart">
+  <h2>{{ titulo }}</h2>
+  <p class="muted">{{ descripcion }}</p>
+  {% if perfiles %}
+  <div class="eva-scale" aria-label="Escala de 0 a 100 por ciento"><span>0 %</span><span>25 %</span><span>50 %</span><span>75 %</span><span>100 %</span></div>
+  {% for perfil in perfiles %}
+  {% with indice=forloop.counter|stringformat:'s' %}
+  <div class="eva-bar">
+    <div class="eva-bar-label"><span id="{{ prefijo|add:indice }}">{{ perfil.nombre }} <small>· n = {{ perfil.n }}</small></span><strong>{{ perfil.intensidad|floatformat:2 }} %</strong></div>
+    <meter aria-labelledby="{{ prefijo|add:indice }}" min="0" max="100" value="{{ perfil.intensidad|unlocalize }}"></meter>
+  </div>
+  {% endwith %}
+  {% endfor %}
+  {% else %}{% include 'historico/_vacio_indicador.html' %}{% endif %}
+</article>

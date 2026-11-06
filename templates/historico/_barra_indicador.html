@@ -1,6 +1,0 @@
-{% load l10n %}
-<div class="eva-bar">
-  <div class="eva-bar-label"><span id="{{ barra_id }}">{% if es_motivo %}{% include "historico/_motivo_exclusion.html" with motivo=etiqueta only %}{% else %}{{ etiqueta }}{% endif %}</span>
-    <strong>{% if porcentaje %}{{ valor|floatformat:2 }} %{% else %}{{ valor }}{% endif %}</strong></div>
-  <meter aria-labelledby="{{ barra_id }}" min="0" max="{{ maximo|unlocalize }}" value="{{ valor|unlocalize }}"></meter>
-</div>

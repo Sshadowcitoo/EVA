@@ -36,11 +36,12 @@ def lista(request):
     except BackendHistoricoNoDisponible:
         error = 'El histórico está pendiente de conexión. No hay resultados disponibles para esta consulta.'
     form = FiltrosForm(request.GET, opciones=opciones)
-    datos, enlaces, status = None, {}, 503 if error else 200
+    datos, panel, enlaces, status = None, None, {}, 503 if error else 200
     if not error:
         if form.is_valid():
             try:
-                datos = services.consultar_historico(form.filtros, pagina=form.cleaned_data.get('page') or 1)
+                datos, panel = services.consultar_panel(form.filtros, pagina=form.cleaned_data.get('page') or 1,
+                                                       grupo=request.GET.get('grupo', ''))
                 enlaces = _enlaces_pagina(request, datos)
             except BackendHistoricoNoDisponible:
                 error, status = 'El histórico está pendiente de conexión. Intenta nuevamente más tarde.', 503
@@ -49,7 +50,8 @@ def lista(request):
                 status = 400
         else:
             status = 400
-    return render(request, 'historico/lista.html', dict(form=form, datos=datos, enlaces=enlaces, error=error), status=status)
+    return render(request, 'historico/lista.html', dict(form=form, datos=datos, panel=panel, enlaces=enlaces, error=error,
+        filtros_panel=[(k, v) for k, v in request.GET.items() if k in form.fields and k != 'page']), status=status)
 
 
 @roles_required(COCINA, ADMINISTRACION)

@@ -1,0 +1,5 @@
+<div class="eva-empty eva-empty-warning">
+  {% if panel.grupo and not panel.grupo.comparable %}Grupo no comparable.
+  {% elif panel.opciones and not panel.grupo %}Selecciona un grupo de referencia.
+  {% else %}Evidencia insuficiente para mostrar este gráfico.{% endif %}
+</div>

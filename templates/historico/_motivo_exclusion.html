@@ -1,0 +1,12 @@
+<span title="{{ motivo }}">{% if motivo == 'ANULADO' %}Servicio anulado
+{% elif motivo == 'SIN_FECHA_SERVIDO' %}Sin fecha de servido
+{% elif motivo == 'PAR_INCOMPLETO' %}Par de fotografías incompleto
+{% elif motivo == 'SIN_ANALISIS' %}Sin análisis
+{% elif motivo == 'INTENTO_NO_COMPLETADO' %}Análisis sin completar
+{% elif motivo == 'SIN_REVISION' %}Sin revisión de Cocina
+{% elif motivo == 'RECHAZADO' %}Rechazado en revisión
+{% elif motivo == 'NO_CONCLUYENTE' %}Revisión no concluyente
+{% elif motivo == 'REVISION_NO_CONFIRMADA' %}Revisión sin confirmar
+{% elif motivo == 'COMPONENTES_INVALIDOS' %}Componentes incompatibles
+{% elif motivo == 'CRITERIOS_INVALIDOS' %}Evidencia fuera de criterios
+{% else %}{{ motivo }}{% endif %}</span>

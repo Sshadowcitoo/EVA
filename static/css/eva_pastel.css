@@ -1,0 +1,143 @@
+/* Piloto optativo. Los tokens se activan con .eva-pastel en el cuerpo. */
+.eva-pastel {
+  --eva-canvas: #edf5ef;
+  --eva-surface: #f7fbf7;
+  --eva-emphasis: #e4f0e7;
+  --eva-border: #cfdfd3;
+  --eva-ink: #162d23;
+  --eva-muted: #486052;
+  --eva-action: #246045;
+  --eva-action-hover: #194b34;
+  --eva-warning-bg: #fff4df;
+  --eva-warning: #6e4b12;
+  --eva-error-bg: #faeceb;
+  --eva-error: #8f2b2b;
+  --eva-radius: 12px;
+  background: var(--eva-canvas);
+  color: var(--eva-ink);
+}
+
+.eva-pastel .sidebar,
+.eva-pastel .page-header,
+.eva-pastel .panel {
+  background: var(--eva-surface);
+  border-color: var(--eva-border);
+}
+
+.eva-pastel .page-header { color: var(--eva-ink); }
+.eva-pastel .panel { border-radius: var(--eva-radius); }
+.eva-pastel :is(.muted, .page-header p, .brand-caption, .sidebar-note, .sidebar-user, .nav-link) { color: var(--eva-muted); }
+.eva-pastel :is(.brand, .eyebrow) { color: var(--eva-action); }
+.eva-pastel .nav-link:is(:hover, .active) { background: var(--eva-emphasis); color: var(--eva-ink); }
+
+.eva-pastel .eva-primary,
+.eva-pastel .historico button {
+  min-height: 44px;
+  background: var(--eva-action);
+  color: var(--eva-surface);
+  border: 0;
+  border-radius: 8px;
+}
+
+.eva-pastel .eva-primary:hover,
+.eva-pastel .historico button:hover { background: var(--eva-action-hover); }
+.eva-pastel :focus-visible { outline: 3px solid var(--eva-action); outline-offset: 3px; }
+.eva-pastel .historico :is(input, select, textarea) {
+  color: var(--eva-ink);
+  background: var(--eva-surface);
+  border-color: #7d9b86;
+}
+
+.eva-pastel .historico-aviso { background: var(--eva-warning-bg); color: var(--eva-warning); }
+.eva-pastel .historico-aviso[role="alert"],
+.eva-pastel .historico-error { background: var(--eva-error-bg); color: var(--eva-error); }
+.eva-pastel .historico .errorlist { color: var(--eva-error); }
+.eva-pastel .historico :is(th, td) { border-color: var(--eva-border); }
+.eva-pastel .historico :is(caption, td small) { color: var(--eva-muted); }
+.eva-pastel .historico-metricas article { background: var(--eva-emphasis); }
+.eva-pastel .historico-metricas strong { color: var(--eva-ink); }
+
+.eva-indicadores .page-header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  column-gap: 24px;
+}
+.eva-indicadores .page-header > :not(.eva-header-action) { grid-column: 1; }
+.eva-indicadores .eva-header-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  grid-column: 2;
+  grid-row: 1 / 4;
+  margin: 0;
+}
+.eva-indicadores .page-content { max-width: none; padding: 22px 24px 36px; }
+.eva-indicadores .historico { gap: 16px; }
+.eva-indicadores .eva-filters, .eva-indicadores .eva-group-details { padding: 0 16px; }
+.eva-indicadores details > summary {
+  min-height: 44px;
+  align-content: center;
+  cursor: pointer;
+}
+.eva-filters summary span { margin-inline-start: 8px; font-size: 13px; }
+.eva-group-details > .panel { margin-block: 12px; overflow-wrap: anywhere; }
+
+.eva-metrics, .eva-charts { display: grid; gap: 16px; }
+.eva-metrics { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.eva-charts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.eva-indicadores :is(.eva-metric, .eva-chart) { padding: 16px; }
+.eva-indicadores .eva-metric h2 { font-size: 12px; letter-spacing: .035em; text-transform: uppercase; margin-bottom: 6px; }
+.eva-metric strong { display: block; font-size: clamp(21px, 2.4vw, 33px); line-height: 1.1; font-variant-numeric: tabular-nums; }
+.eva-metric .eva-metric-unavailable { font-size: 18px; color: var(--eva-muted); }
+.eva-metric p { margin: 8px 0 0; font-size: 13px; color: var(--eva-muted); }
+.eva-indicadores .eva-chart h2 { font-size: 16px; margin-bottom: 5px; }
+.eva-chart > p { margin: 0 0 10px; font-size: 13px; }
+.eva-chart .eva-chart-scale { font-size: 12px; color: var(--eva-muted); margin-top: 8px; }
+.eva-empty { padding: 12px; border-radius: 8px; background: var(--eva-emphasis); font-size: 14px; }
+.eva-empty-warning { background: var(--eva-warning-bg); color: var(--eva-warning); }
+.eva-empty p { margin: 3px 0 0; font-size: 13px; color: var(--eva-muted); }
+.eva-bar + .eva-bar { margin-top: 9px; }
+.eva-bar-label { display: flex; justify-content: space-between; gap: 12px; font-size: 13px; overflow-wrap: anywhere; }
+.eva-bar meter { width: 100%; height: 12px; display: block; margin-top: 4px; }
+.eva-bar meter::-webkit-meter-bar { background: var(--eva-emphasis); border: 0; }
+.eva-bar meter::-webkit-meter-optimum-value { background: var(--eva-action); }
+.eva-bar meter::-moz-meter-bar { background: var(--eva-action); }
+
+@media (min-width: 1000px) {
+  .eva-indicadores .app-layout { grid-template-columns: 240px minmax(0, 1fr); }
+}
+
+@media (max-width: 850px) {
+  .eva-metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 640px) {
+  .eva-indicadores .page-header { display: block; padding: 16px 20px 20px; background: var(--eva-emphasis); }
+  .eva-pastel .sidebar:has(.mobile-menu-toggle[aria-expanded="true"]) { background: var(--eva-surface); }
+  .eva-pastel .sidebar .mobile-menu-toggle { color: var(--eva-action); min-height: 44px; }
+  .eva-indicadores .eva-header-action { width: 100%; margin-top: 14px; }
+  .eva-indicadores .page-content { padding: 16px 16px 28px; }
+  .eva-metrics, .eva-charts { gap: 12px; }
+  .eva-charts { grid-template-columns: minmax(0, 1fr); }
+  .eva-indicadores .eva-metric { padding: 12px; }
+  .eva-filters summary span { display: block; margin: 0 0 6px; }
+}
+
+.eva-indicadores .eva-group-picker { display: flex; align-items: end; gap: 12px; padding: 12px 16px; }
+.eva-group-picker .historico-campo { flex: 1; min-width: 0; margin: 0; }
+.eva-group-note { margin: 0; font-size: 13px; color: var(--eva-muted); overflow-wrap: anywhere; }
+.eva-scale { display: flex; justify-content: space-between; font-size: 12px; color: var(--eva-muted); margin: 12px 0; }
+.eva-bar-label small { color: var(--eva-muted); }
+.eva-trend { width: 100%; max-height: 200px; }
+.eva-trend text { fill: var(--eva-muted); font-size: 12px; }
+.eva-trend-grid { stroke: var(--eva-border); }
+.eva-trend-line { stroke: var(--eva-action); stroke-width: 2.5; }
+.eva-trend-point { fill: var(--eva-action); }
+.eva-trend-partial { fill: var(--eva-surface); stroke: var(--eva-action); stroke-width: 2; }
+.eva-indicadores .eva-week-details summary { color: var(--eva-action); font-size: 13px; }
+.eva-indicadores .eva-week-table :is(th, td) { padding: 6px 4px; min-width: 0; font-size: 12px; }
+@media (max-width: 640px) {
+  .eva-indicadores .eva-group-picker { flex-direction: column; align-items: stretch; }
+}

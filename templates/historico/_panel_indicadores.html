@@ -1,0 +1,65 @@
+{% if datos.solo_pruebas %}<p class="historico-aviso"><strong>Datos de prueba</strong> · No corresponden a servicios reales ni a parámetros aprobados.</p>{% endif %}
+{% for aviso in datos.advertencias %}<p class="historico-aviso">{{ aviso }}</p>{% endfor %}
+{% if panel.opciones %}
+<form method="get" class="panel eva-group-picker">
+  {% for campo, valor in filtros_panel %}<input type="hidden" name="{{ campo }}" value="{{ valor }}">{% endfor %}
+  <div class="historico-campo">
+    <label for="grupo-indicadores">Grupo de referencia</label>
+    <select id="grupo-indicadores" name="grupo" required>
+      <option value="">Selecciona un grupo exacto</option>
+      {% for grupo in panel.opciones %}
+      <option value="{{ grupo.clave }}"{% if grupo.clave == panel.grupo.clave %} selected{% endif %}>{{ grupo.etiqueta }} · {{ grupo.version_modelo }} / {{ grupo.version_configuracion }} / {{ grupo.protocolo_version }} · Contexto {{ grupo.contexto_corto|default:'desconocido' }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <button type="submit">Ver grupo</button>
+</form>
+{% endif %}
+{% if panel.seleccion_invalida %}<p class="historico-aviso">El grupo solicitado no está disponible con estos filtros.</p>{% endif %}
+{% if panel.grupo %}
+<p class="eva-group-note">{{ panel.grupo.etiqueta }} · Contexto {{ panel.grupo.contexto_corto|default:'desconocido' }} · {{ panel.grupo.version_modelo }} / {{ panel.grupo.version_configuracion }} / {{ panel.grupo.protocolo_version }}</p>
+{% elif panel.opciones %}
+<p class="historico-aviso">Hay varios grupos: no se combinan sus medias. Selecciona un grupo para ver sus gráficos.</p>
+{% endif %}
+{% with muestra=datos.resumen grupo=panel.grupo ultimo=panel.ultima %}
+<section class="eva-metrics" aria-label="Resumen de indicadores">
+  <article class="panel eva-metric"><h2>Intensidad del grupo</h2>
+    {% if grupo and grupo.indicadores.intensidad is not None %}<strong>{{ grupo.indicadores.intensidad|floatformat:2 }} %</strong>{% else %}<strong class="eva-metric-unavailable">No disponible</strong>{% endif %}
+    <p>Promedio de todos los servicios aptos del grupo en el periodo</p></article>
+  <article class="panel eva-metric"><h2>Última semana del periodo</h2>
+    {% if ultimo and ultimo.intensidad is not None %}<strong>{{ ultimo.intensidad|floatformat:2 }} %</strong>{% else %}<strong class="eva-metric-unavailable">No disponible</strong>{% endif %}
+    {% if ultimo %}<p>{{ ultimo.inicio|date:'d/m' }}–{{ ultimo.fin|date:'d/m' }} · {% if ultimo.parcial %}Parcial{% else %}Completa{% endif %} · n = {{ ultimo.n }}</p>{% endif %}</article>
+  <article class="panel eva-metric"><h2>Muestra del grupo</h2><strong>{% if grupo %}{{ grupo.indicadores.n }}{% elif not muestra.aptos %}0{% else %}—{% endif %}</strong><p>Servicios aptos del grupo</p></article>
+  <article class="panel eva-metric"><h2>Cobertura de consulta</h2><strong>{{ muestra.aptos }} / {{ muestra.candidatos }}</strong><p>Aptos / candidatos de todos los grupos</p></article>
+</section>
+{% if not muestra.candidatos %}<p class="historico-aviso">No hay registros para los filtros elegidos. Esto no significa cero sobrantes.</p>
+{% elif not muestra.aptos %}<p class="historico-aviso">No hay servicios aptos para calcular indicadores.</p>{% endif %}
+{% if grupo and not grupo.comparable %}<p class="historico-aviso">Grupo no comparable: sin contexto histórico válido. La intensidad describe solo este grupo.</p>{% endif %}
+<section class="eva-charts" aria-label="Gráficos de la consulta">
+  <article class="panel eva-chart">
+    <h2>Evolución semanal</h2>
+    <p class="muted">Intensidad por semana de servido, de lunes a domingo en Ecuador.</p>
+    {% if panel.periodo_extenso %}<div class="eva-empty">Acota el periodo a 52 semanas para ver la serie. La media y la última semana conservan el periodo consultado.</div>
+    {% elif panel.semanas %}
+    {{ panel.semanas|json_script:"eva-semanas" }}
+    <svg class="eva-trend" data-semanas="eva-semanas" viewBox="0 0 480 165" aria-hidden="true" hidden></svg>
+    <p class="eva-chart-scale">Punto vacío: semana parcial. Un hueco indica falta de evidencia apta.</p>
+    <details class="eva-week-details" open>
+      <summary>Valores, muestra y alcance de cada semana</summary>
+      <table class="eva-week-table">
+        <thead><tr><th scope="col">Semana</th><th scope="col">Alcance</th><th scope="col">n</th><th scope="col">Intensidad</th></tr></thead>
+        <tbody>{% for s in panel.semanas %}<tr><th scope="row">{{ s.inicio|date:'d/m/y' }}–{{ s.fin|date:'d/m/y' }}</th><td>{% if s.parcial %}Parcial{% else %}Completa{% endif %}</td><td>{{ s.n }}</td><td>{% if s.intensidad is not None %}{{ s.intensidad|floatformat:2 }} %{% else %}Sin evidencia{% endif %}</td></tr>{% endfor %}</tbody>
+      </table>
+    </details>
+    {% else %}{% include 'historico/_vacio_indicador.html' %}{% endif %}
+  </article>
+  {% include 'historico/_perfil_indicador.html' with titulo='Distribución por componente' descripcion='Grupos separados con el mismo plato, porción, contexto y versiones.' perfiles=panel.perfiles.componentes prefijo='componente-' %}
+  {% include 'historico/_perfil_indicador.html' with titulo='Perfiles por plato' descripcion='Mismo componente y porción. Cada plato conserva su propia muestra.' perfiles=panel.perfiles.platos prefijo='plato-' %}
+  {% include 'historico/_perfil_indicador.html' with titulo='Perfiles por porción' descripcion='Mismo plato y componente. Cada porción conserva su propia muestra.' perfiles=panel.perfiles.porciones prefijo='porcion-' %}
+</section>
+<details class="panel eva-group-details">
+  <summary>Cobertura y exclusiones · {{ muestra.candidatos }} candidatos · {{ muestra.excluidos }} excluidos</summary>
+  <p>Servicios únicos de toda la consulta. Aptos: {{ muestra.aptos }}.</p>
+  {% if muestra.motivos %}<ul>{% for motivo, cantidad in muestra.motivos.items %}<li>{% include 'historico/_motivo_exclusion.html' %} · {{ cantidad }}</li>{% endfor %}</ul>{% endif %}
+</details>
+{% endwith %}

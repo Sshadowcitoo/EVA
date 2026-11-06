@@ -1,9 +1,48 @@
 {% extends 'historico/base.html' %}
+{% load static %}
+{% block title %}Indicadores y estadísticas | EVA{% endblock %}
+{% block body_attributes %} class="eva-pastel eva-indicadores"{% endblock %}
+{% block page_styles %}
+<link rel="stylesheet" href="{% static 'css/eva_pastel.css' %}">
+{% endblock %}
+{% block heading %}Indicadores y estadísticas{% endblock %}
+{% block subtitle %}Consulta la muestra y los indicadores de sobrante visual por componente y periodo.{% endblock %}
+{% block header_action %}
+{% if recomendaciones_url %}
+<a class="button eva-primary eva-header-action" href="{{ recomendaciones_url }}">Ver recomendaciones <span aria-hidden="true">→</span></a>
+{% endif %}
+{% endblock %}
+{% block navigation %}
+<a class="nav-link active" href="{% url 'historico:lista' %}" aria-current="page">Indicadores</a>
+{% if datos %}<a class="nav-link" href="#historial-resultados">Historial de la consulta</a>{% endif %}
+{% if recomendaciones_url %}<a class="nav-link" href="{{ recomendaciones_url }}">Recomendaciones</a>{% endif %}
+<a class="nav-link" href="{% url 'historico:comparar' %}">Comparar periodos</a>
+{% if puede_cocina %}<a class="nav-link" href="{% url 'analisis:lista' %}">Revisión de Cocina</a>{% endif %}
+{% if puede_administrar_catalogo %}<a class="nav-link" href="{% url 'catalogo:platos' %}">Catálogo</a>{% endif %}
+{% include 'includes/captura_nav.html' %}
+{% endblock %}
 {% block historico_content %}
-{% include 'historico/_filtros.html' %}
+<details class="panel eva-filters"{% if form.errors %} open{% endif %}>
+  <summary>
+    <strong>Filtros de consulta</strong>
+    {% if datos %}<span class="muted">
+      {% if datos.filtros.desde %}Desde {{ datos.filtros.desde|date:'d/m/Y' }}{% endif %}
+      {% if datos.filtros.hasta %}hasta {{ datos.filtros.hasta|date:'d/m/Y' }}{% endif %}
+      {% if not datos.filtros.desde and not datos.filtros.hasta %}Periodo disponible{% endif %}
+      · Hora de Ecuador
+    </span>{% endif %}
+  </summary>
+  {% include 'historico/_filtros_form.html' %}
+</details>
 {% if datos %}
-{% include 'historico/_resumen.html' %}
-<section class="panel"><h2>Servicios y componentes</h2><p class="muted">Una fila por servicio y componente; los contadores representan servicios únicos.</p>
+{% include 'historico/_panel_indicadores.html' %}
+{% if datos.grupos %}
+<details class="panel eva-group-details">
+  <summary>Indicadores por grupo · {{ datos.grupos|length }}</summary>
+  {% include 'historico/_grupos.html' %}
+</details>
+{% endif %}
+<section class="panel" id="historial-resultados"><h2>Servicios y componentes</h2><p class="muted">Una fila por servicio y componente; los contadores representan servicios únicos.</p>
 <div class="historico-tabla" tabindex="0" role="region" aria-label="Tabla de resultados; desplazamiento horizontal disponible"><table class="data-table"><caption>Resultados de la consulta · porcentaje visual estimado</caption>
 <thead><tr><th scope="col">Servicio / servido</th><th scope="col">Plato / porción</th><th scope="col">Componente</th><th scope="col">Estado / origen</th><th scope="col">Sobrante visual</th><th scope="col">Exclusión</th></tr></thead>
 <tbody>{% for fila in datos.filas %}<tr>
@@ -15,3 +54,5 @@
 <nav class="historico-paginacion" aria-label="Páginas de resultados">{% if enlaces.anterior %}<a href="{{ enlaces.anterior }}">← Anterior</a>{% endif %}<span>Página {{ datos.paginacion.pagina }} de {{ datos.paginacion.paginas }} · {{ datos.paginacion.total_filas }} filas</span>{% if enlaces.siguiente %}<a href="{{ enlaces.siguiente }}">Siguiente →</a>{% endif %}</nav>
 </section>{% endif %}
 {% endblock %}
+
+{% block historico_scripts %}<script src="{% static 'js/indicadores.js' %}" defer></script>{% endblock %}

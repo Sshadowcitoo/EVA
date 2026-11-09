@@ -1,15 +1,18 @@
 {% extends "base.html" %}
 {% load static %}
+{% block body_classes %} gestion-bandejas{% endblock %}
+{% block page_styles %}
+<link rel="stylesheet" href="{% static 'css/captura.css' %}">
+<link rel="stylesheet" href="{% static 'css/gestion_captura.css' %}">
+{% endblock %}
 {% block eyebrow %}ADMINISTRACIÓN / EVA{% endblock %}
 {% block navigation %}
 <a class="nav-link" href="{% url 'catalogo:platos' %}">Catálogo</a>
-<a class="nav-link active" href="{% url 'captura:gestion' %}">Bandejas y servicios</a>
+<a class="nav-link active" aria-current="location" href="{% url 'captura:gestion' %}">Bandejas y servicios</a>
 {% include 'includes/captura_nav.html' %}
 {% include 'includes/historico_nav.html' %}
 {% endblock %}
 {% block content %}
-<link rel="stylesheet" href="{% static 'css/captura.css' %}">
-<link rel="stylesheet" href="{% static 'css/gestion_captura.css' %}">
 {% for message in messages %}<p class="info-box" role="status">{{ message }}</p>{% endfor %}
 {% block gestion_content %}{% endblock %}
 {% endblock %}

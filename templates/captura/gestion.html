@@ -3,32 +3,80 @@
 {% block heading %}Bandejas y servicios{% endblock %}
 {% block subtitle %}Administra etiquetas y anulaciones conservando el historial.{% endblock %}
 {% block gestion_content %}
-<section class="panel capture-operation"><h2>Localizar registro</h2><form method="get">{{ form.as_p }}<button class="button primary-button">Buscar</button></form></section>
-{% if bandeja %}
-<div class="capture-grid">
-<section class="panel"><h2>Bandeja {{ bandeja.numero }}</h2>
-  <p>{% if bandeja.activo %}Activa{% else %}Inactiva{% endif %}</p>
-  {% if etiqueta %}<p>Etiqueta vigente: <code class="label-code">{{ etiqueta.codigo }}</code></p>
-    {% if permite_reemplazar %}
-    <img class="label-qr" src="{% url 'captura:qr_etiqueta' etiqueta.pk %}" alt="QR de la bandeja {{ bandeja.numero }}">
-    <p><a class="button secondary-button" href="{% url 'captura:qr_etiqueta' etiqueta.pk %}" download="bandeja-{{ bandeja.numero }}.svg">Descargar QR</a></p>
-    <p><a class="button secondary-button" href="{% url 'captura:reemplazar_etiqueta' bandeja.pk %}">Reemplazar etiqueta</a></p>
-    {% endif %}
-  {% endif %}
-  <p class="muted">Imprime el QR junto al número visible y colócalo en el borde de la bandeja. El código no permite iniciar sesión.</p>
+<section class="panel capture-operation gestion-busqueda" aria-labelledby="gestion-buscar">
+  <h2 id="gestion-buscar">Localizar registro</h2>
+  <p class="muted">Busca por número de bandeja o por ID del servicio.</p>
+  <form method="get">
+    {% if form.errors %}<p class="error-summary" role="alert">Revisa los datos de búsqueda.</p>{% endif %}
+    {{ form.non_field_errors }}
+    <div class="gestion-campos">
+      {% for campo in form %}
+        <div>
+          {{ campo.label_tag }}
+          {{ campo }}
+          {{ campo.errors }}
+        </div>
+      {% endfor %}
+    </div>
+    <div class="gestion-acciones">
+      <button type="submit" class="button primary-button">Buscar</button>
+      {% if form.is_bound %}<a href="{% url 'captura:gestion' %}">Volver al listado</a>{% endif %}
+    </div>
+  </form>
 </section>
+{% if bandejas is not None %}
+  <section class="panel gestion-listado" aria-labelledby="gestion-listado">
+    <h2 id="gestion-listado">Listado de bandejas</h2>
+    {% if bandejas.object_list %}
+      <ul class="gestion-bandejas-lista">
+        {% for item in bandejas %}
+          <li>
+            <strong>Bandeja {{ item.numero }}</strong>
+            <span class="gestion-estado">{% if item.activo %}Activa{% else %}Inactiva{% endif %} · {% if item.ocupada %}Asignada{% else %}Sin asignación abierta{% endif %}</span>
+            <a href="?numero={{ item.numero }}" aria-label="Ver bandeja {{ item.numero }}">Ver detalle</a>
+          </li>
+        {% endfor %}
+      </ul>
+      {% if bandejas.has_other_pages %}
+        <nav class="gestion-acciones" aria-label="Páginas del listado">
+          {% if bandejas.has_previous %}<a href="?pagina={{ bandejas.previous_page_number }}">Anterior</a>{% endif %}
+          <span>Página {{ bandejas.number }} de {{ bandejas.paginator.num_pages }}</span>
+          {% if bandejas.has_next %}<a href="?pagina={{ bandejas.next_page_number }}">Siguiente</a>{% endif %}
+        </nav>
+      {% endif %}
+    {% else %}
+      <p class="muted">Todavía no hay bandejas registradas.</p>
+    {% endif %}
+  </section>
+{% endif %}
+{% if bandeja %}
+<div class="capture-grid gestion-detalle">
 {% endif %}
 {% if servicio %}
 <section class="panel"><h2>Servicio localizado</h2>
 <p class="label-code">{{ servicio.pk }}</p><p>{{ servicio.get_plato_display }} · {{ servicio.get_tipo_porcion_display }}</p>
 <p><strong>{{ servicio.get_estado_captura_display|default:"Histórico sin captura" }}</strong></p>
 {% if servicio.anulado_en %}<dl class="capture-details"><dt>Motivo</dt><dd>{{ servicio.anulado_motivo }}</dd><dt>Responsable</dt><dd>{{ servicio.anulado_por.get_username }}</dd><dt>Fecha</dt><dd>{{ servicio.anulado_en }}</dd></dl>{% endif %}
+{% if asignacion %}<p><strong>Asignación:</strong> {% if asignacion.fin %}Cerrada el {{ asignacion.fin }}{% else %}Abierta desde {{ asignacion.inicio }}{% endif %}</p>{% endif %}
 {% include 'captura/_contexto_servicio.html' %}
 {% if permite_anular %}{% if servicio.estado_captura == 'PENDIENTE_SERVIDO' or servicio.estado_captura == 'EN_ESPERA_RETORNO' %}
 <a class="button danger-button" href="{% url 'captura:anular_servicio' servicio.pk %}">Anular servicio</a>
 {% endif %}{% endif %}
 </section>
 {% elif bandeja %}<section class="panel"><h2>Bandeja libre</h2><p>No tiene un servicio abierto. El reemplazo de etiqueta conserva su historial.</p></section>{% endif %}
+{% if bandeja %}
+<section class="panel"><h2>Bandeja {{ bandeja.numero }}</h2>
+  <p class="gestion-estado">{% if bandeja.activo %}Activa{% else %}Inactiva{% endif %}</p>
+  {% if etiqueta %}<p>Etiqueta vigente: <code class="label-code">{{ etiqueta.codigo }}</code></p>
+    {% if permite_reemplazar %}
+    <img class="label-qr" src="{% url 'captura:qr_etiqueta' etiqueta.pk %}" alt="QR de la bandeja {{ bandeja.numero }}">
+    <div class="gestion-acciones"><a class="button primary-button" href="{% url 'captura:qr_etiqueta' etiqueta.pk %}" download="bandeja-{{ bandeja.numero }}.svg">Descargar QR</a>
+    <a class="button secondary-button" href="{% url 'captura:reemplazar_etiqueta' bandeja.pk %}">Reemplazar etiqueta</a></div>
+    {% endif %}
+  {% else %}<p class="muted">Esta bandeja no tiene etiqueta vigente.</p>{% endif %}
+  {% if etiqueta and permite_reemplazar %}<p class="muted">Imprime el QR junto al número visible y colócalo en el borde de la bandeja. El código no permite iniciar sesión.</p>{% endif %}
+</section>
+{% endif %}
 {% if bandeja %}</div>{% endif %}
 {% if historial %}<section class="panel capture-history"><h2>Últimos reemplazos</h2>{% for anterior in historial %}<article><p>Revocada el {{ anterior.revocada_en }} por {{ anterior.revocada_por.get_username }}</p><p>{{ anterior.motivo_revocacion }}</p></article>{% endfor %}</section>{% endif %}
 {% endblock %}

@@ -6,6 +6,8 @@ import qrcode.image.svg
 from django.contrib import messages
 from django.contrib.auth.decorators import permission_required
 from django.core.exceptions import ValidationError
+from django.core.paginator import Paginator
+from django.db.models import Exists, OuterRef
 from django.http import Http404, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
@@ -31,9 +33,15 @@ def _contexto(request, **extra):
 @roles_required(ADMINISTRACION)
 @require_GET
 def gestion(request):
-    form = BuscarGestionForm(request.GET or None)
-    bandeja = servicio = None
-    if request.GET and form.is_valid():
+    busqueda = request.GET.copy()
+    pagina = busqueda.pop('pagina', [None])[-1]
+    form = BuscarGestionForm(busqueda or None)
+    bandeja = servicio = asignacion = bandejas = None
+    if not form.is_bound:
+        abiertas = AsignacionBandeja.objects.filter(bandeja_id=OuterRef('pk'), fin__isnull=True)
+        listado = Bandeja.objects.annotate(ocupada=Exists(abiertas))
+        bandejas = Paginator(listado, 25).get_page(pagina)
+    elif form.is_valid():
         if form.cleaned_data['numero']:
             bandeja = get_object_or_404(Bandeja, numero=form.cleaned_data['numero'])
             asignacion = AsignacionBandeja.objects.select_related('servicio').filter(bandeja=bandeja, fin__isnull=True).first()
@@ -45,7 +53,8 @@ def gestion(request):
     etiqueta = bandeja.etiquetas.filter(revocada_en__isnull=True).first() if bandeja else None
     historial = bandeja.etiquetas.filter(revocada_en__isnull=False).select_related('revocada_por')[:5] if bandeja else []
     return render(request, 'captura/gestion.html', _contexto(request, form=form, bandeja=bandeja,
-                  servicio=servicio, etiqueta=etiqueta, historial=historial))
+                  servicio=servicio, etiqueta=etiqueta, historial=historial,
+                  asignacion=asignacion, bandejas=bandejas))
 
 
 @never_cache
@@ -96,7 +105,7 @@ def reemplazar(request, pk):
 @require_GET
 def qr_etiqueta(request, pk):
     etiqueta = get_object_or_404(EtiquetaBandeja, pk=pk, revocada_en__isnull=True)
-    image = qrcode.make(etiqueta.codigo, image_factory=qrcode.image.svg.SvgPathImage, border=4)
+    image = qrcode.make(etiqueta.codigo, image_factory=qrcode.image.svg.SvgPathFillImage, border=4)
     output = BytesIO()
     image.save(output)
     response = HttpResponse(output.getvalue(), content_type='image/svg+xml')

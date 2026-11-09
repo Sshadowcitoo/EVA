@@ -1,4 +1,5 @@
 from io import StringIO
+from xml.etree import ElementTree
 
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
@@ -7,7 +8,7 @@ from django.test import Client
 from django.urls import reverse
 
 from . import services, test_dominio_bandejas as dominio
-from .models import EtiquetaBandeja, SesionCaptura
+from .models import Bandeja, EtiquetaBandeja, SesionCaptura
 
 
 class GestionCapturaTests(dominio.BaseDominio):
@@ -35,8 +36,27 @@ class GestionCapturaTests(dominio.BaseDominio):
         qr = self.client.get(reverse('captura:qr_etiqueta', args=[self.etiqueta.pk]))
         self.assertEqual(qr.status_code, 200)
         self.assertEqual(qr['Content-Type'], 'image/svg+xml')
-        self.assertIn(b'<svg', qr.content)
+        svg = ElementTree.fromstring(qr.content)
+        ns = {'svg': 'http://www.w3.org/2000/svg'}
+        fondo = svg.find('svg:rect', ns)
+        self.assertEqual(fondo.attrib['fill'], 'white')
+        self.assertEqual(fondo.attrib['width'], '100%')
+        self.assertEqual(fondo.attrib['height'], '100%')
+        self.assertIsNotNone(svg.find('svg:path', ns))
         self.assertIn('no-store', qr['Cache-Control'])
+
+    def test_listado_paginado_refleja_asignacion_y_conserva_busqueda(self):
+        Bandeja.objects.bulk_create(Bandeja(numero=n) for n in range(100, 118))
+        url = reverse('captura:gestion')
+        primera = self.client.get(url)
+        self.assertEqual(len(primera.context['bandejas']), 25)
+        self.assertTrue(primera.context['bandejas'][0].ocupada)
+        segunda = self.client.get(url, {'pagina': 2})
+        self.assertFalse(segunda.context['form'].is_bound)
+        self.assertEqual([b.numero for b in segunda.context['bandejas']], [115, 116, 117])
+        resultado = self.client.get(url, {'numero': self.bandeja.numero, 'pagina': 2})
+        self.assertIsNone(resultado.context['bandejas'])
+        self.assertEqual(resultado.context['servicio'], self.servicio)
 
     def test_anular_exige_motivo_confirmacion_y_conserva_foto_auditoria(self):
         self.capturar(self.servicio, 'SERVIDO')

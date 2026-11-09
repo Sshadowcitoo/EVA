@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block title %}Página no encontrada | EVA{% endblock %}
+{% block eyebrow %}EVA / ERROR 404{% endblock %}
+{% block heading %}Página no encontrada{% endblock %}
+{% block subtitle %}El enlace puede estar incompleto o haber cambiado.{% endblock %}
+
+{% block content %}
+<section class="panel" aria-labelledby="recuperar-pagina">
+  <h2 id="recuperar-pagina">Cómo continuar</h2>
+  {% if puede_registrar %}
+    <a class="button primary-button" href="{% url 'captura:nueva_bandeja' %}">Volver a Registro</a>
+  {% elif puede_administrar_catalogo %}
+    <a class="button primary-button" href="{% url 'catalogo:platos' %}">Volver al catálogo</a>
+  {% elif puede_cocina %}
+    <a class="button primary-button" href="{% url 'cuentas:cocina_pendiente' %}">Volver a Cocina</a>
+  {% else %}
+    <a class="button primary-button" href="{% url 'cuentas:login' %}">Ir a acceso</a>
+  {% endif %}
+</section>
+{% endblock %}

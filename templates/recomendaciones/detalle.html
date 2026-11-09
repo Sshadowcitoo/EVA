@@ -2,6 +2,11 @@
 {% block heading %}Evidencia y decisión{% endblock %}
 {% block recomendaciones_content %}
 {% if caso %}
+<nav class="rec-accesos" aria-label="Secciones del caso">
+  <a href="{% url 'recomendaciones:lista' %}">Volver a evaluaciones</a>
+  <a href="#rec-decision">Decisión</a>
+  <a href="#rec-pruebas">Pruebas controladas</a>
+</nav>
 {% if bloqueado %}<p><a href="{% if caso.recomendacion %}{% url 'recomendaciones:detalle' recomendacion_id=caso.recomendacion.id %}{% else %}{% url 'recomendaciones:evaluacion' evaluacion_id=caso.evaluacion.id %}{% endif %}">Recargar el caso vigente antes de decidir de nuevo</a></p>{% endif %}
 {% include 'recomendaciones/_evidencia.html' %}
 {% if caso.recomendacion %}
@@ -9,7 +14,7 @@
 {% elif administracion and caso.capacidades.puede_generar %}
 <section class="panel"><h2>Evaluación sin propuesta</h2><form method="post" action="{% url 'recomendaciones:generar' evaluacion_id=caso.evaluacion.id %}" data-rec-submit{% if bloqueado %} data-bloqueado="true"{% endif %}>{% csrf_token %}<button class="button" type="submit"{% if bloqueado %} disabled{% endif %}>Generar recomendación</button><p data-envio role="status"></p></form></section>
 {% endif %}
-<section class="panel"><h2>Decisión humana</h2>
+<section class="panel"><h2 id="rec-decision">Decisión humana</h2>
 {% if caso.decision_actual %}<p><strong>{{ decision_visible }}</strong> · {{ caso.decision_actual.autor_visible }} · {{ caso.decision_actual.fecha|date:'d/m/Y H:i' }} · Versión {{ caso.decision_actual.version }}</p><p>{{ caso.decision_actual.justificacion }}</p>{% else %}<p>Sin decisión registrada.</p>{% endif %}
 <p>La revisión de Cocina valida mediciones. Esta decisión administrativa no modifica automáticamente catálogo, receta, porción, inventario ni precios.</p>
 {% if administracion %}{% if caso.capacidades.puede_decidir or decision_form.is_bound %}
@@ -19,7 +24,7 @@
 </form>{% endif %}{% endif %}
 <h3>Historial de decisiones</h3><ol>{% for decision in historial_visible %}<li><strong>{{ decision.decision_visible }}</strong> · {{ decision.autor_visible }} · {{ decision.fecha|date:'d/m/Y H:i' }} · v{{ decision.version }}<p>{{ decision.justificacion }}</p>{% if decision.sustituye_id %}<small>Sustituye {{ decision.sustituye_id }}</small>{% endif %}</li>{% empty %}<li>Aún no hay decisiones.</li>{% endfor %}</ol>
 </section>
-<section class="panel"><h2>Pruebas controladas</h2>
+<section class="panel"><h2 id="rec-pruebas">Pruebas controladas</h2>
 <ul>{% for prueba in caso.pruebas %}<li><a href="{% url 'recomendaciones:prueba' prueba_id=prueba.id %}">{{ prueba.estado }} · {{ prueba.cambio }}</a><p>{{ prueba.responsable_nombre }} · {{ prueba.registrada_en|date:'d/m/Y H:i' }} · v{{ prueba.version }}</p></li>{% empty %}<li>No hay pruebas registradas.</li>{% endfor %}</ul>
 {% if administracion %}{% if caso.capacidades.puede_registrar_prueba or prueba_form.is_bound %}
 <h3>Registrar prueba</h3><p>Solo desde una recomendación aceptada y vigente. La intervención debe comenzar después de la referencia. No escribas datos personales del comensal.</p>

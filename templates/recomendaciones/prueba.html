@@ -7,7 +7,7 @@
 {% if caso.evaluacion.solo_pruebas %}<p class="rec-aviso"><strong>Datos de prueba</strong> · No acreditan resultados reales.</p>{% endif %}
 <section class="panel"><h2>{% if prueba.estado == 'REGISTRADA' %}Registrada{% elif prueba.estado == 'EVALUADA' %}Evaluada{% else %}No evaluable{% endif %}</h2><p>{{ prueba.cambio }}</p><p>Responsable: {{ prueba.responsable_nombre }} · Registrada por {{ prueba.registrada_por }} · {{ prueba.registrada_en|date:'d/m/Y H:i' }} · Versión {{ prueba.version }}</p>
 <p>Aceptación vinculada: {{ prueba.aceptacion_id }}</p>
-<dl><dt>Referencia</dt><dd>{{ prueba.periodos.referencia_desde|date:'d/m/Y' }} – {{ prueba.periodos.referencia_hasta|date:'d/m/Y' }}</dd><dt>Intervención</dt><dd>{{ prueba.periodos.intervencion_desde|date:'d/m/Y' }} – {{ prueba.periodos.intervencion_hasta|date:'d/m/Y' }}</dd></dl>
+<dl class="rec-periodos"><div><dt>Referencia</dt><dd>{{ prueba.periodos.referencia_desde|date:'d/m/Y' }} – {{ prueba.periodos.referencia_hasta|date:'d/m/Y' }}</dd></div><div><dt>Intervención</dt><dd>{{ prueba.periodos.intervencion_desde|date:'d/m/Y' }} – {{ prueba.periodos.intervencion_hasta|date:'d/m/Y' }}</dd></div></dl>
 {% for motivo in prueba.motivos %}<p class="rec-aviso">{{ motivo }}</p>{% endfor %}
 {% if prueba.estado == 'REGISTRADA' %}<p>Prueba registrada, todavía sin evaluación. No se puede afirmar mejora.</p>{% elif prueba.estado == 'NO_EVALUABLE' %}<p>No evaluable. Esto no equivale a una mejora de cero puntos.</p>{% endif %}
 <p><a href="{% url 'recomendaciones:detalle' recomendacion_id=prueba.recomendacion_id %}">Ver recomendación y evidencia</a></p>

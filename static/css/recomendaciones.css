@@ -64,3 +64,16 @@
 .recomendaciones .historico-aviso { padding:16px; border:1px solid #d4b769; background:#fff8e8; border-radius:8px; }
 .recomendaciones .historico-conteos { display:grid; grid-template-columns:repeat(auto-fit,minmax(110px,1fr)); gap:16px; }
 .recomendaciones .historico-conteos dd { margin:8px 0; font-size:22px; }
+
+.rec-controles summary { cursor: pointer; font-size: 1.1rem; font-weight: 700; }
+.rec-controles[open] summary { margin-bottom: 12px; }
+.rec-accesos { display: flex; flex-wrap: wrap; gap: 8px 18px; }
+.rec-accesos a { display: inline-flex; align-items: center; min-height: 44px; }
+.rec-ayuda-tabla { display: none; }
+.rec-periodos { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.rec-periodos div { padding: 12px; background: var(--eva-emphasis); border-radius: 8px; }
+.rec-periodos dd { margin: 6px 0 0; }
+@media (max-width: 640px) {
+  .rec-ayuda-tabla { display: block; }
+  .rec-periodos { grid-template-columns: minmax(0, 1fr); }
+}

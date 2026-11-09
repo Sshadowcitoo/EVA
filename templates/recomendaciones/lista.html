@@ -1,29 +1,30 @@
 {% extends 'recomendaciones/base.html' %}
 {% block recomendaciones_content %}
-<section class="panel">
-  <h2>Consultar evaluaciones</h2>
+<details class="panel rec-controles"{% if form.errors %} open{% endif %}>
+  <summary>Consultar evaluaciones</summary>
   <p class="muted">Fechas inclusivas y horas del mismo día, en America/Guayaquil. Los contadores usan todo el conjunto filtrado y pueden solaparse.</p>
   <form method="get" class="rec-form-grid">
     {% include 'recomendaciones/_campos.html' with formulario=form omitir_ocultos=True %}
     <div class="rec-acciones"><button type="submit" class="button">Consultar</button><a href="{% url 'recomendaciones:lista' %}">Limpiar filtros</a></div>
   </form>
-</section>
+</details>
 {% if administracion %}
-<section class="panel">
-  <h2>Evaluar evidencia</h2>
+<details class="panel rec-controles"{% if evaluacion_form.errors or bloqueado %} open{% endif %}>
+  <summary>Evaluar evidencia</summary>
   <p>No genera una propuesta automáticamente. Usa criterios del servidor; si faltan condiciones, la evidencia será insuficiente.</p>
   <form method="post" action="{% url 'recomendaciones:evaluar' %}" class="rec-form-grid" data-rec-submit{% if bloqueado %} data-bloqueado="true"{% endif %}>
     {% csrf_token %}
     {% include 'recomendaciones/_campos.html' with formulario=evaluacion_form %}
     <div class="rec-acciones"><button type="submit" class="button"{% if bloqueado %} disabled{% endif %}>Evaluar evidencia</button><span data-envio role="status"></span></div>
   </form>
-</section>
+</details>
 {% endif %}
 {% if datos %}
 {% if datos.solo_pruebas %}<p class="rec-aviso"><strong>Datos de prueba</strong> · Cifras y aprobaciones ilustrativas, sin validez para operación real.</p>{% endif %}
 <section class="panel">
   <h2>Evaluaciones del periodo</h2>
   <dl class="rec-contadores"><div><dt>Total</dt><dd>{{ datos.resumen.total }}</dd></div><div><dt>Insuficientes</dt><dd>{{ datos.resumen.insuficientes }}</dd></div><div><dt>Sin decisión</dt><dd>{{ datos.resumen.sin_decision }}</dd></div><div><dt>En observación</dt><dd>{{ datos.resumen.en_observacion }}</dd></div><div><dt>Obsoletas</dt><dd>{{ datos.resumen.obsoletas }}</dd></div></dl>
+  <p class="rec-ayuda-tabla muted">Desplaza la tabla para consultar todas las columnas.</p>
   <div class="rec-tabla" tabindex="0" role="region" aria-label="Evaluaciones; desplazamiento horizontal disponible">
     <table><caption>Se cuentan evaluaciones, no servicios</caption><thead><tr><th scope="col">Grupo</th><th scope="col">Evidencia / muestra</th><th scope="col">Propuesta</th><th scope="col">Decisión</th><th scope="col">Vigencia</th><th scope="col">Fecha / detalle</th></tr></thead>
     <tbody>{% for fila in filas_presentadas %}<tr>

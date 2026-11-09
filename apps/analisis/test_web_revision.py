@@ -123,6 +123,14 @@ class RevisionHTTPTests(BaseWebMotor):
         self.assertContains(respuesta, '&lt;script&gt;', status_code=400)
         self.assertEqual(self.decidir('RECHAZADO', 'x' * 1001).status_code, 400)
 
+    def test_distingue_cola_de_revision_de_la_lista_tecnica(self):
+        self.assertContains(self.client.get(reverse('analisis:pendientes_revision')), 'Cola de revisión')
+        self.assertContains(self.client.get(reverse('analisis:lista')), 'Pares y resultados')
+        self.decidir()
+        self.assertContains(self.client.get(reverse('analisis:pendientes_revision')),
+                            'No hay casos pendientes de revisión.')
+        self.assertContains(self.client.get(reverse('analisis:lista')), 'Abrir análisis')
+
     def test_inicio_cocina_llega_a_revision_sin_bucles(self):
         respuesta = self.client.get(reverse('cuentas:cocina_pendiente'))
         self.assertRedirects(respuesta, reverse('analisis:pendientes_revision'))

@@ -107,3 +107,28 @@
   .revision-evidencia .analisis-fotos { gap: 8px; }
   .revision-botones .button { min-height: 44px; }
 }
+
+.analisis-vistas { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+.analisis-vistas .button { min-height: 44px; }
+.analisis-vistas [aria-current="page"] {
+  background: var(--eva-action);
+  color: var(--eva-on-action, white);
+}
+.analisis-cola { overflow-wrap: anywhere; }
+.analisis-solicitud { max-width: 48rem; overflow-wrap: anywhere; }
+.analisis-detalle-tecnico .analisis-servicio { overflow-wrap: anywhere; }
+.analisis-detalle-tecnico .analisis-fotos {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+.analisis-detalle-tecnico .analisis-foto:only-child { grid-column: 1 / -1; }
+.analisis-detalle-tecnico .analisis-aviso { margin-block: 16px; }
+@media (max-width: 640px) {
+  .analisis-solicitud button,
+  .analisis-detalle-tecnico .analisis-fallo button { width: 100%; min-height: 44px; }
+}
+@media (max-width: 640px) {
+  .analisis-vistas + .analisis-resumen { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .analisis-vistas + .analisis-resumen .analisis-tarjeta { min-width: 0; padding: 12px; }
+  .analisis-vistas + .analisis-resumen .analisis-tarjeta:last-child { grid-column: 1 / -1; }
+}

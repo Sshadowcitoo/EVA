@@ -1,9 +1,17 @@
 {% extends "analisis/base.html" %}
 
-{% block heading %}Pendientes de Cocina{% endblock %}
-{% block subtitle %}Abre los casos pendientes y revisa su evidencia.{% endblock %}
+{% block heading %}{% if solo_revision %}Pendientes de Cocina{% else %}Lista de análisis{% endif %}{% endblock %}
+{% block subtitle %}{% if solo_revision %}Abre los casos pendientes y revisa su evidencia.{% else %}Consulta los pares completos y el estado de cada análisis.{% endif %}{% endblock %}
 
 {% block analisis_content %}
+{% url 'analisis:pendientes_revision' as pendientes_url %}
+{% url 'analisis:lista' as todos_url %}
+{% if pendientes_url and todos_url %}
+<nav class="analisis-vistas" aria-label="Vistas de Cocina">
+  <a class="button secondary-button" href="{{ pendientes_url }}"{% if solo_revision %} aria-current="page"{% endif %}>Pendientes</a>
+  <a class="button secondary-button" href="{{ todos_url }}"{% if not solo_revision %} aria-current="page"{% endif %}>Todos los análisis</a>
+</nav>
+{% endif %}
 <section class="analisis-resumen" aria-label="Resumen de la cola de revisión">
   <article class="panel analisis-tarjeta">
     <h2>Por revisar</h2>
@@ -30,9 +38,9 @@
   </article>
 </section>
 
-<h2 class="section-title" id="cola-revision">Cola de revisión</h2>
+<h2 class="section-title" id="cola-revision">{% if solo_revision %}Cola de revisión{% else %}Pares y resultados{% endif %}</h2>
 
-<section class="panel" aria-labelledby="cola-revision">
+<section class="panel analisis-cola" aria-labelledby="cola-revision">
   <table class="data-table">
     <thead>
       <tr>
@@ -72,7 +80,7 @@
         </tr>
       {% empty %}
         <tr>
-          <td class="empty-row" colspan="4">No hay análisis disponibles. Los pares incompletos no se envían al motor.</td>
+          <td class="empty-row" colspan="4">{% if solo_revision %}No hay casos pendientes de revisión.{% else %}No hay análisis disponibles. Los pares incompletos no se envían al motor.{% endif %}</td>
         </tr>
       {% endfor %}
     </tbody>

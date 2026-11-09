@@ -62,7 +62,7 @@ def lista(request, solo_revision=False):
         casos.append(datos)
     nulos = alcance.filter(origen='REAL', intento_vigente__resultados__estado='NO_CONCLUYENTE').values('servicio_id').distinct().count()
     resumen = dict(no_concluyentes=nulos, por_revisar=pendientes.filter(origen='REAL').values('servicio_id').distinct().count())
-    return render(request, 'analisis/lista_operativa.html', dict(casos=casos, resumen=resumen, pagina=page))
+    return render(request, 'analisis/lista_operativa.html', dict(casos=casos, resumen=resumen, pagina=page, solo_revision=solo_revision))
 
 
 @never_cache

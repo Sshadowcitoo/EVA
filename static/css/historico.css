@@ -48,3 +48,19 @@
  .historico .data-table td { display:table-cell; padding:14px 10px; }
  .historico .data-table td::before { display:none; }
 }
+
+.historico-accesos { display: flex; flex-wrap: wrap; gap: 8px 20px; }
+.historico-accesos a { display: inline-flex; align-items: center; min-height: 44px; }
+.historico-ayuda-tabla { display: none; }
+.historico-comparar-form .historico-campo { min-width: 0; }
+.historico .historico-percepcion { max-width: 46rem; }
+.historico-servicio-id { overflow-wrap: anywhere; }
+.historico-respuesta {
+  padding: 12px 16px;
+  background: var(--eva-emphasis);
+  border-radius: 8px;
+}
+@media (max-width: 640px) {
+  .historico-ayuda-tabla { display: block; }
+  .historico-percepcion button { width: 100%; }
+}

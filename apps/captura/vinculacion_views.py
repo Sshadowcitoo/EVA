@@ -91,12 +91,13 @@ def cancelar(request, pk):
 @require_http_methods(["GET", "POST"])
 def capturar(request):
     token = request.GET.get("token", "")
-    if len(token) != 43:
-        raise Http404("Vínculo no válido.")
     try:
+        if len(token) != 43:
+            raise ValidationError("Vínculo no válido.")
         sesion = services.obtener_sesion(token=token)
     except ValidationError:
-        raise Http404("Vínculo no válido.")
+        return render(request, "captura/captura_vinculada.html",
+                      views._contexto_base(vinculo_invalido=True), status=404)
     _actualizar(sesion)
     if sesion.estado != SesionCaptura.Estado.PENDIENTE:
         return render(request, "captura/captura_vinculada.html",

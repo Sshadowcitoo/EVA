@@ -98,7 +98,10 @@ class VinculacionHTTPTests(BaseDominio):
         csrf.force_login(self.usuario)
         self.assertEqual(csrf.post(self.pc).status_code, 403)
         self.assertEqual(csrf.post(url, self.datos()).status_code, 403)
-        self.assertEqual(self.telefono.get(reverse("captura:captura_vinculada") + "?token=invalido").status_code, 404)
+        respuesta = self.telefono.get(reverse("captura:captura_vinculada") + "?token=invalido")
+        self.assertContains(respuesta, "Vínculo no válido", status_code=404)
+        self.assertContains(respuesta, "Volver a Registro", status_code=404)
+        self.assertNotContains(respuesta, 'type="file"', status_code=404)
 
     def test_fallo_bd_compensa_archivo_y_no_consume_enlace(self):
         from django.core.exceptions import ValidationError

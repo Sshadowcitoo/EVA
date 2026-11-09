@@ -88,3 +88,10 @@
   .capture-shot [data-camera-video], .capture-shot [data-photo-preview] { max-height: 230px; }
   .capture-shot .capture-empty { padding-block: 8px; }
 }
+
+.capture-recovery { max-width: 46rem; }
+.capture-recovery-actions { display: flex; flex-wrap: wrap; gap: 12px; }
+.capture-recovery .button { min-height: 44px; }
+@media (max-width: 640px) {
+  .capture-recovery .button { width: 100%; text-align: center; }
+}

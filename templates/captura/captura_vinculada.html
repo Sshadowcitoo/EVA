@@ -1,18 +1,31 @@
 {% extends "captura/base_operacion.html" %}
 {% block title %}Captura vinculada | EVA{% endblock %}
-{% block heading %}Captura desde el celular{% endblock %}
-{% block subtitle %}Verifica la bandeja, el plato y la etapa antes de guardar.{% endblock %}
+{% block heading %}{% if vinculo_vigente and operacion_habilitada %}Captura desde el celular{% else %}{% if estado == 'COMPLETADA' %}Fotografía guardada correctamente{% elif estado == 'EXPIRADA' %}Enlace caducado{% elif estado == 'CANCELADA' %}Enlace cancelado{% elif vinculo_invalido %}Vínculo no válido{% else %}Captura no disponible{% endif %}{% endif %}{% endblock %}
+{% block subtitle %}{% if vinculo_vigente and operacion_habilitada %}Verifica la bandeja, el plato y la etapa antes de guardar.{% endif %}{% endblock %}
+{% block captura_etapas %}{% if vinculo_vigente and operacion_habilitada %}{{ block.super }}{% endif %}{% endblock %}
 {% block captura_content %}
 {% if vinculo_vigente and operacion_habilitada %}
   <p class="info-box">Esta captura corresponde al servicio indicado. El enlace no reemplaza tu sesión ni tus permisos.</p>
   {% include "captura/_fotografia.html" %}
 {% else %}
-  <section class="panel" role="status">
-    {% if estado == 'COMPLETADA' %}<h2>Fotografía guardada correctamente</h2><p>El servidor ya aceptó la fotografía de esta etapa. No necesitas volver a enviarla. Este enlace quedó cerrado para evitar que se sobrescriba.</p>
-    {% elif estado == 'EXPIRADA' %}<h2>Enlace caducado</h2><p>Vuelve a la computadora para generar un nuevo enlace.</p>
-    {% elif estado == 'CANCELADA' %}<h2>Enlace cancelado</h2><p>Solicita un enlace nuevo para continuar.</p>
-    {% else %}<h2>Captura no disponible</h2><p>Comprueba tu sesión con rol Registro y solicita un enlace vigente.</p>{% endif %}
-    {% if continuar_url %}<a class="button secondary-button" href="{{ continuar_url }}">Volver al servicio</a>{% endif %}
+  <section class="panel capture-recovery" role="status" aria-labelledby="vinculo-siguiente">
+    <h2 id="vinculo-siguiente">Qué hacer ahora</h2>
+    {% if estado == 'COMPLETADA' %}
+      <p>El servidor ya aceptó la fotografía de esta etapa. No necesitas volver a enviarla. Este enlace quedó cerrado para evitar que se sobrescriba.</p>
+    {% elif estado == 'EXPIRADA' %}
+      <p>Vuelve a la computadora y genera un nuevo enlace para el mismo servicio.</p>
+    {% elif estado == 'CANCELADA' %}
+      <p>Solicita un enlace nuevo desde la computadora si todavía necesitas tomar la fotografía.</p>
+    {% elif vinculo_invalido %}
+      <p>Abre el enlace completo desde el QR que aparece en la computadora. Si vuelve a fallar, genera un nuevo enlace desde el mismo servicio.</p>
+    {% else %}
+      <p>Comprueba tu sesión con rol Registro y solicita un enlace vigente.</p>
+    {% endif %}
+    {% if continuar_url %}
+      <a class="button secondary-button" href="{{ continuar_url }}">Volver al servicio</a>
+    {% else %}
+      <a class="button secondary-button" href="{% url 'captura:nueva_bandeja' %}">Volver a Registro</a>
+    {% endif %}
   </section>
 {% endif %}
 {% endblock %}

@@ -1,8 +1,16 @@
 {% extends "base.html" %}
+{% load static %}
 {% block title %}Servicio no encontrado | EVA{% endblock %}
+{% block page_styles %}<link rel="stylesheet" href="{% static 'css/captura.css' %}">{% endblock %}
 {% block heading %}Servicio no encontrado{% endblock %}
-{% block subtitle %}Revisa el enlace o vuelve a buscar la bandeja por su número o etiqueta.{% endblock %}
+{% block subtitle %}El enlace no lleva a un servicio disponible.{% endblock %}
 {% block content %}
-<a class="button primary-button" href="{% url 'captura:resolver_bandeja' %}">Buscar bandeja para servido</a>
-<a class="button secondary-button" href="{% url 'captura:buscar_retorno' %}">Buscar bandeja para retorno</a>
+<section class="panel capture-recovery" aria-labelledby="recuperar-servicio">
+  <h2 id="recuperar-servicio">Vuelve a localizar la bandeja</h2>
+  <p>Usa su número visible o escanea la etiqueta QR. Elige la etapa que quieres registrar.</p>
+  <div class="capture-recovery-actions">
+    <a class="button primary-button" href="{% url 'captura:resolver_bandeja' %}">Buscar bandeja para servido</a>
+    <a class="button secondary-button" href="{% url 'captura:buscar_retorno' %}">Buscar bandeja para retorno</a>
+  </div>
+</section>
 {% endblock %}

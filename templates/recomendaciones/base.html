@@ -9,7 +9,6 @@
 <a class="nav-link active" href="{% url 'recomendaciones:lista' %}" aria-current="page">Recomendaciones</a>
 {% url 'historico:lista' as historico_url %}{% if historico_url %}<a class="nav-link" href="{{ historico_url }}">Histórico e indicadores</a>{% endif %}
 {% url 'catalogo:platos' as catalogo_url %}{% if administracion and catalogo_url %}<a class="nav-link" href="{{ catalogo_url }}">Catálogo</a>{% endif %}
-<a class="nav-link" href="{% url 'recomendaciones:demo' %}">Demostración</a>
 {% endblock %}
 {% block content %}
 <link rel="stylesheet" href="{% static 'css/recomendaciones.css' %}">

@@ -22,7 +22,6 @@
 {% block filtros_indicadores %}
 <nav class="historico-accesos" aria-label="Accesos de la consulta">
   {% if datos.filas %}<a href="#historial-resultados">Ir a servicios y componentes</a>{% endif %}
-  <details class="eva-secundarias"><summary>Más opciones</summary><a href="{% url 'historico:demostracion' %}">Ver demostración →</a></details>
 </nav>
 <details class="panel eva-filters"{% if form.errors %} open{% endif %}>
   <summary>

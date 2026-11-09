@@ -5,7 +5,6 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 from django.test import TestCase, override_settings
-from django.urls import reverse
 from apps.captura.models import Servicio
 from .demo import preparar
 from .models import EvaluacionEvidencia, Recomendacion
@@ -38,21 +37,17 @@ class DemostracionTests(TestCase):
         usuario.groups.add(Group.objects.get_or_create(name=rol)[0])
         self.client.force_login(usuario)
 
-    def test_pantalla_restringida_y_origen_siempre_visible(self):
-        self.assertEqual(self.client.get(reverse('recomendaciones:demo')).status_code, 302)
-        self.usuario('Registro')
-        self.assertEqual(self.client.get(reverse('recomendaciones:demo')).status_code, 403)
-        self.assertEqual(self.client.get(reverse('recomendaciones:demo_foto')).status_code, 403)
-        for rol in ('Cocina', 'Administración'):
+    def test_pantalla_y_foto_retiradas_para_todos(self):
+        urls = ('/recomendaciones/demostracion/', '/recomendaciones/demostracion/foto/')
+        for url in urls:
+            self.assertEqual(self.client.get(url).status_code, 404)
+        for rol in ('Registro', 'Cocina', 'Administración'):
             self.usuario(rol)
-            respuesta = self.client.get(reverse('recomendaciones:demo'))
-            self.assertContains(respuesta, 'Datos de ejemplo')
-            self.assertContains(respuesta, 'no son predicciones de la IA')
-            self.assertContains(respuesta, 'Revisar porción')
-            self.assertEqual(self.client.post(reverse('recomendaciones:demo')).status_code, 405)
-            self.assertEqual(self.client.get(reverse('recomendaciones:demo'), {'escenario':'otro'}).status_code, 404)
+            for url in urls:
+                self.assertEqual(self.client.get(url).status_code, 404)
+                self.assertEqual(self.client.post(url).status_code, 404)
 
-    @override_settings(EVA_DEMO_SERVICIO_ID='')
-    def test_foto_sin_configuracion_no_acepta_id_arbitrario(self):
+    @override_settings(EVA_DEMO_SERVICIO_ID='00000000-0000-0000-0000-000000000001')
+    def test_foto_retirada_incluso_con_configuracion_anterior(self):
         self.usuario('Cocina')
-        self.assertEqual(self.client.get(reverse('recomendaciones:demo_foto'), {'servicio':'cualquiera'}).status_code, 404)
+        self.assertEqual(self.client.get('/recomendaciones/demostracion/foto/', {'servicio':'cualquiera'}).status_code, 404)

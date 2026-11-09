@@ -1,5 +1,4 @@
 from decimal import Decimal
-from unittest.mock import patch
 
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
@@ -42,33 +41,22 @@ class DemostracionHTTPTests(TestCase):
             u.groups.add(Group.objects.get_or_create(name=rol)[0])
             cls.usuarios[rol] = u
 
-    def test_permisos_y_metodo(self):
-        url = reverse("historico:demostracion")
-        self.assertEqual(self.client.get(url).status_code, 302)
-        self.client.force_login(self.usuarios["Registro"])
-        self.assertEqual(self.client.get(url).status_code, 403)
-        for rol in ("Cocina", "Administración"):
-            self.client.force_login(self.usuarios[rol])
-            self.assertEqual(self.client.get(url).status_code, 200)
-            self.assertEqual(self.client.post(url).status_code, 405)
-
-    def test_no_usa_selector_real_ni_escribe_servicios_o_fotos(self):
-        self.client.force_login(self.usuarios["Administración"])
-        with patch("apps.historico.selectors.seleccionar", side_effect=AssertionError("No consultar datos reales")):
-            respuesta = self.client.get(reverse("historico:demostracion"))
-        self.assertContains(respuesta, "Datos de demostración")
-        self.assertContains(respuesta, "Sin validez operativa")
-        self.assertContains(respuesta, 'id="eva-semanas"')
-        self.assertEqual(respuesta.context["panel"]["grupo"]["indicadores"]["intensidad"], 35)
+    def test_demostracion_retirada_para_todos_los_roles(self):
+        url = '/historico/demostracion/'
+        self.assertEqual(self.client.get(url).status_code, 404)
+        for usuario in self.usuarios.values():
+            self.client.force_login(usuario)
+            for metodo in (self.client.get, self.client.post):
+                self.assertEqual(metodo(url).status_code, 404)
         self.assertEqual(Servicio.objects.count(), 0)
         self.assertEqual(FotografiaServicio.objects.count(), 0)
 
-    def test_entrada_invalida_y_escenario_sin_evidencia(self):
-        self.client.force_login(self.usuarios["Cocina"])
-        url = reverse("historico:demostracion")
-        for datos in ({"escenario": "desconocido"}, {"page": "²"}, {"page": "0"}):
-            self.assertEqual(self.client.get(url, datos).status_code, 400)
-        respuesta = self.client.get(url, {"escenario": "sin_aptos"})
-        self.assertContains(respuesta, "Evidencia insuficiente")
-        self.assertNotContains(respuesta, 'class="eva-trend"')
-        self.assertNotContains(respuesta, '<meter')
+    def test_navegacion_operativa_sin_demostracion_ni_prototipo(self):
+        for rol in ('Cocina', 'Administración'):
+            self.client.force_login(self.usuarios[rol])
+            for url in (reverse('historico:lista'), reverse('recomendaciones:lista')):
+                respuesta = self.client.get(url)
+                self.assertEqual(respuesta.status_code, 200)
+                self.assertNotContains(respuesta, '/historico/demostracion/')
+                self.assertNotContains(respuesta, '/recomendaciones/demostracion/')
+                self.assertNotContains(respuesta, 'Prototipo académico')

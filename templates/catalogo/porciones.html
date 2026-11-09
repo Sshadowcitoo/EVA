@@ -3,7 +3,6 @@
 {% block title %}Porciones | EVA{% endblock %}
 
 {% block catalog_content %}
-  {% include "catalogo/_secciones.html" with seccion="porciones" %}
 
   <section class="panel catalog-header" aria-labelledby="titulo-porciones">
     <div>
@@ -16,9 +15,11 @@
     <a class="button primary-button" href="{% url 'catalogo:porcion_crear' %}">Agregar porción</a>
   </section>
 
+  {% include "catalogo/_secciones.html" with seccion="porciones" %}
+
   <h2 class="section-title" id="porciones-disponibles">Porciones disponibles</h2>
 
-  <section class="panel" aria-labelledby="porciones-disponibles">
+  <section class="panel catalog-lista" aria-labelledby="porciones-disponibles">
     <table class="data-table">
       <thead>
         <tr>
@@ -38,9 +39,9 @@
               </div>
             </td>
             <td data-label="Estado">
-              {% if porcion.activo %}Activo{% else %}Inactivo{% endif %}
+              <span class="catalog-estado{% if porcion.activo %} catalog-estado-activo{% endif %}">{% if porcion.activo %}Activo{% else %}Inactivo{% endif %}</span>
             </td>
-            <td data-label="Acción">
+            <td data-label="Acción"><div class="catalog-acciones">
               <a href="{% url 'catalogo:porcion_editar' porcion.pk %}">Editar</a>
               <form method="post" action="{% url 'catalogo:porcion_estado' porcion.pk %}">
                 {% csrf_token %}
@@ -48,7 +49,7 @@
                   {% if porcion.activo %}Desactivar{% else %}Activar{% endif %}
                 </button>
               </form>
-            </td>
+            </div></td>
           </tr>
         {% empty %}
           <tr>

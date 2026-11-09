@@ -7,13 +7,14 @@
     <title>{% block title %}EVA{% endblock %}</title>
     <link rel="stylesheet" href="{% static 'css/eva.css' %}" />
     <link rel="stylesheet" href="{% static 'css/eva_pastel.css' %}?v=20261106-global" />
+    <link rel="stylesheet" href="{% static 'css/navegacion.css' %}" />
     {% block page_styles %}{% endblock %}
   </head>
   <body class="eva-pastel{% block body_classes %}{% endblock %}"{% block body_attributes %}{% endblock %}>
     <div class="app-layout">
       <aside class="sidebar">
-        <button type="button" class="mobile-menu-toggle" aria-expanded="false" aria-controls="navegacion-principal" aria-label="Mostrar u ocultar navegación">
-          EVA <span>Menú ☰</span>
+        <button type="button" class="mobile-menu-toggle" aria-expanded="false" aria-controls="navegacion-principal{% if user.is_authenticated %} sesion-principal{% endif %}">
+          EVA <span class="menu-abrir">Menú ☰</span><span class="menu-cerrar">Cerrar menú ×</span>
         </button>
         <div class="sidebar-brand">
           <span class="brand">EVA</span>
@@ -21,6 +22,12 @@
         </div>
 
         <nav id="navegacion-principal" class="sidebar-nav" aria-label="Navegación principal">
+          {% if puede_registrar or puede_cocina or puede_administrar_catalogo %}<p class="menu-roles">
+            {% if puede_registrar %}<span>Registro</span>{% endif %}
+            {% if puede_cocina %}<span>Cocina</span>{% endif %}
+            {% if puede_administrar_catalogo %}<span>Administración</span>{% endif %}
+          </p>
+          {% endif %}
           {% block navigation %}
           {% include 'includes/captura_nav.html' %}
 
@@ -37,9 +44,9 @@
           {% endblock %}
         </nav>
 
-                  {% if user.is_authenticated %}
+        {% if user.is_authenticated %}
           {% url 'cuentas:logout' as logout_url %}
-          <div class="sidebar-session">
+          <div class="sidebar-session" id="sesion-principal">
             <p class="sidebar-user">
               <span>Sesión iniciada</span>
               <strong>{{ user.get_full_name|default:user.get_username }}</strong>
@@ -86,9 +93,15 @@
     </div>
 <script>
   const menuToggle = document.querySelector('.mobile-menu-toggle');
+  const menuAbierto = () => menuToggle.getAttribute('aria-expanded') === 'true';
   menuToggle.addEventListener('click', () => {
-    const expanded = menuToggle.getAttribute('aria-expanded') === 'true';
-    menuToggle.setAttribute('aria-expanded', String(!expanded));
+    menuToggle.setAttribute('aria-expanded', String(!menuAbierto()));
+  });
+  menuToggle.closest('.sidebar').addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && menuAbierto()) {
+      menuToggle.setAttribute('aria-expanded', 'false');
+      menuToggle.focus();
+    }
   });
 </script>
 </body>

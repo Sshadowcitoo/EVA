@@ -3,7 +3,6 @@
 {% block title %}Componentes | EVA{% endblock %}
 
 {% block catalog_content %}
-  {% include "catalogo/_secciones.html" with seccion="componentes" %}
 
   <section class="panel catalog-header" aria-labelledby="titulo-componentes">
     <div>
@@ -16,9 +15,11 @@
     <a class="button primary-button" href="{% url 'catalogo:componente_crear' %}">Agregar componente</a>
   </section>
 
+  {% include "catalogo/_secciones.html" with seccion="componentes" %}
+
   <h2 class="section-title" id="componentes-disponibles">Componentes disponibles</h2>
 
-  <section class="panel" aria-labelledby="componentes-disponibles">
+  <section class="panel catalog-lista" aria-labelledby="componentes-disponibles">
     <table class="data-table">
       <thead>
         <tr>
@@ -38,9 +39,9 @@
               </div>
             </td>
             <td data-label="Estado">
-              {% if componente.activo %}Activo{% else %}Inactivo{% endif %}
+              <span class="catalog-estado{% if componente.activo %} catalog-estado-activo{% endif %}">{% if componente.activo %}Activo{% else %}Inactivo{% endif %}</span>
             </td>
-            <td data-label="Acción">
+            <td data-label="Acción"><div class="catalog-acciones">
               <a href="{% url 'catalogo:componente_editar' componente.pk %}">Editar</a>
               <form method="post" action="{% url 'catalogo:componente_estado' componente.pk %}">
                 {% csrf_token %}
@@ -48,7 +49,7 @@
                   {% if componente.activo %}Desactivar{% else %}Activar{% endif %}
                 </button>
               </form>
-            </td>
+            </div></td>
           </tr>
         {% empty %}
           <tr>

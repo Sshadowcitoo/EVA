@@ -1,0 +1,40 @@
+.catalogo .catalog-header { margin-bottom: 16px; }
+.catalogo .catalog-tabs { margin-bottom: 18px; }
+.catalogo .catalog-tabs a,
+.catalogo .catalog-acciones :is(a, button),
+.catalogo .form-actions .button { min-height: 44px; }
+.catalogo .catalog-acciones,
+.catalogo .catalog-acciones a,
+.catalogo .catalog-tabs a {
+  display: flex;
+  align-items: center;
+}
+.catalogo .catalog-acciones { flex-wrap: wrap; gap: 8px 16px; }
+.catalogo .catalog-acciones form { margin: 0; }
+.catalogo .catalog-lista { overflow-wrap: anywhere; }
+.catalogo .catalog-estado {
+  display: inline-block;
+  padding: 4px 9px;
+  border: 1px solid var(--eva-border);
+  border-radius: 999px;
+  color: var(--eva-muted);
+}
+.catalogo .catalog-estado-activo {
+  background: var(--eva-emphasis);
+  color: var(--eva-action);
+}
+.catalogo .catalog-decisiones { margin-top: 20px; background: var(--eva-emphasis); }
+.catalogo .catalog-volver { display: inline-block; margin-bottom: 14px; }
+.catalogo .catalog-form .form-field-group { min-width: 0; overflow-wrap: anywhere; }
+.catalogo .catalog-form .form-field-group > div {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr));
+  gap: 8px;
+}
+
+@media (max-width: 640px) {
+  .catalogo .catalog-tabs { gap: 4px; }
+  .catalogo .catalog-tabs a { flex: 1; justify-content: center; padding-inline: 8px; }
+  .catalogo .catalog-header .primary-button { width: 100%; }
+  .catalogo .catalog-lista td[data-label="Acción"] { align-items: center; }
+}

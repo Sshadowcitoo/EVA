@@ -1,8 +1,9 @@
 {% extends 'analisis/base.html' %}
 {% block heading %}Solicitar análisis{% endblock %}
 {% block analisis_content %}
-<section class="panel">
-<h2>{{ servicio.get_plato_display }}</h2>
+<section class="panel analisis-solicitud" aria-labelledby="solicitud-plato">
+<p class="muted"><a href="{% url 'analisis:lista' %}">← Volver a la lista de análisis</a></p>
+<h2 id="solicitud-plato">{{ servicio.get_plato_display }}</h2>
 <p>{{ servicio.get_tipo_porcion_display }} · Servicio {{ servicio.pk }}</p>
 <p>Solo se procesan pares completos con fotografías disponibles y protocolo confirmado. El análisis se ejecuta en segundo plano.</p>
 {% if not error %}<form method="post" action="{% url 'analisis:solicitar' servicio.pk %}">{% csrf_token %}

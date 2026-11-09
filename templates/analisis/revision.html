@@ -9,11 +9,19 @@
 <p class="info-box analisis-simulado">SIMULADO: solo prueba del flujo. No válido para indicadores.</p>
 {% endif %}
 
+<div class="panel revision-resumen">
+  <p><strong>{{ caso.plato_nombre|default:"Plato sin identificar" }}</strong> · {{ caso.porcion_nombre|default:"Porción sin identificar" }}{% if caso.bandeja_numero %} · Bandeja {{ caso.bandeja_numero }}{% endif %}</p>
+  {% if revision_actual %}<p><strong>Decisión vigente:</strong> {{ revision_actual.get_decision_display|default:revision_actual.decision }}</p>{% endif %}
+  {% if decision_url and caso.estado == "COMPLETADO" %}<a href="#rev-decision">Ir al motivo y las decisiones</a>{% endif %}
+</div>
 <div class="revision-grid">
 <div class="revision-principal">
 <section class="panel revision-evidencia" aria-labelledby="rev-evidencia">
 <h2 id="rev-evidencia">Evidencia</h2>
 {% if foto_servido_url or foto_retorno_url %}
+    {% if foto_servido_url and foto_retorno_url %}
+    <label class="revision-ampliar"><input type="checkbox"> Ver fotos a ancho completo</label>
+    {% endif %}
     {% include "analisis/_evidencia.html" %}
 {% else %}
     <p class="info-box" role="status">La evidencia fotográfica no está disponible (venció o aún no se cargó). No se pueden emitir nuevas confirmaciones a ciegas.</p>
@@ -24,6 +32,53 @@
 <h2 class="section-title" id="rev-hallazgos">Hallazgos por componente</h2>
 {% include "analisis/_tabla_resultados.html" with titulo_id="rev-hallazgos" %}
 </section>
+{% if caso.estado == "PENDIENTE" or caso.estado == "EN_PROCESO" %}
+<p class="info-box" role="status">El análisis todavía no termina. La revisión estará disponible cuando haya un resultado.</p>
+{% elif caso.estado == "FALLIDO" or caso.estado == "TIEMPO_AGOTADO" %}
+<p class="info-box" role="status">El análisis no terminó bien: no hay un resultado técnico que revisar. Pide un reintento desde el detalle del análisis.</p>
+{% elif decision_url %}
+<form id="rev-decision" method="post" action="{{ decision_url }}" class="panel revision-acciones" data-revision-form{% if revision_actual %} data-rectificar{% endif %}>
+{% csrf_token %}
+<input type="hidden" name="version_esperada" value="{{ version_esperada }}">
+<h2>{% if revision_actual %}Rectificar la decisión{% else %}Tu decisión{% endif %}</h2>
+
+<div class="revision-sugerencias" data-motivo-sugerencias hidden>
+    <label for="motivo-sugerido">Motivo frecuente (opcional)</label>
+    <select id="motivo-sugerido">
+    <option value="">Elige un motivo</option>
+    <option value="Máscara incorrecta">Máscara incorrecta</option>
+    <option value="Fotografía dudosa">Fotografía dudosa</option>
+    <option value="">Otro (escribe el detalle abajo)</option>
+    </select>
+</div>
+
+<label for="motivo-revision">Motivo</label>
+<p id="motivo-ayuda" class="muted">{% if revision_actual %}Es obligatorio para rectificar una decisión.{% else %}Es obligatorio al marcar como incorrecto o no concluyente. Al confirmar es opcional.{% endif %}</p>
+<textarea id="motivo-revision" name="motivo" maxlength="1000" rows="3" aria-describedby="motivo-ayuda motivo-error">{{ motivo_borrador }}</textarea>
+<p id="motivo-error" class="error-texto" role="alert" data-motivo-error hidden>Escribe el motivo para continuar.</p>
+
+<div class="revision-botones">
+    <button class="button" type="submit" name="decision" value="CONFIRMADO" {% if not puede_confirmar %}disabled aria-describedby="confirmar-ayuda"{% endif %}>Confirmar revisión</button>
+    <button class="button button-secundario" type="submit" name="decision" value="NO_CONCLUYENTE" data-requiere-motivo>Marcar no concluyente</button>
+    <button class="button button-secundario" type="submit" name="decision" value="RECHAZADO" data-requiere-motivo>Marcar incorrecto</button>
+</div>
+
+{% if not puede_confirmar %}
+    <p id="confirmar-ayuda" class="info-box">
+    {% if caso.origen == "SIMULADO" %}Un resultado simulado solo prueba el flujo: no se puede confirmar como evidencia.
+    {% elif not foto_servido_url or not foto_retorno_url %}No hay evidencia disponible ahora: no se puede confirmar a ciegas.
+    {% else %}No se puede confirmar sin evidencia disponible y criterios técnicos aprobados.{% endif %}
+    </p>
+{% endif %}
+<p class="muted" role="status" data-revision-estado></p>
+</form>
+<script src="{% static 'js/analisis.js' %}" defer></script>
+{% elif revision_actual %}
+<p class="info-box">Revisión cerrada. Consulta en solo lectura.</p>
+{% else %}
+<p class="info-box">Las acciones estarán disponibles al conectar el servicio de revisión.</p>
+{% endif %}
+
 </div>
 
 <div class="revision-lateral">
@@ -65,51 +120,4 @@
 <p class="muted">Servido → retorno → validación → análisis → revisión de cocina.</p>
 </section>
 </div>
-
-{% if caso.estado == "PENDIENTE" or caso.estado == "EN_PROCESO" %}
-<p class="info-box" role="status">El análisis todavía no termina. La revisión estará disponible cuando haya un resultado.</p>
-{% elif caso.estado == "FALLIDO" or caso.estado == "TIEMPO_AGOTADO" %}
-<p class="info-box" role="status">El análisis no terminó bien: no hay un resultado técnico que revisar. Pide un reintento desde el detalle del análisis.</p>
-{% elif decision_url %}
-<form method="post" action="{{ decision_url }}" class="panel revision-acciones" data-revision-form{% if revision_actual %} data-rectificar{% endif %}>
-{% csrf_token %}
-<input type="hidden" name="version_esperada" value="{{ version_esperada }}">
-<h2>{% if revision_actual %}Rectificar la decisión{% else %}Tu decisión{% endif %}</h2>
-
-<div class="revision-sugerencias" data-motivo-sugerencias hidden>
-    <label for="motivo-sugerido">Motivo frecuente (opcional)</label>
-    <select id="motivo-sugerido">
-    <option value="">Elige un motivo</option>
-    <option value="Máscara incorrecta">Máscara incorrecta</option>
-    <option value="Fotografía dudosa">Fotografía dudosa</option>
-    <option value="">Otro (escribe el detalle abajo)</option>
-    </select>
-</div>
-
-<label for="motivo-revision">Motivo</label>
-<p id="motivo-ayuda" class="muted">{% if revision_actual %}Es obligatorio para rectificar una decisión.{% else %}Es obligatorio al marcar como incorrecto o no concluyente. Al confirmar es opcional.{% endif %}</p>
-<textarea id="motivo-revision" name="motivo" maxlength="1000" rows="3" aria-describedby="motivo-ayuda motivo-error"></textarea>
-<p id="motivo-error" class="error-texto" role="alert" data-motivo-error hidden>Escribe el motivo para continuar.</p>
-
-<div class="revision-botones">
-    <button class="button" type="submit" name="decision" value="CONFIRMADO" {% if not puede_confirmar %}disabled{% endif %} aria-describedby="confirmar-ayuda">Confirmar revisión</button>
-    <button class="button button-secundario" type="submit" name="decision" value="NO_CONCLUYENTE" data-requiere-motivo>Marcar no concluyente</button>
-    <button class="button button-secundario" type="submit" name="decision" value="RECHAZADO" data-requiere-motivo>Marcar incorrecto</button>
-</div>
-
-{% if not puede_confirmar %}
-    <p id="confirmar-ayuda" class="info-box">
-    {% if caso.origen == "SIMULADO" %}Un resultado simulado solo prueba el flujo: no se puede confirmar como evidencia.
-    {% elif not foto_servido_url or not foto_retorno_url %}No hay evidencia disponible ahora: no se puede confirmar a ciegas.
-    {% else %}No se puede confirmar sin evidencia disponible y criterios técnicos aprobados.{% endif %}
-    </p>
-{% endif %}
-<p class="muted" role="status" data-revision-estado></p>
-</form>
-<script src="{% static 'js/analisis.js' %}" defer></script>
-{% elif revision_actual %}
-<p class="info-box">Revisión cerrada. Consulta en solo lectura.</p>
-{% else %}
-<p class="info-box">Las acciones estarán disponibles al conectar el servicio de revisión.</p>
-{% endif %}
 {% endblock %}

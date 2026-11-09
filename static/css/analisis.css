@@ -90,3 +90,20 @@
 @media(max-width:640px) {
 .revision-botones .button { width:100%; }
 }
+/* La comparación empieza en pareja; ampliar conserva las mismas fotos y máscaras. */
+.revision-resumen { margin-bottom: 16px; overflow-wrap: anywhere; }
+.revision-resumen p { margin: 0 0 6px; }
+.revision-resumen p:last-child { margin-bottom: 0; }
+.revision-resumen a { display: inline-block; padding: 6px 0; }
+.revision-evidencia .analisis-fotos { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.revision-evidencia .analisis-foto:only-child { grid-column: 1 / -1; }
+.revision-ampliar { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; min-height: 44px; }
+.revision-ampliar input { margin: 0; }
+.revision-evidencia:has(.revision-ampliar input:checked) .analisis-fotos { grid-template-columns: minmax(0, 1fr); }
+.revision-acciones { scroll-margin-top: 20px; }
+.revision-grid :is(.revision-lateral, .revision-acciones) { overflow-wrap: anywhere; }
+@media (max-width: 640px) {
+  .revision-evidencia { padding: 16px; }
+  .revision-evidencia .analisis-fotos { gap: 8px; }
+  .revision-botones .button { min-height: 44px; }
+}

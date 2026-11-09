@@ -55,7 +55,7 @@ class RevisionHTTPTests(BaseWebMotor):
         self.decidir()
         respuesta = self.decidir('RECHAZADO', 'Otra persona revisó', version=0)
         self.assertEqual(respuesta.status_code, 409)
-        self.assertContains(respuesta, 'Otra persona revisó', status_code=409)
+        self.assertContains(respuesta, 'Otra persona revisó</textarea>', status_code=409)
         self.assertEqual(services.revision_vigente(self.intento).decision, 'CONFIRMADO')
 
     def test_bloqueo_concurrente_no_produce_reintento_ciego(self):

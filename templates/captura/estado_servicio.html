@@ -14,6 +14,7 @@
   {% else %}
   <h2>Fotografía pendiente</h2><p>Aún no hay confirmación de guardado para esta etapa.</p>
   {% endif %}
+  {% if continuar_url %}<a class="button primary-button" href="{{ continuar_url }}">{{ continuar_texto }}</a>{% endif %}
   {% if fotografias_registradas %}
   <dl class="capture-details">
     {% for fotografia in fotografias_registradas %}
@@ -25,7 +26,6 @@
   </dl>
   <p class="muted">Fecha y hora registradas automáticamente al guardar cada fotografía.</p>
   {% endif %}
-  {% if continuar_url %}<a class="button primary-button" href="{{ continuar_url }}">{{ continuar_texto }}</a>{% endif %}
   {% url 'historico:percepcion' servicio.pk as percepcion_url %}
   {% if puede_registrar and estado != 'ANULADO' and percepcion_url %}<p><a href="{{ percepcion_url }}">Registrar percepción opcional</a></p>{% endif %}
 </section>

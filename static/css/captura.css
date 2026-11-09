@@ -39,3 +39,59 @@
 
 .capture-context { margin-block: 16px; overflow-wrap: anywhere; }
 .capture-lookup .errorlist, .capture-operation .errorlist { color: #a91c30; overflow-wrap: anywhere; }
+
+/* En móvil, primero la identificación y la evidencia; luego la acción y las ayudas ampliadas. */
+.capture-shot {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  grid-template-areas: "reference action" "help action";
+  gap: 16px 24px;
+  align-items: start;
+  align-content: start;
+}
+.capture-shot-reference { grid-area: reference; }
+.capture-shot > :is(.capture-photo-panel, .capture-link-panel) { grid-area: action; min-width: 0; }
+.capture-shot-help { grid-area: help; min-width: 0; }
+.capture-shot-help .capture-context { margin-block: 12px 0; }
+.capture-shot :is(.panel, .info-box) { overflow-wrap: anywhere; }
+.capture-shot .capture-identity {
+  grid-template-columns: max-content minmax(0, 1fr);
+  gap: 4px 12px;
+  margin-block: 8px 0;
+}
+.capture-shot .capture-identity dd { margin: 0; }
+.capture-shot-reference h2 { margin-bottom: 4px; }
+.capture-shot-reference p { margin-block: 6px; }
+.capture-shot .capture-checklist {
+  min-width: 0;
+  margin: 12px 0;
+  padding: 10px 12px;
+  border: 1px solid var(--eva-border, #cbd5e1);
+  border-radius: 8px;
+}
+.capture-checklist legend { font-weight: 700; }
+.capture-checklist p { margin: 6px 0; }
+.capture-source p { margin-block: 8px; }
+.capture-return-reference { max-height: 260px; }
+.capture-search-again summary { cursor: pointer; font-weight: 700; }
+.capture-search-again[open] summary { margin-bottom: 12px; }
+.capture-basic .info-box { margin-top: 12px; }
+@media (max-width: 700px) {
+  .capture-shot { grid-template-columns: minmax(0, 1fr); grid-template-areas: "reference" "action" "help"; }
+  .capture-shot .capture-shot-reference { padding: 14px 16px; }
+  .capture-shot-reference .capture-image, .capture-return-reference { max-height: 156px; }
+  .capture-shot [data-camera-start], .capture-shot [data-photo-submit], .capture-basic button[type="submit"] {
+    width: 100%;
+    min-height: 44px;
+    margin-inline: 0;
+  }
+  .capture-shot [data-camera-video], .capture-shot [data-photo-preview] { max-height: 230px; }
+  .capture-shot .capture-empty { padding-block: 8px; }
+}
+
+.capture-recovery { max-width: 46rem; }
+.capture-recovery-actions { display: flex; flex-wrap: wrap; gap: 12px; }
+.capture-recovery .button { min-height: 44px; }
+@media (max-width: 640px) {
+  .capture-recovery .button { width: 100%; text-align: center; }
+}

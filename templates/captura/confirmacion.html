@@ -26,6 +26,11 @@ de la bandeja quedaron guardados.{% endblock %} {% block content %}
       <dd>{{ servicio.fecha_creacion|date:"d/m/Y H:i" }}</dd>
     </div>
   </dl>
+  <p><a class="button primary-button" href="{% url 'captura:resolver_bandeja' %}">Iniciar captura con bandeja</a></p>
+
+  <a class="button secondary-button" href="{% url 'captura:nueva_bandeja' %}">
+    Crear otro registro
+  </a>
   {% include 'captura/_contexto_servicio.html' %}
 
   <div class="info-box">
@@ -35,11 +40,6 @@ de la bandeja quedaron guardados.{% endblock %} {% block content %}
       Para el recorrido con fotos, inicia una captura con bandeja desde el menú.
     </p>
   </div>
-  <p><a class="button primary-button" href="{% url 'captura:resolver_bandeja' %}">Iniciar captura con bandeja</a></p>
-
-  <a class="button primary-button" href="{% url 'captura:nueva_bandeja' %}">
-    Crear otro registro
-  </a>
   {% url 'historico:percepcion' servicio.pk as percepcion_url %}
   {% if puede_registrar and percepcion_url %}<p><a href="{{ percepcion_url }}">Registrar percepción opcional</a></p>{% endif %}
 </section>

@@ -5,17 +5,15 @@
 {% block subtitle %}Confirma el servicio y escanea el QR temporal desde el teléfono.{% endblock %}
 {% block captura_content %}
 <link rel="stylesheet" href="{% static 'css/vinculacion.css' %}">
-<div class="capture-grid">
-  <section class="panel">
+<div class="capture-shot">
+  <section class="panel capture-shot-reference">
     <h2>Datos del servicio</h2>
-    <dl class="capture-details">
+    <dl class="capture-details capture-identity">
       <dt>Bandeja</dt><dd>{{ bandeja.numero }}</dd>
       <dt>Plato</dt><dd>{{ plato_nombre }}</dd>
       <dt>Porción</dt><dd>{{ porcion_nombre }}</dd>
       <dt>Etapa</dt><dd>{% if etapa == "RETORNO" %}Retorno{% else %}Servido{% endif %}</dd>
     </dl>
-    {% include "captura/_contexto_servicio.html" %}
-    <div class="info-box"><h3>Dos códigos diferentes</h3><p>El QR de la bandeja identifica el soporte físico. Este QR temporal permite abrir la captura de este servicio y etapa. Debes iniciar sesión con rol Registro en el teléfono.</p></div>
     <form method="post" {% if crear_url %}action="{{ crear_url }}"{% endif %}>
       {% csrf_token %}
       {% if crear_form %}{{ crear_form.as_p }}{% endif %}
@@ -49,6 +47,10 @@
     </form>
     {% endif %}
   </section>
+  <aside class="capture-shot-help" aria-label="Ayudas y contexto de la vinculación">
+    {% include "captura/_contexto_servicio.html" %}
+    <div class="info-box"><h3>Dos códigos diferentes</h3><p>El QR de la bandeja identifica el soporte físico. Este QR temporal permite abrir la captura de este servicio y etapa. Debes iniciar sesión con rol Registro en el teléfono.</p></div>
+  </aside>
 </div>
 {% endblock %}
 {% block captura_scripts %}<script src="{% static 'js/vinculacion.js' %}" defer></script>{% endblock %}

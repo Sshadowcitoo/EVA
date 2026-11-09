@@ -1,0 +1,37 @@
+<section class="capture-lookup">
+  {% if busqueda.non_field_errors %}<div class="error-summary" role="alert">{{ busqueda.non_field_errors }}</div>{% endif %}
+  <form method="get" {% if buscar_url %}action="{{ buscar_url }}"{% endif %} data-lookup>
+    <div class="capture-search-field">
+      {{ busqueda.numero.label_tag }}
+      {{ busqueda.numero }}
+      {{ busqueda.numero.errors }}
+    </div>
+    <button class="button primary-button" {% if not operacion_habilitada or not buscar_url %}disabled{% endif %}>Buscar bandeja</button>
+    {% if lector_habilitado %}
+    <div class="capture-scanner" data-qr-reader>
+      <details{% if busqueda.etiqueta.errors or busqueda.etiqueta.value %} open{% endif %}><summary>Escanear etiqueta QR</summary>
+        {{ busqueda.etiqueta.label_tag }}
+        {{ busqueda.etiqueta }}
+        {{ busqueda.etiqueta.errors }}
+        <button type="button" class="button secondary-button" data-qr-start>Activar cámara</button>
+        <button type="button" class="button secondary-button" data-qr-stop hidden>Detener cámara</button>
+        <video class="capture-image" data-qr-video autoplay playsinline muted hidden aria-label="Cámara para escanear la etiqueta"></video>
+        <canvas data-qr-canvas hidden></canvas>
+        <p role="status" data-qr-status aria-live="polite">El permiso de cámara se solicita al activarla.</p>
+      </details>
+    </div>
+    {% endif %}
+  </form>
+  {% if not bandeja %}
+  <div class="info-box capture-search-help">
+    {% if es_retorno %}
+    <h2>Busca la bandeja que regresó</h2>
+    <p>Usa la misma bandeja del servido. Revisa el plato, la porción y la foto inicial, si está disponible, antes de confirmar el retorno.</p>
+    {% else %}
+    <h2>Busca una bandeja libre</h2>
+    <p>Selecciona el plato y la porción después de localizar la bandeja. Luego toma la fotografía antes de entregar el plato.</p>
+    {% endif %}
+    <p>El código identifica la bandeja; debes tener una sesión con rol Registro.</p>
+  </div>
+  {% endif %}
+</section>

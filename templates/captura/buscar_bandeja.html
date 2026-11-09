@@ -4,50 +4,16 @@
 {% block heading %}{% if es_retorno %}Registrar retorno{% else %}Registrar servido{% endif %}{% endblock %}
 {% block subtitle %}Escanea la etiqueta o escribe el número visible de la bandeja.{% endblock %}
 {% block captura_content %}
-<section class="capture-lookup">
-  {% if busqueda.non_field_errors %}<div class="error-summary" role="alert">{{ busqueda.non_field_errors }}</div>{% endif %}
-  <form method="get" {% if buscar_url %}action="{{ buscar_url }}"{% endif %} data-lookup>
-    <div class="capture-search-field">
-      {{ busqueda.numero.label_tag }}
-      {{ busqueda.numero }}
-      {{ busqueda.numero.errors }}
-    </div>
-    <button class="button primary-button" {% if not operacion_habilitada or not buscar_url %}disabled{% endif %}>Buscar bandeja</button>
-    {% if lector_habilitado %}
-    <div class="capture-scanner" data-qr-reader>
-      <details{% if busqueda.etiqueta.errors or busqueda.etiqueta.value %} open{% endif %}><summary>Escanear etiqueta QR</summary>
-        {{ busqueda.etiqueta.label_tag }}
-        {{ busqueda.etiqueta }}
-        {{ busqueda.etiqueta.errors }}
-        <button type="button" class="button secondary-button" data-qr-start>Activar cámara</button>
-        <button type="button" class="button secondary-button" data-qr-stop hidden>Detener cámara</button>
-        <video class="capture-image" data-qr-video autoplay playsinline muted hidden aria-label="Cámara para escanear la etiqueta"></video>
-        <canvas data-qr-canvas hidden></canvas>
-        <p role="status" data-qr-status aria-live="polite">El permiso de cámara se solicita al activarla.</p>
-      </details>
-    </div>
-    {% endif %}
-  </form>
-  {% if not bandeja %}
-  <div class="info-box capture-search-help">
-    {% if es_retorno %}
-    <h2>Busca la bandeja que regresó</h2>
-    <p>Usa la misma bandeja del servido. Revisa el plato, la porción y la foto inicial, si está disponible, antes de confirmar el retorno.</p>
-    {% else %}
-    <h2>Busca una bandeja libre</h2>
-    <p>Selecciona el plato y la porción después de localizar la bandeja. Luego toma la fotografía antes de entregar el plato.</p>
-    {% endif %}
-    <p>El código identifica la bandeja; debes tener una sesión con rol Registro.</p>
-  </div>
-  {% endif %}
-</section>
+{% if not bandeja or not form or not confirmar_url or not operacion_habilitada %}
+{% include 'captura/_buscar_bandeja.html' %}
+{% endif %}
 {% if bandeja %}
 <section class="panel capture-operation">
   <h2>Bandeja {{ bandeja.numero }}</h2>
   {% if continuar_url %}<p><a class="button primary-button" href="{{ continuar_url }}">{{ continuar_texto }}</a></p>{% endif %}
-  {% if servicio %}<p>{{ plato_nombre }} · {{ porcion_nombre }}</p>{% include 'captura/_contexto_servicio.html' %}{% endif %}
+  {% if servicio %}<p>{{ plato_nombre }} · {{ porcion_nombre }}</p>{% endif %}
   {% if es_retorno and servicio %}
-    {% if foto_servido_url %}<img class="capture-image" src="{{ foto_servido_url }}" alt="Fotografía del servido para confirmar la correspondencia">{% else %}<p class="muted">La fotografía del servido no está disponible. Revisa los identificadores y el historial del servicio.</p>{% endif %}
+    {% if foto_servido_url %}<img class="capture-image capture-return-reference" src="{{ foto_servido_url }}" alt="Fotografía del servido para confirmar la correspondencia">{% else %}<p class="muted">La fotografía del servido no está disponible. Revisa los identificadores y el historial del servicio.</p>{% endif %}
   {% endif %}
   {% if form and confirmar_url and operacion_habilitada %}
   <form method="post" action="{{ confirmar_url }}">
@@ -60,11 +26,18 @@
     {% else %}
     {{ form.as_p }}
     {% endif %}
-    {% if not es_retorno and form.establecimiento_nombre %}<p class="muted">Establecimiento: {{ form.establecimiento_nombre }}. La franja se fija automáticamente con la foto del servido. Completa sede, modalidad y lote juntos; si omites los tres, el servicio queda sin contexto comparable.</p>{% endif %}
     <button class="button primary-button">{% if es_retorno %}Confirmar y tomar foto del retorno{% else %}Confirmar y tomar foto del servido{% endif %}</button>
+    {% if not es_retorno and form.establecimiento_nombre %}<p class="muted">Establecimiento: {{ form.establecimiento_nombre }}. La franja se fija automáticamente con la foto del servido. Completa sede, modalidad y lote juntos; si omites los tres, el servicio queda sin contexto comparable.</p>{% endif %}
   </form>
   {% endif %}
+  {% if servicio %}{% include 'captura/_contexto_servicio.html' %}{% endif %}
 </section>
+{% if form and confirmar_url and operacion_habilitada %}
+<details class="panel capture-search-again">
+  <summary>Buscar otra bandeja</summary>
+  {% include 'captura/_buscar_bandeja.html' %}
+</details>
+{% endif %}
 {% endif %}
 {% endblock %}
 {% block captura_scripts %}{% if lector_habilitado %}

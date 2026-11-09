@@ -35,7 +35,7 @@
             <td data-label="Componente">
               <div>
                 <strong>{{ componente.nombre }}</strong>
-                <small>{{ componente.codigo }}</small>
+                {% include "includes/detalles_tecnicos.html" with valor=componente.codigo etiqueta="Código de catálogo" only %}
               </div>
             </td>
             <td data-label="Estado">
@@ -43,12 +43,14 @@
             </td>
             <td data-label="Acción"><div class="catalog-acciones">
               <a href="{% url 'catalogo:componente_editar' componente.pk %}">Editar</a>
+              <details class="eva-secundarias"><summary>Más opciones</summary>
               <form method="post" action="{% url 'catalogo:componente_estado' componente.pk %}">
                 {% csrf_token %}
                 <button type="submit" class="button secondary-button">
                   {% if componente.activo %}Desactivar{% else %}Activar{% endif %}
                 </button>
               </form>
+              </details>
             </div></td>
           </tr>
         {% empty %}

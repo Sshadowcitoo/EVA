@@ -54,7 +54,8 @@
 {% endif %}
 {% if servicio %}
 <section class="panel"><h2>Servicio localizado</h2>
-<p class="label-code">{{ servicio.pk }}</p><p>{{ servicio.get_plato_display }} · {{ servicio.get_tipo_porcion_display }}</p>
+<p>{{ servicio.get_plato_display }} · {{ servicio.get_tipo_porcion_display }} · {{ servicio.fecha_creacion|date:"d/m/Y H:i" }}</p>
+{% include "includes/detalles_tecnicos.html" with valor=servicio.pk etiqueta="Servicio" only %}
 <p><strong>{{ servicio.get_estado_captura_display|default:"Histórico sin captura" }}</strong></p>
 {% if servicio.anulado_en %}<dl class="capture-details"><dt>Motivo</dt><dd>{{ servicio.anulado_motivo }}</dd><dt>Responsable</dt><dd>{{ servicio.anulado_por.get_username }}</dd><dt>Fecha</dt><dd>{{ servicio.anulado_en }}</dd></dl>{% endif %}
 {% if asignacion %}<p><strong>Asignación:</strong> {% if asignacion.fin %}Cerrada el {{ asignacion.fin }}{% else %}Abierta desde {{ asignacion.inicio }}{% endif %}</p>{% endif %}
@@ -67,11 +68,12 @@
 {% if bandeja %}
 <section class="panel"><h2>Bandeja {{ bandeja.numero }}</h2>
   <p class="gestion-estado">{% if bandeja.activo %}Activa{% else %}Inactiva{% endif %}</p>
-  {% if etiqueta %}<p>Etiqueta vigente: <code class="label-code">{{ etiqueta.codigo }}</code></p>
+  {% if etiqueta %}<p>Etiqueta vigente</p>
+    {% include "includes/detalles_tecnicos.html" with valor=etiqueta.codigo etiqueta="Etiqueta" only %}
     {% if permite_reemplazar %}
     <img class="label-qr" src="{% url 'captura:qr_etiqueta' etiqueta.pk %}" alt="QR de la bandeja {{ bandeja.numero }}">
     <div class="gestion-acciones"><a class="button primary-button" href="{% url 'captura:qr_etiqueta' etiqueta.pk %}" download="bandeja-{{ bandeja.numero }}.svg">Descargar QR</a>
-    <a class="button secondary-button" href="{% url 'captura:reemplazar_etiqueta' bandeja.pk %}">Reemplazar etiqueta</a></div>
+    </div><details class="eva-secundarias"><summary>Más opciones</summary><a class="button secondary-button" href="{% url 'captura:reemplazar_etiqueta' bandeja.pk %}">Reemplazar etiqueta</a></details>
     {% endif %}
   {% else %}<p class="muted">Esta bandeja no tiene etiqueta vigente.</p>{% endif %}
   {% if etiqueta and permite_reemplazar %}<p class="muted">Imprime el QR junto al número visible y colócalo en el borde de la bandeja. El código no permite iniciar sesión.</p>{% endif %}

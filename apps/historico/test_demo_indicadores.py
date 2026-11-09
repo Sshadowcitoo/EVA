@@ -70,5 +70,5 @@ class DemostracionHTTPTests(TestCase):
             self.assertEqual(self.client.get(url, datos).status_code, 400)
         respuesta = self.client.get(url, {"escenario": "sin_aptos"})
         self.assertContains(respuesta, "Evidencia insuficiente")
-        self.assertNotContains(respuesta, '<svg')
+        self.assertNotContains(respuesta, 'class="eva-trend"')
         self.assertNotContains(respuesta, '<meter')

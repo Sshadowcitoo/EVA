@@ -11,7 +11,7 @@
 
 <div class="panel revision-resumen">
   <p><strong>{{ caso.plato_nombre|default:"Plato sin identificar" }}</strong> · {{ caso.porcion_nombre|default:"Porción sin identificar" }}{% if caso.bandeja_numero %} · Bandeja {{ caso.bandeja_numero }}{% endif %}</p>
-  {% if revision_actual %}<p><strong>Decisión vigente:</strong> {{ revision_actual.get_decision_display|default:revision_actual.decision }}</p>{% endif %}
+  {% if caso.fecha %}<p>{{ caso.fecha|date:"d/m/Y H:i" }}</p>{% endif %}
   {% if decision_url and caso.estado == "COMPLETADO" %}<a href="#rev-decision">Ir al motivo y las decisiones</a>{% endif %}
 </div>
 <div class="revision-grid">
@@ -58,9 +58,19 @@
 <p id="motivo-error" class="error-texto" role="alert" data-motivo-error hidden>Escribe el motivo para continuar.</p>
 
 <div class="revision-botones">
+{% if puede_confirmar %}
     <button class="button" type="submit" name="decision" value="CONFIRMADO" {% if not puede_confirmar %}disabled aria-describedby="confirmar-ayuda"{% endif %}>Confirmar revisión</button>
+{% else %}
+    <button class="button" type="submit" name="decision" value="NO_CONCLUYENTE" data-requiere-motivo>Marcar no concluyente</button>
+{% endif %}
+<details class="eva-secundarias"><summary>Más opciones</summary>
+    {% if puede_confirmar %}
     <button class="button button-secundario" type="submit" name="decision" value="NO_CONCLUYENTE" data-requiere-motivo>Marcar no concluyente</button>
+    {% else %}
+    <button class="button" type="submit" name="decision" value="CONFIRMADO" {% if not puede_confirmar %}disabled aria-describedby="confirmar-ayuda"{% endif %}>Confirmar revisión</button>
+    {% endif %}
     <button class="button button-secundario" type="submit" name="decision" value="RECHAZADO" data-requiere-motivo>Marcar incorrecto</button>
+</details>
 </div>
 
 {% if not puede_confirmar %}
@@ -88,13 +98,15 @@
     <div><dt>Plato</dt><dd>{{ caso.plato_nombre|default:"—" }}</dd></div>
     <div><dt>Porción</dt><dd>{{ caso.porcion_nombre|default:"—" }}</dd></div>
     {% if caso.bandeja_numero %}<div><dt>Bandeja</dt><dd>{{ caso.bandeja_numero }}</dd></div>{% endif %}
-    {% if caso.servicio_id %}<div><dt>Servicio</dt><dd class="analisis-codigo">{{ caso.servicio_id }}</dd></div>{% endif %}
     <div><dt>Estado del análisis</dt><dd>{% include "analisis/_estado.html" with estado=caso.estado %}</dd></div>
     <div><dt>Origen</dt><dd>{% if caso.origen == "SIMULADO" %}<span class="origen-chip origen-simulado">Simulado</span>{% elif caso.origen == "REAL" %}<span class="origen-chip">Real</span>{% else %}—{% endif %}</dd></div>
-    {% if caso.intento_numero %}<div><dt>Intento</dt><dd>{{ caso.intento_numero }}</dd></div>{% endif %}
-    {% if caso.duracion_texto %}<div><dt>Duración</dt><dd>{{ caso.duracion_texto }}</dd></div>{% endif %}
-    <div><dt>Modelo</dt><dd>{{ caso.version_modelo|default:"Sin configurar" }}</dd></div>
 </dl>
+{% include "includes/detalles_tecnicos.html" with valor=caso.servicio_id etiqueta="Servicio" only %}
+<details class="eva-tecnico"><summary>Detalles técnicos · Análisis</summary>
+  <p>Modelo: {{ caso.version_modelo|default:"Sin configurar" }}</p>
+  {% if caso.intento_numero %}<p>Intento {{ caso.intento_numero }}</p>{% endif %}
+  {% if caso.duracion_texto %}<p>Duración {{ caso.duracion_texto }}</p>{% endif %}
+</details>
 </aside>
 
 <aside class="panel revision-vigente" aria-labelledby="rev-vigente">
@@ -106,7 +118,7 @@
     {% elif revision_actual.decision == "NO_CONCLUYENTE" %}<span class="estado-chip estado-aviso">Marcada como no concluyente</span>
     {% else %}<span class="estado-chip estado-neutro">Sin estado</span>{% endif %}
     </p>
-    <p class="muted">Decisión vigente: {{ revision_actual.decision }} · {{ revision_actual.autor }} · {{ revision_actual.fecha }}</p>
+    <p class="muted">Decisión vigente · {{ revision_actual.autor }} · {{ revision_actual.fecha }}</p>
     {% if revision_actual.motivo %}<p>Motivo: {{ revision_actual.motivo }}</p>{% endif %}
 {% else %}
     <p><span class="estado-chip estado-proceso">Por revisar</span></p>

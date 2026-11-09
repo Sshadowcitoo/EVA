@@ -34,8 +34,9 @@ class ListaAnalisisTests(SimpleTestCase):
         html = render_to_string("analisis/lista.html", {"casos": casos})
         self.assertIn(">Bandeja<", html)
         self.assertNotIn(">Registro<", html)
-        self.assertIn("Servicio 7c9e6679", html)
-        self.assertIn('title="Servicio 7c9e6679-7425-40de-944b-e07fc1f90ae7"', html)
+        self.assertNotIn("Servicio 7c9e6679", html)
+        self.assertIn('<summary>Detalles técnicos · Servicio</summary>', html)
+        self.assertIn('<code data-valor-tecnico>7c9e6679-7425-40de-944b-e07fc1f90ae7</code>', html)
 
     def test_accion_solo_si_hay_ruta_de_detalle(self):
         html = render_to_string("analisis/lista.html", {"casos": CASOS})

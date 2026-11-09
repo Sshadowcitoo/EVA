@@ -41,7 +41,7 @@
             <td data-label="Plato">
               <div>
                 <strong>{{ plato.nombre }}</strong>
-                <small>{{ plato.codigo }}</small>
+                {% include "includes/detalles_tecnicos.html" with valor=plato.codigo etiqueta="Código de catálogo" only %}
               </div>
             </td>
             <td data-label="Estado">
@@ -56,12 +56,14 @@
               {% else %}
                 —
               {% endif %}
+              <details class="eva-secundarias"><summary>Más opciones</summary>
               <form method="post" action="{% url 'catalogo:plato_estado' plato.pk %}">
                 {% csrf_token %}
                 <button type="submit" class="button secondary-button">
                   {% if plato.activo %}Desactivar{% else %}Activar{% endif %}
                 </button>
               </form>
+              </details>
             </div></td>
           </tr>
         {% empty %}

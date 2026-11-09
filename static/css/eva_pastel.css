@@ -244,3 +244,14 @@
 .eva-mascot-feedback[hidden] { display: none; }
 .eva-mascot-feedback { display: flow-root; margin-block: 12px; }
 @media (max-width: 800px) { .eva-mascot-state { width: 64px; height: 96px; margin-left: 12px; } }
+
+.eva-tecnico, .eva-secundarias { margin-block: .5rem; min-width: 0; }
+.eva-tecnico summary, .eva-secundarias summary {
+  cursor: pointer;
+  color: var(--eva-action);
+  font-weight: 600;
+  padding-block: .55rem;
+}
+.eva-tecnico code { display: block; overflow-wrap: anywhere; user-select: all; }
+.eva-tecnico button[hidden] { display: none; }
+.eva-tecnico [data-estado-copia] { display: block; font-size: .875rem; }

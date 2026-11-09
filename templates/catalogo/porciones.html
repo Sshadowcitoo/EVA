@@ -35,7 +35,7 @@
             <td data-label="Tipo de porción">
               <div>
                 <strong>{{ porcion.nombre }}</strong>
-                <small>{{ porcion.codigo }}</small>
+                {% include "includes/detalles_tecnicos.html" with valor=porcion.codigo etiqueta="Código de catálogo" only %}
               </div>
             </td>
             <td data-label="Estado">
@@ -43,12 +43,14 @@
             </td>
             <td data-label="Acción"><div class="catalog-acciones">
               <a href="{% url 'catalogo:porcion_editar' porcion.pk %}">Editar</a>
+              <details class="eva-secundarias"><summary>Más opciones</summary>
               <form method="post" action="{% url 'catalogo:porcion_estado' porcion.pk %}">
                 {% csrf_token %}
                 <button type="submit" class="button secondary-button">
                   {% if porcion.activo %}Desactivar{% else %}Activar{% endif %}
                 </button>
               </form>
+              </details>
             </div></td>
           </tr>
         {% empty %}

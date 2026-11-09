@@ -53,7 +53,8 @@
     <tbody>
       {% for caso in casos %}
         <tr>
-          <td data-label="Bandeja">{{ caso.bandeja_numero|default:"—" }}{% if caso.servicio_id %}<small title="Servicio {{ caso.servicio_id }}">Servicio {{ caso.servicio_id|slice:":8" }}</small>{% endif %}</td>
+          <td data-label="Bandeja">{{ caso.bandeja_numero|default:"—" }}{% if caso.fecha %}<small>{{ caso.fecha|date:"d/m/Y H:i" }}</small>{% endif %}
+            {% include "includes/detalles_tecnicos.html" with valor=caso.servicio_id etiqueta="Servicio" only %}</td>
           <td data-label="Plato">
             <div>
               <strong>{{ caso.plato_nombre }}</strong>

@@ -58,7 +58,7 @@ def lista(request, solo_revision=False):
             datos['detalle_url'] = reverse('analisis:revision_detalle' if intento and intento.estado == 'COMPLETADO' else 'analisis:detalle', args=[analisis.pk])
         else:
             datos = dict(plato_nombre=servicio.get_plato_display(), porcion_nombre=servicio.get_tipo_porcion_display(),
-                         servicio_id=str(servicio.pk), estado='', detalle_url=reverse('analisis:par', args=[servicio.pk]))
+                         servicio_id=str(servicio.pk), fecha=servicio.fecha_creacion, estado='', detalle_url=reverse('analisis:par', args=[servicio.pk]))
         casos.append(datos)
     nulos = alcance.filter(origen='REAL', intento_vigente__resultados__estado='NO_CONCLUYENTE').values('servicio_id').distinct().count()
     resumen = dict(no_concluyentes=nulos, por_revisar=pendientes.filter(origen='REAL').values('servicio_id').distinct().count())

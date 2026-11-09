@@ -22,7 +22,7 @@
 {% csrf_token %}{% include 'recomendaciones/_campos.html' with formulario=decision_form %}
 <button type="submit" class="button"{% if bloqueado or not caso.capacidades.puede_decidir %} disabled{% endif %}>Guardar decisión con justificación</button><p data-envio role="status"></p>
 </form>{% endif %}{% endif %}
-<h3>Historial de decisiones</h3><ol>{% for decision in historial_visible %}<li><strong>{{ decision.decision_visible }}</strong> · {{ decision.autor_visible }} · {{ decision.fecha|date:'d/m/Y H:i' }} · v{{ decision.version }}<p>{{ decision.justificacion }}</p>{% if decision.sustituye_id %}<small>Sustituye {{ decision.sustituye_id }}</small>{% endif %}</li>{% empty %}<li>Aún no hay decisiones.</li>{% endfor %}</ol>
+<h3>Historial de decisiones</h3><ol>{% for decision in historial_visible %}<li><strong>{{ decision.decision_visible }}</strong> · {{ decision.autor_visible }} · {{ decision.fecha|date:'d/m/Y H:i' }} · v{{ decision.version }}<p>{{ decision.justificacion }}</p>{% if decision.sustituye_id %}{% include "includes/detalles_tecnicos.html" with valor=decision.sustituye_id etiqueta="Decisión sustituida" only %}{% endif %}</li>{% empty %}<li>Aún no hay decisiones.</li>{% endfor %}</ol>
 </section>
 <section class="panel"><h2 id="rec-pruebas">Pruebas controladas</h2>
 <ul>{% for prueba in caso.pruebas %}<li><a href="{% url 'recomendaciones:prueba' prueba_id=prueba.id %}">{{ prueba.estado }} · {{ prueba.cambio }}</a><p>{{ prueba.responsable_nombre }} · {{ prueba.registrada_en|date:'d/m/Y H:i' }} · v{{ prueba.version }}</p></li>{% empty %}<li>No hay pruebas registradas.</li>{% endfor %}</ul>

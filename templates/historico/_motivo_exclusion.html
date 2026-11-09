@@ -1,4 +1,5 @@
-<span title="{{ motivo }}">{% if motivo == 'ANULADO' %}Servicio anulado
+{% if motivo == motivo|upper and " " not in motivo %}
+<span>{% if motivo == 'ANULADO' %}Servicio anulado
 {% elif motivo == 'SIN_FECHA_SERVIDO' %}Sin fecha de servido
 {% elif motivo == 'PAR_INCOMPLETO' %}Par de fotografías incompleto
 {% elif motivo == 'SIN_ANALISIS' %}Sin análisis
@@ -9,4 +10,8 @@
 {% elif motivo == 'REVISION_NO_CONFIRMADA' %}Revisión sin confirmar
 {% elif motivo == 'COMPONENTES_INVALIDOS' %}Componentes incompatibles
 {% elif motivo == 'CRITERIOS_INVALIDOS' %}Evidencia fuera de criterios
-{% else %}{{ motivo }}{% endif %}</span>
+{% elif motivo == 'SIN_CONTEXTO_HISTORICO' %}Falta contexto para comparar este grupo
+{% elif motivo == 'SIN_REGISTROS_APTOS' %}No hay registros aptos para calcular este indicador
+{% else %}El resultado no cumple las condiciones de la consulta{% endif %}</span>
+{% include "includes/detalles_tecnicos.html" with valor=motivo etiqueta="Motivo de exclusión" only %}
+{% else %}{{ motivo }}{% endif %}

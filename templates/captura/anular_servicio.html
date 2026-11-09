@@ -3,7 +3,8 @@
 {% block heading %}Anular servicio{% endblock %}
 {% block subtitle %}La anulación libera la bandeja y conserva las fotos y el historial.{% endblock %}
 {% block gestion_content %}
-<section class="panel capture-operation"><h2>{{ servicio.get_plato_display }}</h2><p class="label-code">Servicio {{ servicio.pk }}</p>
+<section class="panel capture-operation"><h2>{{ servicio.get_plato_display }}</h2><p>{{ servicio.fecha_creacion|date:"d/m/Y H:i" }}</p>
+{% include "includes/detalles_tecnicos.html" with valor=servicio.pk etiqueta="Servicio" only %}
 {% if permitida %}<p class="info-box">Después de anular, este servicio no aceptará nuevas fotografías ni enlaces de captura.</p><form method="post">{% csrf_token %}{% if form.errors %}<p class="error-summary" role="alert">Revisa el motivo y la confirmación antes de continuar.</p>{% endif %}
 {{ form.as_p }}<div class="gestion-acciones"><button class="button danger-button">Confirmar anulación</button>
 <a class="button secondary-button" href="{% url 'captura:gestion' %}?servicio={{ servicio.pk }}">Volver sin cambios</a>

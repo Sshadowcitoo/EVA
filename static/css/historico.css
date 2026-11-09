@@ -64,3 +64,17 @@
   .historico-ayuda-tabla { display: block; }
   .historico-percepcion button { width: 100%; }
 }
+
+.historico-servicio {
+  margin-block: .7rem;
+  padding: .8rem 1rem;
+  border: 1px solid var(--eva-border);
+  border-radius: .75rem;
+  background: var(--eva-surface);
+}
+.historico-servicio > summary { cursor: pointer; min-height: 44px; }
+.historico-servicio > summary :is(span, small) { display: block; color: var(--eva-muted); }
+.historico-componentes { list-style: none; padding: 0; }
+.historico-componentes li { border-top: 1px solid var(--eva-border); padding: .75rem 0; }
+.historico-componentes li > strong { display: block; }
+.historico-vacio { border: 1px dashed var(--eva-border); padding: 1rem; border-radius: .75rem; }

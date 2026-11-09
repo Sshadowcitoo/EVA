@@ -4,7 +4,8 @@
 <section class="panel analisis-solicitud" aria-labelledby="solicitud-plato">
 <p class="muted"><a href="{% url 'analisis:lista' %}">← Volver a la lista de análisis</a></p>
 <h2 id="solicitud-plato">{{ servicio.get_plato_display }}</h2>
-<p>{{ servicio.get_tipo_porcion_display }} · Servicio {{ servicio.pk }}</p>
+<p>{{ servicio.get_tipo_porcion_display }} · {{ servicio.fecha_creacion|date:"d/m/Y H:i" }}</p>
+{% include "includes/detalles_tecnicos.html" with valor=servicio.pk etiqueta="Servicio" only %}
 <p>Solo se procesan pares completos con fotografías disponibles y protocolo confirmado. El análisis se ejecuta en segundo plano.</p>
 {% if not error %}<form method="post" action="{% url 'analisis:solicitar' servicio.pk %}">{% csrf_token %}
 <button type="submit" class="button">Solicitar análisis</button>

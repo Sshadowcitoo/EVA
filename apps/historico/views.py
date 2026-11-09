@@ -1,4 +1,6 @@
 """Adaptación HTTP del histórico. Los servicios conservan las reglas de negocio."""
+from uuid import UUID
+
 from django import forms
 from django.contrib import messages
 from django.core.exceptions import ValidationError
@@ -6,6 +8,7 @@ from django.http import Http404
 from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.views.decorators.http import require_GET, require_http_methods
+from apps.captura.models import AsignacionBandeja, Servicio
 from apps.catalogo.permissions import ADMINISTRACION, COCINA, REGISTRO, roles_required
 from . import services
 from .contracts import BackendHistoricoNoDisponible, ConflictoPercepcion, FiltrosInvalidos, ServicioNoDisponible
@@ -25,6 +28,29 @@ def _enlaces_pagina(request, datos):
             query['page'] = pagina
             enlaces[nombre] = '?' + query.urlencode()
     return enlaces
+
+
+def _servicios_presentados(datos, *, demostracion=False):
+    """Agrupa solo la página visible, sin volver a calcular ni paginar resultados."""
+    servicios = {}
+    for fila in datos['filas']:
+        grupo = servicios.setdefault(fila['servicio_id'], {'identidad': fila, 'componentes': []})
+        grupo['componentes'].append(fila)
+    if demostracion or not servicios:
+        return servicios.values()
+
+    por_uuid = {}
+    for identificador in servicios:
+        try:
+            por_uuid[UUID(str(identificador))] = servicios[identificador]
+        except ValueError:
+            continue
+    asignaciones = AsignacionBandeja.objects.filter(servicio_id__in=por_uuid).order_by(
+        'servicio_id', '-inicio', '-pk'
+    ).values_list('servicio_id', 'bandeja__numero')
+    for servicio_id, numero in asignaciones:
+        por_uuid[servicio_id].setdefault('bandeja', numero)
+    return servicios.values()
 
 
 @roles_required(COCINA, ADMINISTRACION)
@@ -52,6 +78,7 @@ def lista(request):
         else:
             status = 400
     return render(request, 'historico/lista.html', dict(form=form, datos=datos, panel=panel, enlaces=enlaces, error=error,
+        servicios_presentados=_servicios_presentados(datos) if datos else (),
         filtros_panel=[(k, v) for k, v in request.GET.items() if k in form.fields and k != 'page']), status=status)
 
 
@@ -119,7 +146,8 @@ def percepcion(request, servicio_id):
                 status = 400
         else:
             status = 400
-    return render(request, 'historico/percepcion.html', dict(form=form, actual=actual, servicio_id=servicio_id, error=error, conflicto=conflicto, bloqueado=bool(error)), status=status)
+    return render(request, 'historico/percepcion.html', dict(form=form, actual=actual, servicio_id=servicio_id, error=error, conflicto=conflicto, bloqueado=bool(error),
+        servicio=Servicio.objects.filter(pk=servicio_id).first() if actual else None), status=status)
 
 
 @roles_required(COCINA, ADMINISTRACION)
@@ -136,6 +164,6 @@ def demostracion(request):
         return render(request, "historico/demostracion.html", dict(error=" ".join(exc.messages),
             es_demostracion=True, escenario=escenario), status=400)
     datos, panel = construir(escenario, request.GET.get("grupo", ""), pagina)
-    return render(request, "historico/demostracion.html", dict(datos=datos, panel=panel,
+    return render(request, "historico/demostracion.html", dict(datos=datos, panel=panel, servicios_presentados=_servicios_presentados(datos, demostracion=True),
         es_demostracion=True, escenario=escenario, filtros_panel=[("escenario", escenario)],
         enlaces=_enlaces_pagina(request, datos), recomendaciones_url=reverse("recomendaciones:demo")))

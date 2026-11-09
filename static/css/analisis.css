@@ -132,3 +132,6 @@
   .analisis-vistas + .analisis-resumen .analisis-tarjeta { min-width: 0; padding: 12px; }
   .analisis-vistas + .analisis-resumen .analisis-tarjeta:last-child { grid-column: 1 / -1; }
 }
+
+.revision-botones .eva-secundarias { flex-basis: 100%; }
+.revision-botones .eva-secundarias button { margin: .3rem .4rem .3rem 0; }

@@ -21,7 +21,7 @@ Uso: {% include "analisis/_tabla_resultados.html" with titulo_id="hallazgos" %} 
         <td data-label="Estado"><div class="analisis-celda">
         {% if resultado.estado == "NO_CONCLUYENTE" or resultado.motivo %}
             <span class="estado-chip estado-aviso">No concluyente</span>
-            {% include "analisis/_motivo.html" with motivo=resultado.motivo %}
+            {% include "analisis/_motivo.html" with motivo=resultado.motivo componente=resultado.componente %}
         {% elif resultado.estado == "CONCLUYENTE" %}
             <span class="estado-chip estado-completado">Concluyente</span>
         {% else %}

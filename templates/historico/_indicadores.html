@@ -3,4 +3,4 @@
 <article><h3>Intensidad</h3><strong>{% if indicadores.intensidad is not None %}{{ indicadores.intensidad|floatformat:2 }} %{% else %}No disponible{% endif %}</strong><p>Promedio por servicio, incluidos ceros confirmados.</p></article>
 <article><h3>Muestra del grupo</h3><strong>n = {{ indicadores.n }}</strong><p>t: {% if indicadores.t is not None %}{{ indicadores.t|floatformat:2 }} puntos porcentuales{% else %}Pendiente de aprobación{% endif %}<br>Versión: {{ indicadores.version_criterio|default_if_none:"No disponible" }}</p></article>
 </div>
-{% if indicadores.motivos_no_disponible %}<ul class="historico-motivos" aria-label="Motivos de indicadores no disponibles">{% for motivo in indicadores.motivos_no_disponible %}<li>{{ motivo }}</li>{% endfor %}</ul>{% endif %}
+{% if indicadores.motivos_no_disponible %}<ul class="historico-motivos" aria-label="Motivos de indicadores no disponibles">{% for motivo in indicadores.motivos_no_disponible %}<li>{% include 'historico/_motivo_exclusion.html' with motivo=motivo only %}</li>{% endfor %}</ul>{% endif %}

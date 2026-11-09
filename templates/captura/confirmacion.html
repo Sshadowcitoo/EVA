@@ -8,11 +8,6 @@ de la bandeja quedaron guardados.{% endblock %} {% block content %}
 
   <dl class="record-details">
     <div>
-      <dt>ID del servicio</dt>
-      <dd class="record-id">{{ servicio.id }}</dd>
-    </div>
-
-    <div>
       <dt>Plato</dt>
       <dd>{{ servicio.get_plato_display }}</dd>
     </div>
@@ -29,9 +24,12 @@ de la bandeja quedaron guardados.{% endblock %} {% block content %}
   </dl>
   <p><a class="button primary-button" href="{% url 'captura:resolver_bandeja' %}">Iniciar captura con bandeja</a></p>
 
+  <details class="eva-secundarias"><summary>Más opciones</summary>
   <a class="button secondary-button" href="{% url 'captura:nueva_bandeja' %}">
     Crear otro registro
   </a>
+  {% include 'includes/detalles_tecnicos.html' with valor=servicio.id etiqueta='Servicio' only %}
+  </details>
   {% include 'captura/_contexto_servicio.html' %}
 
   <div class="info-box">

@@ -7,7 +7,7 @@ def contexto(analisis, intento):
     servicio = analisis.servicio
     asignacion = servicio.asignaciones.select_related('bandeja').order_by('-inicio').first()
     caso = dict(plato_nombre=servicio.get_plato_display(), porcion_nombre=servicio.get_tipo_porcion_display(),
-                servicio_id=str(servicio.pk), estado=intento.estado if intento else 'PENDIENTE',
+                servicio_id=str(servicio.pk), fecha=analisis.foto_servido.fecha, estado=intento.estado if intento else 'PENDIENTE',
                 origen=analisis.origen, version_modelo=analisis.version_modelo,
                 bandeja_numero=asignacion.bandeja.numero if asignacion else None,
                 intento_numero=intento.numero if intento else None,

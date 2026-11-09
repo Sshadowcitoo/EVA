@@ -1,4 +1,5 @@
-{% for grupo in datos.grupos %}<section class="panel"><h2>Grupo: {{ grupo.plato_codigo }} / {{ grupo.componente_codigo }} / {{ grupo.porcion_codigo }}</h2>
-<p class="muted">Contexto: {{ grupo.contexto_clave|default_if_none:"No disponible" }} · Modelo: {{ grupo.version_modelo }} · Configuración: {{ grupo.version_configuracion }} · Protocolo: {{ grupo.protocolo_version }}</p>
-{% if not grupo.comparable %}<p class="historico-aviso">Grupo no comparable.</p>{% endif %}{% for motivo in grupo.motivos %}<p>{{ motivo }}</p>{% endfor %}
+{% for grupo in datos.grupos %}<section class="panel"><h2>Grupo {{ forloop.counter }}</h2>
+<details class="eva-tecnico"><summary>Detalles técnicos · Grupo</summary><p>{{ grupo.plato_codigo }} / {{ grupo.componente_codigo }} / {{ grupo.porcion_codigo }}</p>
+<p class="muted">Contexto: {{ grupo.contexto_clave|default_if_none:"No disponible" }} · Modelo: {{ grupo.version_modelo }} · Configuración: {{ grupo.version_configuracion }} · Protocolo: {{ grupo.protocolo_version }}</p></details>
+{% if not grupo.comparable %}<p class="historico-aviso">Grupo no comparable.</p>{% endif %}{% for motivo in grupo.motivos %}<p>{% include 'historico/_motivo_exclusion.html' with motivo=motivo only %}</p>{% endfor %}
 {% include 'historico/_indicadores.html' with indicadores=grupo.indicadores %}</section>{% endfor %}

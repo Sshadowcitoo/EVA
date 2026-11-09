@@ -6,34 +6,38 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Acceso | EVA</title>
     <link rel="stylesheet" href="{% static 'css/eva.css' %}" />
-    <link rel="stylesheet" href="{% static 'css/eva_pastel.css' %}?v=20261109-amarillo-crema" />
-    <link rel="stylesheet" href="{% static 'css/acceso.css' %}?v=20261109-mascotas" />
+    <link rel="stylesheet" href="{% static 'css/eva_pastel.css' %}?v=20261109-claridad" />
+    <link rel="stylesheet" href="{% static 'css/acceso.css' %}?v=20261109-claridad" />
 </head>
 
 <body class="login-page eva-pastel">
     <main class="login-layout">
-    <section class="login-presentation">
+    <section class="login-presentation" aria-labelledby="bienvenida-eva">
         <span class="login-brand">EVA</span>
-        <div>
-        <h1>Menos desperdicio.<br /> Mejores decisiones.</h1>
-        <p>
-            Compara el plato servido con el retorno y convierte la evidencia
-            visual en una revisión útil.
-        </p>
+        <div class="login-bienvenida">
+            <h1 id="bienvenida-eva">Cada porción cuenta</h1>
+            <p>Observa qué vuelve del plato y toma mejores decisiones para reducir el desperdicio.</p>
+        </div>
+        <div class="login-ilustracion" aria-hidden="true">
+            <svg viewBox="0 0 330 240" fill="none" focusable="false">
+                <ellipse cx="165" cy="126" rx="126" ry="99" />
+                <ellipse cx="165" cy="126" rx="106" ry="81" stroke-dasharray="4 8" />
+                <path d="M46 160c-20-8-31-25-31-46 22 5 36 17 38 37m224 2c20-6 31-23 34-41-22 3-36 14-41 34M50 55c-3-12 2-22 13-30 5 14 2 24-9 34m222 10c5-15 15-21 30-21-3 16-12 24-28 26" />
+            </svg>
+            <img class="login-mascot" src="{% if form.non_field_errors %}{% static 'img/eva-mascota-alerta.png' %}{% else %}{% static 'img/eva-mascota-bienvenida.png' %}{% endif %}" alt="" width="392" height="560" />
         </div>
     </section>
 
-    <section class="login-access">
+    <section class="login-access" aria-labelledby="iniciar-sesion">
         <form class="login-card" method="post">
         {% csrf_token %}
         <input type="hidden" name="next" value="{{ next }}" />
 
         <div class="login-intro">
             <div>
-                <h2>Iniciar sesión</h2>
+                <h2 id="iniciar-sesion">Iniciar sesión</h2>
                 <p>Ingresa con las credenciales asignadas a tu rol.</p>
             </div>
-        <img class="login-mascot" src="{% if form.non_field_errors %}{% static 'img/eva-mascota-alerta.png' %}{% else %}{% static 'img/eva-mascota-bienvenida.png' %}{% endif %}" alt="" width="392" height="560" />
         </div>
 
         {% if form.non_field_errors %}

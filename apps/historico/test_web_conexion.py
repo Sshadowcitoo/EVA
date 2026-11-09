@@ -70,6 +70,19 @@ class ConexionHistoricoTests(TestCase):
         self.assertEqual(response.context['datos']['indicadores']['n'], 3)
         self.assertContains(response, 'RECHAZADO')
 
+    def test_presentacion_agrupa_componentes_sin_cambiar_filas_ni_totales(self):
+        servicio, _ = self.caso(0)
+        self.client.force_login(self.cocina)
+        respuesta = self.client.get('/historico/')
+        self.assertEqual(respuesta.status_code, 200)
+        datos = respuesta.context['datos']
+        presentados = list(respuesta.context['servicios_presentados'])
+        self.assertEqual(len(presentados), 1)
+        self.assertEqual(presentados[0]['identidad']['servicio_id'], str(servicio.pk))
+        self.assertEqual(presentados[0]['componentes'], datos['filas'])
+        self.assertEqual(datos['paginacion']['total_filas'], len(datos['filas']))
+        self.assertContains(respuesta, '0,00 % de sobrante visual')
+
     def test_percepcion_guarda_reenvia_y_rechaza_version_obsoleta(self):
         from .models import PercepcionServicio
         servicio, _ = self.caso(25)

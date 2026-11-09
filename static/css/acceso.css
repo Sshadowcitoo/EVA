@@ -1,32 +1,58 @@
 .eva-pastel .login-layout {
-  grid-template-columns: minmax(0, 45fr) minmax(0, 55fr);
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
 }
-
 .eva-pastel .login-presentation {
-  justify-content: flex-start;
-  gap: clamp(4rem, 18vh, 12rem);
+  display: grid;
+  align-content: center;
+  justify-content: stretch;
+  gap: 16px;
   padding: clamp(32px, 5vw, 72px);
 }
-
+.eva-pastel .login-bienvenida h1 {
+  max-width: 16ch;
+  margin: 0 0 10px;
+  font-size: clamp(2rem, 4vw, 3.7rem);
+}
+.login-ilustracion {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  align-items: center;
+  width: min(100%, 430px);
+  min-height: 270px;
+}
+.login-ilustracion svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  stroke: var(--eva-action);
+  opacity: .35;
+  stroke-width: 1.6;
+}
+.eva-pastel .login-ilustracion .login-mascot {
+  position: relative;
+  height: clamp(230px, 33vh, 320px);
+  width: auto;
+  max-width: 100%;
+  object-fit: contain;
+  margin: 0;
+}
 .eva-pastel .login-card { width: min(100%, 530px); }
 .login-intro { margin-bottom: 20px; }
 .login-intro p { color: var(--eva-muted); margin: 0; }
-.login-intro { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
-.login-intro > div { min-width: 0; }
-.login-intro .login-mascot { display: block; flex: 0 0 auto; width: auto; height: 132px; max-width: 30%; object-fit: contain; margin: 0; }
 .login-card .primary-button { min-height: 44px; }
 
 @media (max-width: 800px) {
   .eva-pastel .login-layout { grid-template-columns: minmax(0, 1fr); }
-  .eva-pastel .login-presentation { gap: 8px; padding: 20px 24px; }
-  .eva-pastel .login-presentation h1 { margin: 0 0 8px; }
-  .login-presentation h1 br { display: none; }
-  .login-intro { display: flex; align-items: center; gap: 12px; }
-  .login-intro .login-mascot {
-    display: block;
-    flex: 0 0 auto;
-    margin: 0;
-    width: auto;
-    height: 88px;
+  .eva-pastel .login-presentation {
+    grid-template-columns: minmax(0, 1fr) 105px;
+    gap: 4px 12px;
+    padding: 16px 20px;
   }
+  .login-brand { grid-column: 1 / -1; font-size: 1.25rem; }
+  .eva-pastel .login-bienvenida h1 { font-size: 1.6rem; }
+  .eva-pastel .login-bienvenida p { font-size: .875rem; }
+  .login-ilustracion { min-height: 100px; }
+  .eva-pastel .login-ilustracion .login-mascot { height: 108px; }
 }

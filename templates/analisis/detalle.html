@@ -10,15 +10,18 @@
 <section class="panel analisis-resumen-caso" aria-labelledby="caso-titulo">
 <h2 id="caso-titulo">{{ caso.plato_nombre }}</h2>
 <p class="muted">{{ caso.porcion_nombre }}{% if caso.bandeja_numero %} · Bandeja {{ caso.bandeja_numero }}{% endif %}</p>
-{% if caso.servicio_id %}<p class="analisis-servicio">Servicio <code>{{ caso.servicio_id }}</code></p>{% endif %}
+{% if caso.fecha %}<p>{{ caso.fecha|date:"d/m/Y H:i" }}</p>{% endif %}
+{% include "includes/detalles_tecnicos.html" with valor=caso.servicio_id etiqueta="Servicio" only %}
 <div class="analisis-estado">
 {% include "analisis/_estado.html" with estado=caso.estado %}
 {% if caso.origen == "SIMULADO" %}<span class="origen-chip origen-simulado">Simulado</span>
 {% elif caso.origen == "REAL" %}<span class="origen-chip">Real</span>{% endif %}
-{% if caso.intento_numero %}<span class="origen-chip">Intento {{ caso.intento_numero }}</span>{% endif %}
-{% if caso.duracion_texto %}<span class="origen-chip">Duración {{ caso.duracion_texto }}</span>{% endif %}
 </div>
-<p class="analisis-modelo">Modelo: {{ caso.version_modelo|default:"Sin configurar" }}</p>
+<details class="eva-tecnico"><summary>Detalles técnicos · Análisis</summary>
+  <p>Modelo: {{ caso.version_modelo|default:"Sin configurar" }}</p>
+  {% if caso.intento_numero %}<p>Intento {{ caso.intento_numero }}</p>{% endif %}
+  {% if caso.duracion_texto %}<p>Duración {{ caso.duracion_texto }}</p>{% endif %}
+</details>
 {% if caso.origen == 'SIMULADO' %}
 <p class="info-box">SIMULADO: prueba del flujo. No válido para indicadores.</p>
 {% endif %}

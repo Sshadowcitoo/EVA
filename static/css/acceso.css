@@ -1,0 +1,30 @@
+.eva-pastel .login-layout {
+  grid-template-columns: minmax(0, 45fr) minmax(0, 55fr);
+}
+
+.eva-pastel .login-presentation {
+  justify-content: flex-start;
+  gap: clamp(4rem, 18vh, 12rem);
+  padding: clamp(32px, 5vw, 72px);
+}
+
+.eva-pastel .login-card { width: min(100%, 530px); }
+.login-intro { margin-bottom: 20px; }
+.login-intro p { color: var(--eva-muted); margin: 0; }
+.login-intro .login-mascot { display: none; }
+.login-card .primary-button { min-height: 44px; }
+
+@media (max-width: 800px) {
+  .eva-pastel .login-layout { grid-template-columns: minmax(0, 1fr); }
+  .eva-pastel .login-presentation { gap: 8px; padding: 20px 24px; }
+  .eva-pastel .login-presentation h1 { margin: 0 0 8px; }
+  .login-presentation h1 br { display: none; }
+  .login-intro { display: flex; align-items: center; gap: 12px; }
+  .login-intro .login-mascot {
+    display: block;
+    flex: 0 0 auto;
+    margin: 0;
+    width: auto;
+    height: 56px;
+  }
+}

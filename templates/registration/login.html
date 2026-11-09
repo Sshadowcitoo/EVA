@@ -7,15 +7,15 @@
     <title>Acceso | EVA</title>
     <link rel="stylesheet" href="{% static 'css/eva.css' %}" />
     <link rel="stylesheet" href="{% static 'css/eva_pastel.css' %}?v=20261106-global" />
+    <link rel="stylesheet" href="{% static 'css/acceso.css' %}" />
 </head>
 
 <body class="login-page eva-pastel">
     <main class="login-layout">
     <section class="login-presentation">
         <span class="login-brand">EVA</span>
-        <img class="login-mascot" src="{% static 'img/eva-mascota-bienvenida.png' %}" alt="" width="392" height="560" />
         <div>
-        <h1>Menos desperdicio.<br />Mejores decisiones.</h1>
+        <h1>Menos desperdicio.<br /> Mejores decisiones.</h1>
         <p>
             Compara el plato servido con el retorno y convierte la evidencia
             visual en una revisión útil.
@@ -28,8 +28,13 @@
         {% csrf_token %}
         <input type="hidden" name="next" value="{{ next }}" />
 
-        <h2>Iniciar sesión</h2>
-        <p>Ingresa con las credenciales asignadas a tu rol.</p>
+        <div class="login-intro">
+            <div>
+                <h2>Iniciar sesión</h2>
+                <p>Ingresa con las credenciales asignadas a tu rol.</p>
+            </div>
+        <img class="login-mascot" src="{% static 'img/eva-mascota-bienvenida.png' %}" alt="" width="392" height="560" />
+        </div>
 
         {% if form.non_field_errors %}
             <div class="error-summary" role="alert">

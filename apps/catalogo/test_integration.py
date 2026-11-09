@@ -176,6 +176,14 @@ class BloqueIntegradoTests(TestCase):
         self.client.force_login(self.usuarios["registro"])
         self.assertEqual(self.client.get(reverse("cuentas:cocina_pendiente")).status_code, 403)
 
+    def test_acceso_denegado_conserva_el_menu_permitido(self):
+        self.client.force_login(self.usuarios["registro"])
+        respuesta = self.client.get(reverse("catalogo:platos"))
+        retorno = reverse("captura:buscar_retorno")
+        self.assertContains(respuesta, f'href="{retorno}"', status_code=403)
+        self.assertNotContains(respuesta, 'href="/catalogo/platos/"', status_code=403)
+        self.assertNotContains(respuesta, 'class="nav-link unavailable"', status_code=403)
+
     def test_catalogo_rechaza_cambio_sin_csrf(self):
         client = Client(enforce_csrf_checks=True)
         client.force_login(self.usuarios["administracion"])

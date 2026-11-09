@@ -1,13 +1,14 @@
 /* Sistema visual compartido. Los colores de máscaras y estados conservan su semántica. */
 .eva-pastel {
-  --eva-canvas: #edf5ef;
-  --eva-surface: #f7fbf7;
-  --eva-emphasis: #e4f0e7;
-  --eva-border: #cfdfd3;
-  --eva-ink: #162d23;
-  --eva-muted: #486052;
-  --eva-action: #246045;
-  --eva-action-hover: #194b34;
+  --eva-canvas: #fff1bb;
+  --eva-surface: #fffaf0;
+  --eva-emphasis: #ffe49a;
+  --eva-border: #dfce97;
+  --eva-ink: #3d321d;
+  --eva-muted: #6c6045;
+  --eva-action: #735317;
+  --eva-action-hover: #59400f;
+  --eva-chart: #246045;
   --eva-warning-bg: #fff4df;
   --eva-warning: #6e4b12;
   --eva-error-bg: #faeceb;
@@ -45,7 +46,7 @@
 .eva-pastel .historico :is(input, select, textarea) {
   color: var(--eva-ink);
   background: var(--eva-surface);
-  border-color: #7d9b86;
+  border-color: #97825b;
 }
 
 .eva-pastel .historico-aviso { background: var(--eva-warning-bg); color: var(--eva-warning); }
@@ -102,8 +103,8 @@
 .eva-bar-label { display: flex; justify-content: space-between; gap: 12px; font-size: 13px; overflow-wrap: anywhere; }
 .eva-bar meter { width: 100%; height: 12px; display: block; margin-top: 4px; }
 .eva-bar meter::-webkit-meter-bar { background: var(--eva-emphasis); border: 0; }
-.eva-bar meter::-webkit-meter-optimum-value { background: var(--eva-action); }
-.eva-bar meter::-moz-meter-bar { background: var(--eva-action); }
+.eva-bar meter::-webkit-meter-optimum-value { background: var(--eva-chart); }
+.eva-bar meter::-moz-meter-bar { background: var(--eva-chart); }
 
 @media (min-width: 1000px) {
   .eva-indicadores .app-layout { grid-template-columns: 240px minmax(0, 1fr); }
@@ -133,9 +134,9 @@
 .eva-trend { width: 100%; max-height: 200px; }
 .eva-trend text { fill: var(--eva-muted); font-size: 12px; }
 .eva-trend-grid { stroke: var(--eva-border); }
-.eva-trend-line { stroke: var(--eva-action); stroke-width: 2.5; }
-.eva-trend-point { fill: var(--eva-action); }
-.eva-trend-partial { fill: var(--eva-surface); stroke: var(--eva-action); stroke-width: 2; }
+.eva-trend-line { stroke: var(--eva-chart); stroke-width: 2.5; }
+.eva-trend-point { fill: var(--eva-chart); }
+.eva-trend-partial { fill: var(--eva-surface); stroke: var(--eva-chart); stroke-width: 2; }
 .eva-indicadores .eva-week-details summary { color: var(--eva-action); font-size: 13px; }
 .eva-indicadores .eva-week-table :is(th, td) { padding: 6px 4px; min-width: 0; font-size: 12px; }
 @media (max-width: 640px) {
@@ -147,13 +148,13 @@
 .eva-pastel { min-height: 100vh; }
 .eva-pastel .workspace { background: var(--eva-canvas); }
 .eva-pastel .page-header { border-color: var(--eva-border); }
-.eva-pastel .panel { box-shadow: 0 2px 8px rgb(22 45 35 / 3%); }
+.eva-pastel .panel { box-shadow: 0 2px 8px rgb(61 50 29 / 3%); }
 .eva-pastel :is(.form-field, .capture-search-field, .revision-acciones select) {
   background: var(--eva-surface); border-color: var(--eva-border);
 }
 .eva-pastel :is(input, select, textarea) { color: var(--eva-ink); accent-color: var(--eva-action); }
 .eva-pastel :is(.capture-fields, .capture-operation, .rec-campo, .historico-campo) :is(input, select, textarea) {
-  background: var(--eva-surface); border-color: #7d9b86;
+  background: var(--eva-surface); border-color: #97825b;
 }
 .eva-pastel :is(.form-field label, .capture-search-field label, .revision-acciones label, .form-field-group legend) { color: var(--eva-muted); }
 .eva-pastel :is(.form-field:focus-within, .login-card .form-field:focus-within) { outline: 2px solid var(--eva-action); outline-offset: 3px; }
@@ -191,7 +192,7 @@
 .eva-pastel .danger-button:hover { background: #702020; }
 .eva-pastel :is(.button, .historico button, .recomendaciones button):disabled,
 .eva-pastel :is(.button, .historico button, .recomendaciones button):disabled:hover {
-  background: #dfe8e1; color: #486052; border-color: #c5d5ca; cursor: not-allowed;
+  background: #e9e1ca; color: #6c6045; border-color: #d8ccb0; cursor: not-allowed;
 }
 /* No teñir QR, fotografías ni leyendas de componentes: son evidencia. */
 .eva-pastel .login-layout { grid-template-columns: minmax(0, .95fr) minmax(0, 1.05fr); }
@@ -232,9 +233,9 @@
 .eva-pastel .catalog-tabs a:hover { background: var(--eva-emphasis); }
 .eva-pastel .catalog-tabs a[aria-current="page"] { background: var(--eva-action); color: var(--eva-surface); border-color: var(--eva-action); }
 .eva-pastel .process-steps li { background: var(--eva-surface); color: var(--eva-muted); }
-.eva-pastel .process-steps li.current { background: #d5e9db; color: var(--eva-action); }
+.eva-pastel .process-steps li.current { background: #ffe49a; color: var(--eva-action); }
 
-.eva-pastel :is(input, select, textarea) { background-color: var(--eva-surface); border-color: #7d9b86; }
+.eva-pastel :is(input, select, textarea) { background-color: var(--eva-surface); border-color: #97825b; }
 .eva-pastel .data-table td { color: var(--eva-ink); }
 
 /* Mascotas de estado: acompañan el texto sin cubrir formularios ni fotografías. */

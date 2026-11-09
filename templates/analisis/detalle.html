@@ -27,13 +27,15 @@
 {% if caso.estado == "PENDIENTE" or caso.estado == "EN_PROCESO" %}
 <section class="info-box analisis-aviso" role="status"
         {% if estado_url %}data-estado-url="{{ estado_url }}" data-estado-actual="{{ caso.estado }}"{% endif %}>
+{% include "includes/mascota.html" with pose="carga" %}
 <h2>Analizando fotografías</h2>
 <p>Aún no hay resultados. Se verifican la calidad, la asociación del par y el sobrante visual. Puedes consultar otro servicio mientras tanto.</p>
 <p data-estado-mensaje>{% if estado_url %}Esta pantalla se actualiza sola.{% else %}Recarga la página para ver el avance.{% endif %}</p>
     {% if estado_url %}<button class="button" type="button" data-estado-reintentar hidden>Reintentar consulta</button>{% endif %}</section>
 
 {% elif caso.estado == "FALLIDO" or caso.estado == "TIEMPO_AGOTADO" %}
-<section class="panel analisis-fallo" role="alert">
+<section class="panel analisis-fallo eva-mascot-message" role="alert">
+{% include "includes/mascota.html" with pose="alerta" %}
 <h2>{% if caso.estado == "TIEMPO_AGOTADO" %}El análisis tardó demasiado{% else %}Fallo técnico del análisis{% endif %}</h2>
 <p>No hay resultado analítico para este par, y no se muestra ningún porcentaje. Los resultados anteriores no se modifican.</p>
 {% if reintentar_url %}

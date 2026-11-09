@@ -9,6 +9,7 @@
   {% include "captura/_fotografia.html" %}
 {% else %}
   <section class="panel capture-recovery" role="status" aria-labelledby="vinculo-siguiente">
+    {% if estado == "COMPLETADA" %}{% include "includes/mascota.html" with pose="guardado" %}{% else %}{% include "includes/mascota.html" with pose="alerta" %}{% endif %}
     <h2 id="vinculo-siguiente">Qué hacer ahora</h2>
     {% if estado == 'COMPLETADA' %}
       <p>El servidor ya aceptó la fotografía de esta etapa. No necesitas volver a enviarla. Este enlace quedó cerrado para evitar que se sobrescriba.</p>

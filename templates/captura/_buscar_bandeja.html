@@ -1,4 +1,5 @@
 <section class="capture-lookup">
+  {% if busqueda.errors and not error %}{% include "includes/mascota.html" with pose="alerta" %}{% endif %}
   {% if busqueda.non_field_errors %}<div class="error-summary" role="alert">{{ busqueda.non_field_errors }}</div>{% endif %}
   <form method="get" {% if buscar_url %}action="{{ buscar_url }}"{% endif %} data-lookup>
     <div class="capture-search-field">

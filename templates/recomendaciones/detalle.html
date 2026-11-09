@@ -15,7 +15,7 @@
 <section class="panel"><h2>Evaluación sin propuesta</h2><form method="post" action="{% url 'recomendaciones:generar' evaluacion_id=caso.evaluacion.id %}" data-rec-submit{% if bloqueado %} data-bloqueado="true"{% endif %}>{% csrf_token %}<button class="button" type="submit"{% if bloqueado %} disabled{% endif %}>Generar recomendación</button><p data-envio role="status"></p></form></section>
 {% endif %}
 <section class="panel"><h2 id="rec-decision">Decisión humana</h2>
-{% if caso.decision_actual %}<p><strong>{{ decision_visible }}</strong> · {{ caso.decision_actual.autor_visible }} · {{ caso.decision_actual.fecha|date:'d/m/Y H:i' }} · Versión {{ caso.decision_actual.version }}</p><p>{{ caso.decision_actual.justificacion }}</p>{% else %}<p>Sin decisión registrada.</p>{% endif %}
+{% if caso.decision_actual %}{% include "includes/mascota.html" with pose="exito" %}<p><strong>{{ decision_visible }}</strong> · {{ caso.decision_actual.autor_visible }} · {{ caso.decision_actual.fecha|date:'d/m/Y H:i' }} · Versión {{ caso.decision_actual.version }}</p><p>{{ caso.decision_actual.justificacion }}</p>{% else %}<p>Sin decisión registrada.</p>{% endif %}
 <p>La revisión de Cocina valida mediciones. Esta decisión administrativa no modifica automáticamente catálogo, receta, porción, inventario ni precios.</p>
 {% if administracion %}{% if caso.capacidades.puede_decidir or decision_form.is_bound %}
 <form method="post" action="{% url 'recomendaciones:decidir' recomendacion_id=caso.recomendacion.id %}" data-rec-submit{% if bloqueado or not caso.capacidades.puede_decidir %} data-bloqueado="true"{% endif %}>

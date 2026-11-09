@@ -10,6 +10,7 @@
 
 {% block content %}
   <section class="panel denied-panel" aria-labelledby="titulo-denegado">
+    {% include "includes/mascota.html" with pose="alerta" %}
     <h2 id="titulo-denegado">No puedes abrir esta pantalla</h2>
     <p>
       Tu sesión sigue iniciada, pero tu rol no incluye este permiso. No se

@@ -16,7 +16,7 @@
     {% if foto_servido_url %}<img class="capture-image capture-return-reference" src="{{ foto_servido_url }}" alt="Fotografía del servido para confirmar la correspondencia">{% else %}<p class="muted">La fotografía del servido no está disponible. Revisa los identificadores y el historial del servicio.</p>{% endif %}
   {% endif %}
   {% if form and confirmar_url and operacion_habilitada %}
-  <form method="post" action="{{ confirmar_url }}">
+  <form data-eva-save method="post" action="{{ confirmar_url }}">
     {% csrf_token %}
     {% if es_retorno %}
     <div class="capture-fields">
@@ -27,6 +27,7 @@
     {{ form.as_p }}
     {% endif %}
     <button class="button primary-button">{% if es_retorno %}Confirmar y tomar foto del retorno{% else %}Confirmar y tomar foto del servido{% endif %}</button>
+    {% include "includes/guardando.html" %}
     {% if not es_retorno and form.establecimiento_nombre %}<p class="muted">Establecimiento: {{ form.establecimiento_nombre }}. La franja se fija automáticamente con la foto del servido. Completa sede, modalidad y lote juntos; si omites los tres, el servicio queda sin contexto comparable.</p>{% endif %}
   </form>
   {% endif %}

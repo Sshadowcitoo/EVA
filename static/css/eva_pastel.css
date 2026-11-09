@@ -236,3 +236,10 @@
 
 .eva-pastel :is(input, select, textarea) { background-color: var(--eva-surface); border-color: #7d9b86; }
 .eva-pastel .data-table td { color: var(--eva-ink); }
+
+/* Mascotas de estado: acompañan el texto sin cubrir formularios ni fotografías. */
+.eva-mascot-state { float: right; width: 72px; height: 108px; object-fit: contain; margin: 0 0 12px 16px; }
+.eva-mascot-message { display: flow-root; }
+.eva-mascot-feedback[hidden] { display: none; }
+.eva-mascot-feedback { display: flow-root; margin-block: 12px; }
+@media (max-width: 800px) { .eva-mascot-state { width: 64px; height: 96px; margin-left: 12px; } }

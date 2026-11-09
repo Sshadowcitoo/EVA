@@ -17,6 +17,7 @@
           data-max-bytes="{{ max_bytes|default:10485760|unlocalize }}" data-max-pixels="{{ max_pixels|default:20000000|unlocalize }}">
       {% csrf_token %}
       {% if form %}
+      {% if form.errors %}{% include "includes/mascota.html" with pose="alerta" %}{% endif %}
       {{ form.non_field_errors }}
       <div class="capture-fields capture-source">
         {% for field in form %}{% if field.field.widget.input_type != 'checkbox' %}
@@ -46,6 +47,7 @@
         {% endif %}{% endfor %}
       </fieldset>
       {% endif %}
+      <div class="eva-mascot-feedback" data-photo-mascot hidden>{% include "includes/mascota.html" with pose="carga" %}</div>
       <p data-photo-status role="status" aria-live="polite"></p>
       <button class="button primary-button" data-photo-submit {% if not operacion_habilitada or not guardar_url or not form %}disabled{% endif %}>Guardar fotografía</button>
       <p class="muted">JPEG o PNG, hasta {{ max_mib|default:10|floatformat:"-2" }} MiB y {{ max_megapixeles|default:20|floatformat:"-2" }} megapíxeles. Puedes seleccionar un archivo si no puedes usar la cámara.</p>

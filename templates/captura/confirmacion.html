@@ -2,6 +2,7 @@
 {% block heading %}Registro creado{% endblock %} {% block subtitle %}Los datos
 de la bandeja quedaron guardados.{% endblock %} {% block content %}
 <section class="panel confirmation-panel" aria-labelledby="resumen-registro">
+  {% include 'includes/mascota.html' with pose='guardado' %}
   <span class="success-label">Guardado correctamente</span>
   <h2 id="resumen-registro">Datos del servicio</h2>
 

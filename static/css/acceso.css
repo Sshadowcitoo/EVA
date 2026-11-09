@@ -11,7 +11,9 @@
 .eva-pastel .login-card { width: min(100%, 530px); }
 .login-intro { margin-bottom: 20px; }
 .login-intro p { color: var(--eva-muted); margin: 0; }
-.login-intro .login-mascot { display: none; }
+.login-intro { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.login-intro > div { min-width: 0; }
+.login-intro .login-mascot { display: block; flex: 0 0 auto; width: auto; height: 132px; max-width: 30%; object-fit: contain; margin: 0; }
 .login-card .primary-button { min-height: 44px; }
 
 @media (max-width: 800px) {
@@ -25,6 +27,6 @@
     flex: 0 0 auto;
     margin: 0;
     width: auto;
-    height: 56px;
+    height: 88px;
   }
 }

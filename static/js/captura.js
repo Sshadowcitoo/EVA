@@ -18,6 +18,12 @@
     const message = (text, error = false) => {
       status.textContent = text;
       status.dataset.error = String(error);
+      const mascot = form.querySelector('[data-photo-mascot]');
+      if (mascot) {
+        mascot.hidden = !error;
+        const image = mascot.querySelector('img');
+        if (image) image.src = image.src.replace(/eva-mascota-(carga|alerta)\.png$/, 'eva-mascota-alerta.png');
+      }
     };
     const clear = () => {
       if (objectURL) URL.revokeObjectURL(objectURL);
@@ -69,6 +75,12 @@
       if (!valid || !permitted) { event.preventDefault(); return; }
       submit.disabled = true;
       message('Guardando fotografía… Espera la confirmación del servidor.');
+      const mascot = form.querySelector('[data-photo-mascot]');
+      if (mascot) {
+        mascot.hidden = false;
+        const image = mascot.querySelector('img');
+        if (image) image.src = image.src.replace(/eva-mascota-(carga|alerta)\.png$/, 'eva-mascota-carga.png');
+      }
     });
     window.addEventListener('pageshow', (event) => {
       if (event.persisted) input.dispatchEvent(new Event('change'));

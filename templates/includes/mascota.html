@@ -1,0 +1,5 @@
+{% load static %}
+{% if pose == "carga" %}<img class="eva-mascot-state" src="{% static 'img/eva-mascota-carga.png' %}" alt="" width="72" height="108" aria-hidden="true">
+{% elif pose == "alerta" %}<img class="eva-mascot-state" src="{% static 'img/eva-mascota-alerta.png' %}" alt="" width="82" height="96" aria-hidden="true">
+{% elif pose == "exito" %}<img class="eva-mascot-state" src="{% static 'img/eva-mascota-exito.png' %}" alt="" width="82" height="96" aria-hidden="true">
+{% else %}<img class="eva-mascot-state" src="{% static 'img/eva-mascota-guardado.png' %}" alt="" width="82" height="96" aria-hidden="true">{% endif %}

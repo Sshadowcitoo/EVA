@@ -6,8 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Acceso | EVA</title>
     <link rel="stylesheet" href="{% static 'css/eva.css' %}" />
-    <link rel="stylesheet" href="{% static 'css/eva_pastel.css' %}?v=20261106-global" />
-    <link rel="stylesheet" href="{% static 'css/acceso.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/eva_pastel.css' %}?v=20261109-mascotas" />
+    <link rel="stylesheet" href="{% static 'css/acceso.css' %}?v=20261109-mascotas" />
 </head>
 
 <body class="login-page eva-pastel">
@@ -33,7 +33,7 @@
                 <h2>Iniciar sesión</h2>
                 <p>Ingresa con las credenciales asignadas a tu rol.</p>
             </div>
-        <img class="login-mascot" src="{% static 'img/eva-mascota-bienvenida.png' %}" alt="" width="392" height="560" />
+        <img class="login-mascot" src="{% if form.non_field_errors %}{% static 'img/eva-mascota-alerta.png' %}{% else %}{% static 'img/eva-mascota-bienvenida.png' %}{% endif %}" alt="" width="392" height="560" />
         </div>
 
         {% if form.non_field_errors %}

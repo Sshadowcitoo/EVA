@@ -2,7 +2,7 @@
 {% load static %}
 {% block content %}
 <link rel="stylesheet" href="{% static 'css/captura.css' %}?v=20261108-flujo">
-{% if error %}<div class="error-summary" role="alert">{{ error }}</div>{% endif %}
+{% if error %}<div class="error-summary eva-mascot-message" role="alert">{% include "includes/mascota.html" with pose="alerta" %}{{ error }}</div>{% endif %}
 {% if not operacion_habilitada %}
 <p class="info-box" role="status">Esta operación aún no está disponible. No se ha guardado ninguna fotografía.</p>
 {% endif %}
@@ -16,6 +16,7 @@
     <li><span>05</span> Análisis y revisión</li>
   </ol>
 </section>{% endblock %}
-<script src="{% static 'js/captura.js' %}" defer></script>
+<script src="{% static 'js/captura.js' %}?v=20261109-mascotas" defer></script>
+<script src="{% static 'js/mascota.js' %}" defer></script>
 {% block captura_scripts %}{% endblock %}
 {% endblock %}

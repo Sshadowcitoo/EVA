@@ -6,6 +6,7 @@
 {% block subtitle %}El enlace no lleva a un servicio disponible.{% endblock %}
 {% block content %}
 <section class="panel capture-recovery" aria-labelledby="recuperar-servicio">
+  {% include "includes/mascota.html" with pose="alerta" %}
   <h2 id="recuperar-servicio">Vuelve a localizar la bandeja</h2>
   <p>Usa su número visible o escanea la etiqueta QR. Elige la etapa que quieres registrar.</p>
   <div class="capture-recovery-actions">

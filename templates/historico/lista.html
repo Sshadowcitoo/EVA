@@ -20,7 +20,10 @@
 {% endblock %}
 {% block historico_content %}
 {% block filtros_indicadores %}
-<p><a href="{% url 'historico:demostracion' %}">Ver interfaz con datos de demostración →</a></p>
+<nav class="historico-accesos" aria-label="Accesos de la consulta">
+  {% if datos.filas %}<a href="#historial-resultados">Ir a servicios y componentes</a>{% endif %}
+  <a href="{% url 'historico:demostracion' %}">Ver demostración →</a>
+</nav>
 <details class="panel eva-filters"{% if form.errors %} open{% endif %}>
   <summary>
     <strong>Filtros de consulta</strong>
@@ -43,6 +46,7 @@
 </details>
 {% endif %}
 <section class="panel" id="historial-resultados"><h2>Servicios y componentes</h2><p class="muted">Una fila por servicio y componente; los contadores representan servicios únicos.</p>
+<p class="historico-ayuda-tabla muted">En pantallas estrechas, desplaza la tabla para consultar todas las columnas.</p>
 <div class="historico-tabla" tabindex="0" role="region" aria-label="Tabla de resultados; desplazamiento horizontal disponible"><table class="data-table"><caption>Resultados de la consulta · porcentaje visual estimado</caption>
 <thead><tr><th scope="col">Servicio / servido</th><th scope="col">Plato / porción</th><th scope="col">Componente</th><th scope="col">Estado / origen</th><th scope="col">Sobrante visual</th><th scope="col">Exclusión</th></tr></thead>
 <tbody>{% for fila in datos.filas %}<tr>

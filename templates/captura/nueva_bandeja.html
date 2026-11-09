@@ -1,4 +1,6 @@
 {% extends "base.html" %}
+{% load static %}
+{% block page_styles %}<link rel="stylesheet" href="{% static 'css/captura.css' %}?v=20261108-flujo">{% endblock %}
 
 {% block title %}
 Registro básico | EVA
@@ -13,7 +15,7 @@ Registro básico del servicio. Para fotografiar servido y retorno, usa la captur
 {% endblock %}
 
 {% block content %}
-<form method="post" action="{% url 'captura:nueva_bandeja' %}">
+<form class="capture-basic" method="post" action="{% url 'captura:nueva_bandeja' %}">
   {% csrf_token %} {% if form.errors %}
   <div class="error-summary" role="alert">
     <p>Revisa los campos indicados antes de continuar.</p>
@@ -48,6 +50,8 @@ Registro básico del servicio. Para fotografiar servido y retorno, usa la captur
         <p>Se generará al guardar</p>
       </div>
 
+      <button type="submit" class="button primary-button">Guardar registro</button>
+
       <div class="info-box">
         <h3>Relación de las fotos</h3>
         <p>
@@ -61,11 +65,10 @@ Registro básico del servicio. Para fotografiar servido y retorno, usa la captur
       <span class="photo-icon" aria-hidden="true">▧</span>
       <h2 id="titulo-foto">Captura con bandeja</h2>
       <p>Asocia una bandeja física y registra las fotografías del servido y del retorno.</p>
-      <a class="button primary-button" href="{% url 'captura:resolver_bandeja' %}">Escanear o buscar una bandeja</a>
+      <a class="button secondary-button" href="{% url 'captura:resolver_bandeja' %}">Escanear o buscar una bandeja</a>
     </section>
   </div>
 
-  <button type="submit" class="button primary-button">Guardar registro</button>
 </form>
 
 <section class="process-panel" aria-label="Etapas del servicio">

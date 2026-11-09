@@ -1,7 +1,6 @@
 """Adaptación HTTP del histórico. Los servicios conservan las reglas de negocio."""
 from uuid import UUID
 
-from django import forms
 from django.contrib import messages
 from django.core.exceptions import ValidationError
 from django.http import Http404
@@ -30,13 +29,13 @@ def _enlaces_pagina(request, datos):
     return enlaces
 
 
-def _servicios_presentados(datos, *, demostracion=False):
+def _servicios_presentados(datos):
     """Agrupa solo la página visible, sin volver a calcular ni paginar resultados."""
     servicios = {}
     for fila in datos['filas']:
         grupo = servicios.setdefault(fila['servicio_id'], {'identidad': fila, 'componentes': []})
         grupo['componentes'].append(fila)
-    if demostracion or not servicios:
+    if not servicios:
         return servicios.values()
 
     por_uuid = {}
@@ -148,22 +147,3 @@ def percepcion(request, servicio_id):
             status = 400
     return render(request, 'historico/percepcion.html', dict(form=form, actual=actual, servicio_id=servicio_id, error=error, conflicto=conflicto, bloqueado=bool(error),
         servicio=Servicio.objects.filter(pk=servicio_id).first() if actual else None), status=status)
-
-
-@roles_required(COCINA, ADMINISTRACION)
-@require_GET
-def demostracion(request):
-    """Vista de solo lectura; no consulta ni modifica los servicios operativos."""
-    from .demo import ESCENARIOS, construir
-    escenario = request.GET.get("escenario", "con_datos")
-    try:
-        if escenario not in ESCENARIOS:
-            raise ValidationError("Escenario de demostración desconocido.")
-        pagina = forms.IntegerField(min_value=1).clean(request.GET.get("page", "1"))
-    except ValidationError as exc:
-        return render(request, "historico/demostracion.html", dict(error=" ".join(exc.messages),
-            es_demostracion=True, escenario=escenario), status=400)
-    datos, panel = construir(escenario, request.GET.get("grupo", ""), pagina)
-    return render(request, "historico/demostracion.html", dict(datos=datos, panel=panel, servicios_presentados=_servicios_presentados(datos, demostracion=True),
-        es_demostracion=True, escenario=escenario, filtros_panel=[("escenario", escenario)],
-        enlaces=_enlaces_pagina(request, datos), recomendaciones_url=reverse("recomendaciones:demo")))

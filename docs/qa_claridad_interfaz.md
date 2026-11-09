@@ -17,4 +17,14 @@ Las referencias se revisaron mediante las exportaciones del inventario. Los marc
 - Nueve escenarios de QA a 1440 × 900 y 390 × 844. Se comprobaron login y error, el grupo de Histórico con bandeja y 0 %, el estado vacío, los diagnósticos plegados, la copia del UUID, las seis máscaras sintéticas de Cocina y el acceso a las acciones secundarias.
 - Los datos de pantalla son sintéticos. Las comparaciones antes/después usan el mismo escenario y la revisión de main indicada arriba.
 - Se conservaron selectores, cálculos, criterios, filtros, paginación, permisos y operaciones. La agrupación de Histórico se aplica a la presentación después de obtener la página. Los grupos de comparación siguen separados.
-- Quedan pendientes las pruebas físicas previamente registradas. La limpieza de QA se mantiene separada.
+- Quedan pendientes las pruebas físicas previamente registradas. La limpieza de los registros QA autorizados terminó el 9 de noviembre de 2026 con respaldo, conservando los demás servicios, fotos y cuentas.
+
+## Retirada de la sección de demostración
+
+Se retiran las pantallas, las rutas públicas y los enlaces de Demostración de Histórico y Recomendaciones, incluida la foto de referencia. Las direcciones antiguas responden 404 para visitantes y los tres roles. Se elimina «Prototipo académico» del pie lateral. Los avisos de análisis simulados, evidencia insuficiente y resultados no concluyentes siguen visibles: no se convierten datos de prueba en evidencia operativa.
+
+Los generadores internos de datos permanecen únicamente como fixtures de pruebas, sin pantallas ni rutas públicas. No se modifican criterios, pesos, servicios, imágenes ni resultados operativos.
+
+Validación integrada: 592 pruebas Django ejecutadas, 589 correctas y 3 omitidas por el paquete privado de paridad ONNX; 46 pruebas JavaScript correctas. Las comprobaciones HTTP cubren las rutas retiradas para visitantes y los tres roles, la ausencia de los enlaces y del rótulo académico y la navegación operativa de Histórico y Recomendaciones. No hay migraciones nuevas.
+
+Después se ejecutaron las tres comprobaciones privadas con el paquete local original: las tres pasaron, incluida la comparación ONNX/PT y la eliminación de píxeles compartidos sin aprobar porcentajes. Es una comprobación de concordancia entre implementaciones, no una validación de precisión del modelo.

@@ -28,11 +28,13 @@
 .historico td small { display:block; margin-top:8px; color:#51647e; }
 .historico-estado { font-size:12px; font-weight:700; }
 .historico-paginacion { justify-content:space-between; padding-top:20px; }
-.historico-comparacion { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:20px; }
+.historico-comparacion { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:20px; min-width:0; }
+.historico-comparacion > section { min-width:0; overflow-wrap:anywhere; }
 .historico-comparacion .panel { margin-bottom:16px; }
 .historico-comparacion .historico-metricas { grid-template-columns:1fr; }
 @media(max-width:700px) {
- .historico-metricas,.historico-conteos,.historico-comparacion { grid-template-columns:1fr; }
+ .historico-metricas,.historico-conteos { grid-template-columns:1fr; }
+ .historico-comparacion { grid-template-columns:minmax(0,1fr); }
  .historico-filtros { grid-template-columns:1fr; }
  .historico-acciones { align-items:stretch; flex-direction:column; }
  .historico th,.historico td { font-size:13px; }

@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="{% static 'css/eva.css' %}" />
     <link rel="stylesheet" href="{% static 'css/eva_pastel.css' %}?v=20261109-claridad" />
     <link rel="stylesheet" href="{% static 'css/acceso.css' %}?v=20261109-claridad" />
+    <link rel="stylesheet" href="{% static 'css/interfaz.css' %}" />
 </head>
 
 <body class="login-page eva-pastel">
@@ -59,7 +60,7 @@
         </div>
 
         <button class="button primary-button" type="submit">
-            Ingresar
+            {% include "includes/icono.html" with nombre="acceso" only %} Ingresar
         </button>
         </form>
     </section>

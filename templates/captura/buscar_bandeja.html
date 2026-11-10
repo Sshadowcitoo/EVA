@@ -1,4 +1,5 @@
 {% extends "captura/base_operacion.html" %}
+{% block heading_icon %}{% include "includes/icono.html" with nombre="buscar" only %}{% endblock %}
 {% load static %}
 {% block title %}Localizar bandeja | EVA{% endblock %}
 {% block heading %}{% if es_retorno %}Registrar retorno{% else %}Registrar servido{% endif %}{% endblock %}
@@ -26,7 +27,7 @@
     {% else %}
     {{ form.as_p }}
     {% endif %}
-    <button class="button primary-button">{% if es_retorno %}Confirmar y tomar foto del retorno{% else %}Confirmar y tomar foto del servido{% endif %}</button>
+    <button class="button primary-button">{% include "includes/icono.html" with nombre="camara" only %} {% if es_retorno %}Confirmar y tomar foto del retorno{% else %}Confirmar y tomar foto del servido{% endif %}</button>
     {% include "includes/guardando.html" %}
     {% if not es_retorno and form.establecimiento_nombre %}<p class="muted">Establecimiento: {{ form.establecimiento_nombre }}. La franja se fija automáticamente con la foto del servido. Completa sede, modalidad y lote juntos; si omites los tres, el servicio queda sin contexto comparable.</p>{% endif %}
   </form>

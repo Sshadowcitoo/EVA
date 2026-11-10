@@ -1,17 +1,19 @@
 {% extends "base.html" %}
+{% block heading_icon %}{% include "includes/icono.html" with nombre="alerta" only %}{% endblock %}
 {% load static %}
 {% block title %}Servicio no encontrado | EVA{% endblock %}
 {% block page_styles %}<link rel="stylesheet" href="{% static 'css/captura.css' %}">{% endblock %}
 {% block heading %}Servicio no encontrado{% endblock %}
 {% block subtitle %}El enlace no lleva a un servicio disponible.{% endblock %}
 {% block content %}
-<section class="panel capture-recovery" aria-labelledby="recuperar-servicio">
+<section class="panel capture-recovery eva-estado-panel" aria-labelledby="recuperar-servicio">
   {% include "includes/mascota.html" with pose="alerta" %}
+  {% include "includes/mascota.html" with pose="alerta" only %}
   <h2 id="recuperar-servicio">Vuelve a localizar la bandeja</h2>
   <p>Usa su número visible o escanea la etiqueta QR. Elige la etapa que quieres registrar.</p>
   <div class="capture-recovery-actions">
-    <a class="button primary-button" href="{% url 'captura:resolver_bandeja' %}">Buscar bandeja para servido</a>
-    <a class="button secondary-button" href="{% url 'captura:buscar_retorno' %}">Buscar bandeja para retorno</a>
+    <a class="button primary-button" href="{% url 'captura:resolver_bandeja' %}">{% include "includes/icono.html" with nombre="buscar" only %} Buscar bandeja para servido</a>
+    <a class="button secondary-button" href="{% url 'captura:buscar_retorno' %}">{% include "includes/icono.html" with nombre="retorno" only %} Buscar bandeja para retorno</a>
   </div>
 </section>
 {% endblock %}

@@ -26,18 +26,18 @@
       </div>
       {% else %}<p class="muted">El formulario de captura aún no está conectado.</p>{% endif %}
       <div data-photo-camera>
-        <button type="button" class="button secondary-button" data-camera-start>Usar cámara de este dispositivo</button>
+        <button type="button" class="button secondary-button" data-camera-start>{% include "includes/icono.html" with nombre="camara" only %} Usar cámara de este dispositivo</button>
         <video class="capture-image" data-camera-video autoplay playsinline muted hidden aria-label="Vista de la cámara del dispositivo"></video>
         <canvas data-camera-canvas hidden></canvas>
-        <button type="button" class="button primary-button" data-camera-take hidden>Tomar fotografía</button>
+        <button type="button" class="button primary-button" data-camera-take hidden>{% include "includes/icono.html" with nombre="camara" only %} Tomar fotografía</button>
         <button type="button" class="button secondary-button" data-camera-stop hidden>Cerrar cámara</button>
         <p data-camera-status role="status" aria-live="polite">La cámara se activa solo al pulsar el botón. También puedes seleccionar un archivo.</p>
       </div>
       <div data-photo-enhancement hidden>
         <img data-photo-preview class="capture-image" alt="Vista previa de la fotografía seleccionada" hidden>
-        <button type="button" class="button secondary-button" data-photo-repeat>Elegir otra foto</button>
+        <button type="button" class="button secondary-button" data-photo-repeat>{% include "includes/icono.html" with nombre="camara" only %} Elegir otra foto</button>
       </div>
-      <div data-photo-empty class="capture-empty"><span aria-hidden="true">▧</span><p>Selecciona o toma una fotografía para revisarla aquí.</p></div>
+      <div data-photo-empty class="capture-empty">{% include "includes/icono.html" with nombre="camara" only %}<p>Selecciona o toma una fotografía para revisarla aquí.</p></div>
       {% if form %}
       <fieldset class="capture-fields capture-checklist">
         <legend>Comprobaciones antes de guardar</legend>
@@ -49,11 +49,11 @@
       {% endif %}
       <div class="eva-mascot-feedback" data-photo-mascot hidden>{% include "includes/mascota.html" with pose="carga" %}</div>
       <p data-photo-status role="status" aria-live="polite"></p>
-      <button class="button primary-button" data-photo-submit {% if not operacion_habilitada or not guardar_url or not form %}disabled{% endif %}>Guardar fotografía</button>
+      <button class="button primary-button" data-photo-submit {% if not operacion_habilitada or not guardar_url or not form %}disabled{% endif %}>{% include "includes/icono.html" with nombre="guardar" only %} Guardar fotografía</button>
       <p class="muted">JPEG o PNG, hasta {{ max_mib|default:10|floatformat:"-2" }} MiB y {{ max_megapixeles|default:20|floatformat:"-2" }} megapíxeles. Puedes seleccionar un archivo si no puedes usar la cámara.</p>
       <p class="muted">La fecha y hora se registran automáticamente al guardar; corresponden al momento del registro en EVA.</p>
     </form>
-    {% if vincular_url %}<p><a class="button secondary-button" href="{{ vincular_url }}">Capturar con celular mediante QR</a></p>{% endif %}
+    {% if vincular_url %}<p><a class="button secondary-button" href="{{ vincular_url }}">{% include "includes/icono.html" with nombre="celular" only %} Capturar con celular mediante QR</a></p>{% endif %}
   </section>
   <aside class="capture-shot-help" aria-label="Ayudas y contexto de la captura">
     <div class="info-box">

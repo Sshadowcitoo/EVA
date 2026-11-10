@@ -1,4 +1,5 @@
 {% extends "captura/base_operacion.html" %}
+{% block heading_icon %}{% include "includes/icono.html" with nombre="celular" only %}{% endblock %}
 {% block title %}Captura vinculada | EVA{% endblock %}
 {% block heading %}{% if vinculo_vigente and operacion_habilitada %}Captura desde el celular{% else %}{% if estado == 'COMPLETADA' %}Fotografía guardada correctamente{% elif estado == 'EXPIRADA' %}Enlace caducado{% elif estado == 'CANCELADA' %}Enlace cancelado{% elif vinculo_invalido %}Vínculo no válido{% else %}Captura no disponible{% endif %}{% endif %}{% endblock %}
 {% block subtitle %}{% if vinculo_vigente and operacion_habilitada %}Verifica la bandeja, el plato y la etapa antes de guardar.{% endif %}{% endblock %}
@@ -8,8 +9,9 @@
   <p class="info-box">Esta captura corresponde al servicio indicado. El enlace no reemplaza tu sesión ni tus permisos.</p>
   {% include "captura/_fotografia.html" %}
 {% else %}
-  <section class="panel capture-recovery" role="status" aria-labelledby="vinculo-siguiente">
+  <section class="panel capture-recovery eva-estado-panel" role="status" aria-labelledby="vinculo-siguiente">
     {% if estado == "COMPLETADA" %}{% include "includes/mascota.html" with pose="guardado" %}{% else %}{% include "includes/mascota.html" with pose="alerta" %}{% endif %}
+    {% if estado == "COMPLETADA" %}{% include "includes/mascota.html" with pose="guardado" only %}{% else %}{% include "includes/mascota.html" with pose="alerta" only %}{% endif %}
     <h2 id="vinculo-siguiente">Qué hacer ahora</h2>
     {% if estado == 'COMPLETADA' %}
       <p>El servidor ya aceptó la fotografía de esta etapa. No necesitas volver a enviarla. Este enlace quedó cerrado para evitar que se sobrescriba.</p>

@@ -27,7 +27,7 @@ Registro básico del servicio. Para fotografiar servido y retorno, usa la captur
   <div class="capture-grid">
     <section class="panel" aria-labelledby="datos-servicio">
       <h2 id="datos-servicio">Datos del servicio</h2>
-      <p class="muted">Este formulario crea un registro básico de servicio. Para asociar una bandeja y capturar servido y retorno, usa <a href="{% url 'captura:resolver_bandeja' %}">Registrar servido</a>.</p>
+      <p class="muted">Este formulario crea un registro básico de servicio. Para asociar una bandeja y capturar servido y retorno, usa <a href="{% url 'captura:resolver_bandeja' %}">{% include "includes/icono.html" with nombre="camara" only %} Registrar servido</a>.</p>
 
       <div class="form-field">
         <label for="{{ form.plato.id_for_label }}">Plato del catálogo</label>
@@ -51,7 +51,7 @@ Registro básico del servicio. Para fotografiar servido y retorno, usa la captur
         <p>Se generará al guardar</p>
       </div>
 
-      <button type="submit" class="button primary-button">Guardar registro</button>
+      <button type="submit" class="button primary-button">{% include "includes/icono.html" with nombre="guardar" only %} Guardar registro</button>
       {% include "includes/guardando.html" %}
 
       <div class="info-box">
@@ -64,25 +64,15 @@ Registro básico del servicio. Para fotografiar servido y retorno, usa la captur
     </section>
 
     <section class="photo-placeholder" aria-labelledby="titulo-foto">
-      <span class="photo-icon" aria-hidden="true">▧</span>
+      <span class="eva-sello">{% include "includes/icono.html" with nombre="camara" only %}</span>
       <h2 id="titulo-foto">Captura con bandeja</h2>
       <p>Asocia una bandeja física y registra las fotografías del servido y del retorno.</p>
-      <a class="button secondary-button" href="{% url 'captura:resolver_bandeja' %}">Escanear o buscar una bandeja</a>
+      <a class="button secondary-button" href="{% url 'captura:resolver_bandeja' %}">{% include "includes/icono.html" with nombre="buscar" only %} Escanear o buscar una bandeja</a>
     </section>
   </div>
 
 </form>
 
-<section class="process-panel" aria-label="Etapas del servicio">
-  <ol class="process-steps">
-    <li class="current"><span>01</span> Registro</li>
-    <li><span>02</span> Foto servido</li>
-    <li><span>03</span> En espera</li>
-    <li><span>04</span> Foto retorno</li>
-    <li><span>05</span> Análisis y revisión</li>
-  </ol>
-  <p class="process-note">
-    Este formulario crea solo el registro básico. La captura con bandeja está disponible en el menú.
-  </p>
-</section>
+{% include "includes/recorrido.html" with actual="" only %}
+<p class="muted">Este formulario crea solo el registro básico. Para tomar fotos, inicia la captura con bandeja.</p>
 {% endblock %}

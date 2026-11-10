@@ -1,6 +1,7 @@
 {% extends 'analisis/base.html' %}
 {% block heading %}Solicitar análisis{% endblock %}
 {% block analisis_content %}
+{% include "includes/recorrido.html" with actual="analisis" only %}
 <section class="panel analisis-solicitud" aria-labelledby="solicitud-plato">
 <p class="muted"><a href="{% url 'analisis:lista' %}">← Volver a la lista de análisis</a></p>
 <h2 id="solicitud-plato">{{ servicio.get_plato_display }}</h2>
@@ -8,7 +9,7 @@
 {% include "includes/detalles_tecnicos.html" with valor=servicio.pk etiqueta="Servicio" only %}
 <p>Solo se procesan pares completos con fotografías disponibles y protocolo confirmado. El análisis se ejecuta en segundo plano.</p>
 {% if not error %}<form method="post" action="{% url 'analisis:solicitar' servicio.pk %}">{% csrf_token %}
-<button type="submit" class="button">Solicitar análisis</button>
+<button type="submit" class="button">{% include "includes/icono.html" with nombre="indicadores" only %} Solicitar análisis</button>
 </form>{% endif %}
 </section>
 {% endblock %}

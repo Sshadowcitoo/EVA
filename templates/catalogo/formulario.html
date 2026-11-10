@@ -1,4 +1,5 @@
 {% extends "catalogo/base_catalogo.html" %}
+{% block heading_icon %}{% include "includes/icono.html" with nombre="editar" only %}{% endblock %}
 
 {% block heading %}{{ titulo }}{% endblock %}
 {% block subtitle %}Catálogo y administración{% endblock %}
@@ -20,7 +21,7 @@
       {% include "catalogo/_campos_formulario.html" %}
     </section>
     <div class="form-actions">
-      <button type="submit" class="button primary-button">Guardar</button>
+      <button type="submit" class="button primary-button">{% include "includes/icono.html" with nombre="guardar" only %} Guardar</button>
       <a class="button secondary-button" href="{% url ruta_lista %}">Cancelar</a>
     </div>
   </form>

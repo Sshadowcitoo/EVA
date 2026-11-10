@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% block heading_icon %}{% include "includes/icono.html" with nombre="alerta" only %}{% endblock %}
 
 {% block title %}Página no encontrada | EVA{% endblock %}
 {% block eyebrow %}EVA / ERROR 404{% endblock %}
@@ -6,7 +7,8 @@
 {% block subtitle %}El enlace puede estar incompleto o haber cambiado.{% endblock %}
 
 {% block content %}
-<section class="panel" aria-labelledby="recuperar-pagina">
+<section class="panel eva-estado-panel" aria-labelledby="recuperar-pagina">
+  {% include "includes/mascota.html" with pose="alerta" only %}
   <h2 id="recuperar-pagina">Cómo continuar</h2>
   {% if puede_registrar %}
     <a class="button primary-button" href="{% url 'captura:nueva_bandeja' %}">Volver a Registro</a>

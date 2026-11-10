@@ -1,4 +1,5 @@
 {% extends "analisis/base.html" %}
+{% block heading_icon %}{% include "includes/icono.html" with nombre="revisar" only %}{% endblock %}
 
 {% block heading %}{% if solo_revision %}Pendientes de Cocina{% else %}Lista de análisis{% endif %}{% endblock %}
 {% block subtitle %}{% if solo_revision %}Abre los casos pendientes y revisa su evidencia.{% else %}Consulta los pares completos y el estado de cada análisis.{% endif %}{% endblock %}
@@ -8,7 +9,7 @@
 {% url 'analisis:lista' as todos_url %}
 {% if pendientes_url and todos_url %}
 <nav class="analisis-vistas" aria-label="Vistas de Cocina">
-  <a class="button secondary-button" href="{{ pendientes_url }}"{% if solo_revision %} aria-current="page"{% endif %}>Pendientes</a>
+  <a class="button secondary-button" href="{{ pendientes_url }}"{% if solo_revision %} aria-current="page"{% endif %}>{% include "includes/icono.html" with nombre="revisar" only %} Pendientes</a>
   <a class="button secondary-button" href="{{ todos_url }}"{% if not solo_revision %} aria-current="page"{% endif %}>Todos los análisis</a>
 </nav>
 {% endif %}
@@ -73,7 +74,7 @@
           </td>
           <td data-label="Acción">
             {% if caso.detalle_url %}
-              <a href="{{ caso.detalle_url }}">Abrir análisis →</a>
+              <a href="{{ caso.detalle_url }}">{% include "includes/icono.html" with nombre="indicadores" only %} Abrir análisis →</a>
             {% else %}
               —
             {% endif %}
@@ -81,20 +82,12 @@
         </tr>
       {% empty %}
         <tr>
-          <td class="empty-row" colspan="4">{% if solo_revision %}No hay casos pendientes de revisión.{% else %}No hay análisis disponibles. Los pares incompletos no se envían al motor.{% endif %}</td>
+          <td class="empty-row eva-estado-panel" colspan="4">{% include "includes/mascota.html" with pose="carga" only %}{% if solo_revision %}No hay casos pendientes de revisión.{% else %}No hay análisis disponibles. Los pares incompletos no se envían al motor.{% endif %}</td>
         </tr>
       {% endfor %}
     </tbody>
   </table>
 </section>
 
-<section class="process-panel" aria-label="Etapas del servicio">
-  <ol class="process-steps">
-    <li><span>01</span> Registro</li>
-    <li><span>02</span> Foto servido</li>
-    <li><span>03</span> En espera</li>
-    <li><span>04</span> Foto retorno</li>
-    <li class="current" aria-current="step"><span>05</span> Análisis y revisión</li>
-  </ol>
-</section>
+{% if solo_revision %}{% include "includes/recorrido.html" with actual="revision" only %}{% else %}{% include "includes/recorrido.html" with actual="analisis" only %}{% endif %}
 {% endblock %}

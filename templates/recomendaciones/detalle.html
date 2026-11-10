@@ -1,4 +1,5 @@
 {% extends 'recomendaciones/base.html' %}
+{% block heading_icon %}{% include "includes/icono.html" with nombre="revisar" only %}{% endblock %}
 {% block heading %}Evidencia y decisión{% endblock %}
 {% block recomendaciones_content %}
 {% if caso %}
@@ -12,7 +13,7 @@
 {% if caso.recomendacion %}
 <section class="panel"><h2>Propuesta: {{ categoria_visible }}</h2><p>{{ caso.recomendacion.explicacion }}</p><p>Creada: {{ caso.recomendacion.creada_en|date:'d/m/Y H:i' }}</p><p class="muted">Una hipótesis para revisión humana. La imagen no demuestra desagrado, mal sabor ni la causa del sobrante.</p></section>
 {% elif administracion and caso.capacidades.puede_generar %}
-<section class="panel"><h2>Evaluación sin propuesta</h2><form method="post" action="{% url 'recomendaciones:generar' evaluacion_id=caso.evaluacion.id %}" data-rec-submit{% if bloqueado %} data-bloqueado="true"{% endif %}>{% csrf_token %}<button class="button" type="submit"{% if bloqueado %} disabled{% endif %}>Generar recomendación</button><p data-envio role="status"></p></form></section>
+<section class="panel"><h2>Evaluación sin propuesta</h2><form method="post" action="{% url 'recomendaciones:generar' evaluacion_id=caso.evaluacion.id %}" data-rec-submit{% if bloqueado %} data-bloqueado="true"{% endif %}>{% csrf_token %}<button class="button" type="submit"{% if bloqueado %} disabled{% endif %}>{% include "includes/icono.html" with nombre="recomendaciones" only %} Generar recomendación</button><p data-envio role="status"></p></form></section>
 {% endif %}
 <section class="panel"><h2 id="rec-decision">Decisión humana</h2>
 {% if caso.decision_actual %}{% include "includes/mascota.html" with pose="exito" %}<p><strong>{{ decision_visible }}</strong> · {{ caso.decision_actual.autor_visible }} · {{ caso.decision_actual.fecha|date:'d/m/Y H:i' }} · Versión {{ caso.decision_actual.version }}</p><p>{{ caso.decision_actual.justificacion }}</p>{% else %}<p>Sin decisión registrada.</p>{% endif %}
@@ -20,7 +21,7 @@
 {% if administracion %}{% if caso.capacidades.puede_decidir or decision_form.is_bound %}
 <form method="post" action="{% url 'recomendaciones:decidir' recomendacion_id=caso.recomendacion.id %}" data-rec-submit{% if bloqueado or not caso.capacidades.puede_decidir %} data-bloqueado="true"{% endif %}>
 {% csrf_token %}{% include 'recomendaciones/_campos.html' with formulario=decision_form %}
-<button type="submit" class="button"{% if bloqueado or not caso.capacidades.puede_decidir %} disabled{% endif %}>Guardar decisión con justificación</button><p data-envio role="status"></p>
+<button type="submit" class="button"{% if bloqueado or not caso.capacidades.puede_decidir %} disabled{% endif %}>{% include "includes/icono.html" with nombre="guardar" only %} Guardar decisión con justificación</button><p data-envio role="status"></p>
 </form>{% endif %}{% endif %}
 <h3>Historial de decisiones</h3><ol>{% for decision in historial_visible %}<li><strong>{{ decision.decision_visible }}</strong> · {{ decision.autor_visible }} · {{ decision.fecha|date:'d/m/Y H:i' }} · v{{ decision.version }}<p>{{ decision.justificacion }}</p>{% if decision.sustituye_id %}{% include "includes/detalles_tecnicos.html" with valor=decision.sustituye_id etiqueta="Decisión sustituida" only %}{% endif %}</li>{% empty %}<li>Aún no hay decisiones.</li>{% endfor %}</ol>
 </section>
@@ -30,7 +31,7 @@
 <h3>Registrar prueba</h3><p>Solo desde una recomendación aceptada y vigente. La intervención debe comenzar después de la referencia. No escribas datos personales del comensal.</p>
 <form method="post" action="{% url 'recomendaciones:registrar_prueba' recomendacion_id=caso.recomendacion.id %}" data-rec-submit{% if bloqueado or not caso.capacidades.puede_registrar_prueba %} data-bloqueado="true"{% endif %}>
 {% csrf_token %}{% include 'recomendaciones/_campos.html' with formulario=prueba_form %}
-<button type="submit" class="button"{% if bloqueado or not caso.capacidades.puede_registrar_prueba %} disabled{% endif %}>Registrar prueba controlada</button><p data-envio role="status"></p>
+<button type="submit" class="button"{% if bloqueado or not caso.capacidades.puede_registrar_prueba %} disabled{% endif %}>{% include "includes/icono.html" with nombre="registro" only %} Registrar prueba controlada</button><p data-envio role="status"></p>
 </form>{% endif %}{% endif %}
 </section>
 {% else %}

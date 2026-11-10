@@ -5,6 +5,7 @@
 {% block subtitle %}Estimación de área; no representa gramos ni volumen.{% endblock %}
 
 {% block analisis_content %}
+{% include "includes/recorrido.html" with actual="analisis" only %}
 <div class="analisis-detalle-tecnico">
 <p><a href="{% url 'analisis:lista' %}">← Volver a la lista de análisis</a></p>
 <section class="panel analisis-resumen-caso" aria-labelledby="caso-titulo">
@@ -28,7 +29,7 @@
 </section>
 
 {% if caso.estado == "PENDIENTE" or caso.estado == "EN_PROCESO" %}
-<section class="info-box analisis-aviso" role="status"
+<section class="info-box analisis-aviso eva-estado-panel" role="status"
         {% if estado_url %}data-estado-url="{{ estado_url }}" data-estado-actual="{{ caso.estado }}"{% endif %}>
 {% include "includes/mascota.html" with pose="carga" %}
 <h2>Analizando fotografías</h2>
@@ -37,13 +38,13 @@
     {% if estado_url %}<button class="button" type="button" data-estado-reintentar hidden>Reintentar consulta</button>{% endif %}</section>
 
 {% elif caso.estado == "FALLIDO" or caso.estado == "TIEMPO_AGOTADO" %}
-<section class="panel analisis-fallo eva-mascot-message" role="alert">
+<section class="panel analisis-fallo eva-estado-panel" role="alert">
 {% include "includes/mascota.html" with pose="alerta" %}
 <h2>{% if caso.estado == "TIEMPO_AGOTADO" %}El análisis tardó demasiado{% else %}Fallo técnico del análisis{% endif %}</h2>
 <p>No hay resultado analítico para este par, y no se muestra ningún porcentaje. Los resultados anteriores no se modifican.</p>
 {% if reintentar_url %}
     <form method="post" action="{{ reintentar_url }}">{% csrf_token %}
-    <button class="button" type="submit">Reintentar análisis</button>
+    <button class="button" type="submit">{% include "includes/icono.html" with nombre="indicadores" only %} Reintentar análisis</button>
     </form>
 {% else %}
     <p class="muted">El reintento todavía no está conectado.</p>
@@ -61,7 +62,7 @@
 
 {% if solicitar_url %}
 <form method="post" action="{{ solicitar_url }}">{% csrf_token %}
-    <button class="button" type="submit">Solicitar análisis</button>
+    <button class="button" type="submit">{% include "includes/icono.html" with nombre="indicadores" only %} Solicitar análisis</button>
 </form>
 {% endif %}
 {% endif %}

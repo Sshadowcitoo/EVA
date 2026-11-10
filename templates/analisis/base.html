@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% block heading_icon %}{% include "includes/icono.html" with nombre="indicadores" only %}{% endblock %}
 {% load static %}
 
 {% block title %}Análisis visual | EVA{% endblock %}
@@ -14,14 +15,14 @@
     {% if lista_url %}
       <a class="nav-link{% if request.resolver_match.namespace == 'analisis' %} active{% endif %}"
          href="{{ lista_url }}"
-         {% if request.resolver_match.view_name == 'analisis:lista' %}aria-current="page"{% endif %}>Pendientes</a>
+         {% if request.resolver_match.view_name == 'analisis:lista' %}aria-current="page"{% endif %}>{% include "includes/icono.html" with nombre="revisar" only %} Pendientes</a>
     {% else %}
       <span class="nav-link unavailable">Pendientes<small>Pendiente de conexión</small></span>
     {% endif %}
   {% endif %}
 
   {% if puede_administrar_catalogo %}
-    <a class="nav-link" href="{% url 'catalogo:platos' %}">Catálogo</a>
+    <a class="nav-link" href="{% url 'catalogo:platos' %}">{% include "includes/icono.html" with nombre="catalogo" only %} Catálogo</a>
   {% endif %}
   {% include 'includes/historico_nav.html' %}
 {% endblock %}

@@ -1,0 +1,9 @@
+<nav class="eva-recorrido" aria-label="Etapas del servicio">
+  <p>Recorrido de la bandeja</p>
+  <ol>
+    <li{% if actual == 'servido' %} aria-current="step"{% endif %}>{% include "includes/icono.html" with nombre="camara" only %}<span>Servido</span></li>
+    <li{% if actual == 'retorno' %} aria-current="step"{% endif %}>{% include "includes/icono.html" with nombre="retorno" only %}<span>Retorno</span></li>
+    <li{% if actual == 'analisis' %} aria-current="step"{% endif %}>{% include "includes/icono.html" with nombre="indicadores" only %}<span>Análisis</span></li>
+    <li{% if actual == 'revision' %} aria-current="step"{% endif %}>{% include "includes/icono.html" with nombre="revisar" only %}<span>Revisión</span></li>
+  </ol>
+</nav>

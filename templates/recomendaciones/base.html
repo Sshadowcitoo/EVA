@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% block heading_icon %}{% include "includes/icono.html" with nombre="recomendaciones" only %}{% endblock %}
 {% load static %}
 {% block title %}Recomendaciones | EVA{% endblock %}
 {% block eyebrow %}DECISIONES / EVA{% endblock %}
@@ -6,9 +7,9 @@
 {% block subtitle %}Evidencia, decisiones humanas y seguimiento de pruebas. Horario de Ecuador.{% endblock %}
 {% block navigation %}
 {% include 'includes/captura_nav.html' %}
-<a class="nav-link active" href="{% url 'recomendaciones:lista' %}" aria-current="page">Recomendaciones</a>
-{% url 'historico:lista' as historico_url %}{% if historico_url %}<a class="nav-link" href="{{ historico_url }}">Histórico e indicadores</a>{% endif %}
-{% url 'catalogo:platos' as catalogo_url %}{% if administracion and catalogo_url %}<a class="nav-link" href="{{ catalogo_url }}">Catálogo</a>{% endif %}
+<a class="nav-link active" href="{% url 'recomendaciones:lista' %}" aria-current="page">{% include "includes/icono.html" with nombre="recomendaciones" only %} Recomendaciones</a>
+{% url 'historico:lista' as historico_url %}{% if historico_url %}<a class="nav-link" href="{{ historico_url }}">{% include "includes/icono.html" with nombre="indicadores" only %} Histórico e indicadores</a>{% endif %}
+{% url 'catalogo:platos' as catalogo_url %}{% if administracion and catalogo_url %}<a class="nav-link" href="{{ catalogo_url }}">{% include "includes/icono.html" with nombre="catalogo" only %} Catálogo</a>{% endif %}
 {% endblock %}
 {% block content %}
 <link rel="stylesheet" href="{% static 'css/recomendaciones.css' %}">

@@ -12,7 +12,7 @@
         varios platos.
       </p>
     </div>
-    <a class="button primary-button" href="{% url 'catalogo:componente_crear' %}">Agregar componente</a>
+    <a class="button primary-button" href="{% url 'catalogo:componente_crear' %}">{% include "includes/icono.html" with nombre="registro" only %} Agregar componente</a>
   </section>
 
   {% include "catalogo/_secciones.html" with seccion="componentes" %}
@@ -42,7 +42,7 @@
               <span class="catalog-estado{% if componente.activo %} catalog-estado-activo{% endif %}">{% if componente.activo %}Activo{% else %}Inactivo{% endif %}</span>
             </td>
             <td data-label="Acción"><div class="catalog-acciones">
-              <a href="{% url 'catalogo:componente_editar' componente.pk %}">Editar</a>
+              <a href="{% url 'catalogo:componente_editar' componente.pk %}">{% include "includes/icono.html" with nombre="editar" only %} Editar</a>
               <details class="eva-secundarias"><summary>Más opciones</summary>
               <form method="post" action="{% url 'catalogo:componente_estado' componente.pk %}">
                 {% csrf_token %}

@@ -3,6 +3,6 @@
 {% csrf_token %}
 {% if form.errors %}<div class="historico-error" role="alert">Revisa la respuesta. {{ form.non_field_errors }}</div>{% endif %}
 {% for field in form %}{% if field.is_hidden %}{{ field }}{{ field.errors }}{% else %}<div class="historico-campo">{{ field.label_tag }}{{ field }}{{ field.errors }}</div>{% endif %}{% endfor %}
-<button type="submit" class="button"{% if bloqueado %} disabled{% endif %}>Guardar respuesta</button>
+<button type="submit" class="button"{% if bloqueado %} disabled{% endif %}>{% include "includes/icono.html" with nombre="guardar" only %} Guardar respuesta</button>
 <p data-estado-envio role="status" aria-live="polite"></p>
 </form>

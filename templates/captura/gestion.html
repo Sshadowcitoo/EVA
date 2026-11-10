@@ -19,7 +19,7 @@
       {% endfor %}
     </div>
     <div class="gestion-acciones">
-      <button type="submit" class="button primary-button">Buscar</button>
+      <button type="submit" class="button primary-button">{% include "includes/icono.html" with nombre="buscar" only %} Buscar</button>
       {% if form.is_bound %}<a href="{% url 'captura:gestion' %}">Volver al listado</a>{% endif %}
     </div>
   </form>
@@ -45,7 +45,7 @@
         </nav>
       {% endif %}
     {% else %}
-      <p class="muted">Todavía no hay bandejas registradas.</p>
+      <div class="eva-estado-panel">{% include "includes/mascota.html" with pose="carga" only %}<p>Todavía no hay bandejas registradas. Cuando estén disponibles, podrás consultarlas aquí.</p></div>
     {% endif %}
   </section>
 {% endif %}
@@ -61,7 +61,7 @@
 {% if asignacion %}<p><strong>Asignación:</strong> {% if asignacion.fin %}Cerrada el {{ asignacion.fin }}{% else %}Abierta desde {{ asignacion.inicio }}{% endif %}</p>{% endif %}
 {% include 'captura/_contexto_servicio.html' %}
 {% if permite_anular %}{% if servicio.estado_captura == 'PENDIENTE_SERVIDO' or servicio.estado_captura == 'EN_ESPERA_RETORNO' %}
-<a class="button danger-button" href="{% url 'captura:anular_servicio' servicio.pk %}">Anular servicio</a>
+<a class="button danger-button" href="{% url 'captura:anular_servicio' servicio.pk %}">{% include "includes/icono.html" with nombre="alerta" only %} Anular servicio</a>
 {% endif %}{% endif %}
 </section>
 {% elif bandeja %}<section class="panel"><h2>Bandeja libre</h2><p>No tiene un servicio abierto. El reemplazo de etiqueta conserva su historial.</p></section>{% endif %}
@@ -72,8 +72,8 @@
     {% include "includes/detalles_tecnicos.html" with valor=etiqueta.codigo etiqueta="Etiqueta" only %}
     {% if permite_reemplazar %}
     <img class="label-qr" src="{% url 'captura:qr_etiqueta' etiqueta.pk %}" alt="QR de la bandeja {{ bandeja.numero }}">
-    <div class="gestion-acciones"><a class="button primary-button" href="{% url 'captura:qr_etiqueta' etiqueta.pk %}" download="bandeja-{{ bandeja.numero }}.svg">Descargar QR</a>
-    </div><details class="eva-secundarias"><summary>Más opciones</summary><a class="button secondary-button" href="{% url 'captura:reemplazar_etiqueta' bandeja.pk %}">Reemplazar etiqueta</a></details>
+    <div class="gestion-acciones"><a class="button primary-button" href="{% url 'captura:qr_etiqueta' etiqueta.pk %}" download="bandeja-{{ bandeja.numero }}.svg">{% include "includes/icono.html" with nombre="qr" only %} Descargar QR</a>
+    </div><details class="eva-secundarias"><summary>Más opciones</summary><a class="button secondary-button" href="{% url 'captura:reemplazar_etiqueta' bandeja.pk %}">{% include "includes/icono.html" with nombre="qr" only %} Reemplazar etiqueta</a></details>
     {% endif %}
   {% else %}<p class="muted">Esta bandeja no tiene etiqueta vigente.</p>{% endif %}
   {% if etiqueta and permite_reemplazar %}<p class="muted">Imprime el QR junto al número visible y colócalo en el borde de la bandeja. El código no permite iniciar sesión.</p>{% endif %}

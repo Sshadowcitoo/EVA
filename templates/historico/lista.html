@@ -6,16 +6,16 @@
 {% block subtitle %}Consulta la muestra y los indicadores de sobrante visual por componente y periodo.{% endblock %}
 {% block header_action %}
 {% if recomendaciones_url %}
-<a class="button eva-primary eva-header-action" href="{{ recomendaciones_url }}">Ver recomendaciones <span aria-hidden="true">→</span></a>
+<a class="button eva-primary eva-header-action" href="{{ recomendaciones_url }}">{% include "includes/icono.html" with nombre="recomendaciones" only %} Ver recomendaciones <span aria-hidden="true">→</span></a>
 {% endif %}
 {% endblock %}
 {% block navigation %}
 <a class="nav-link active" href="{% url 'historico:lista' %}" aria-current="page">Indicadores</a>
 {% if datos %}<a class="nav-link" href="#historial-resultados">Historial de la consulta</a>{% endif %}
-{% if recomendaciones_url %}<a class="nav-link" href="{{ recomendaciones_url }}">Recomendaciones</a>{% endif %}
-<a class="nav-link" href="{% url 'historico:comparar' %}">Comparar periodos</a>
-{% if puede_cocina %}<a class="nav-link" href="{% url 'analisis:lista' %}">Revisión de Cocina</a>{% endif %}
-{% if puede_administrar_catalogo %}<a class="nav-link" href="{% url 'catalogo:platos' %}">Catálogo</a>{% endif %}
+{% if recomendaciones_url %}<a class="nav-link" href="{{ recomendaciones_url }}">{% include "includes/icono.html" with nombre="recomendaciones" only %} Recomendaciones</a>{% endif %}
+<a class="nav-link" href="{% url 'historico:comparar' %}">{% include "includes/icono.html" with nombre="comparar" only %} Comparar periodos</a>
+{% if puede_cocina %}<a class="nav-link" href="{% url 'analisis:lista' %}">{% include "includes/icono.html" with nombre="revisar" only %} Revisión de Cocina</a>{% endif %}
+{% if puede_administrar_catalogo %}<a class="nav-link" href="{% url 'catalogo:platos' %}">{% include "includes/icono.html" with nombre="catalogo" only %} Catálogo</a>{% endif %}
 {% include 'includes/captura_nav.html' %}
 {% endblock %}
 {% block historico_content %}
@@ -70,7 +70,7 @@
   </details>
   {% endwith %}
 {% empty %}
-  <p class="historico-vacio">No hay servicios en esta página. Prueba otros filtros o vuelve a la página anterior.</p>
+  <div class="historico-vacio eva-estado-panel">{% include "includes/mascota.html" with pose="carga" only %}<p><strong>No hay servicios en esta página.</strong> Prueba otros filtros o vuelve a la página anterior.</p></div>
 {% endfor %}
 <nav class="historico-paginacion" aria-label="Páginas de resultados">{% if enlaces.anterior %}<a href="{{ enlaces.anterior }}">← Anterior</a>{% endif %}<span>Página {{ datos.paginacion.pagina }} de {{ datos.paginacion.paginas }} · {{ datos.paginacion.total_filas }} filas</span>{% if enlaces.siguiente %}<a href="{{ enlaces.siguiente }}">Siguiente →</a>{% endif %}</nav>
 </section>{% endif %}

@@ -7,14 +7,14 @@
       {{ busqueda.numero }}
       {{ busqueda.numero.errors }}
     </div>
-    <button class="button primary-button" {% if not operacion_habilitada or not buscar_url %}disabled{% endif %}>Buscar bandeja</button>
+    <button class="button primary-button" {% if not operacion_habilitada or not buscar_url %}disabled{% endif %}>{% include "includes/icono.html" with nombre="buscar" only %} Buscar bandeja</button>
     {% if lector_habilitado %}
     <div class="capture-scanner" data-qr-reader>
       <details{% if busqueda.etiqueta.errors or busqueda.etiqueta.value %} open{% endif %}><summary>Escanear etiqueta QR</summary>
         {{ busqueda.etiqueta.label_tag }}
         {{ busqueda.etiqueta }}
         {{ busqueda.etiqueta.errors }}
-        <button type="button" class="button secondary-button" data-qr-start>Activar cámara</button>
+        <button type="button" class="button secondary-button" data-qr-start>{% include "includes/icono.html" with nombre="camara" only %} Activar cámara</button>
         <button type="button" class="button secondary-button" data-qr-stop hidden>Detener cámara</button>
         <video class="capture-image" data-qr-video autoplay playsinline muted hidden aria-label="Cámara para escanear la etiqueta"></video>
         <canvas data-qr-canvas hidden></canvas>

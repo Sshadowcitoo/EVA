@@ -1,4 +1,5 @@
 {% extends "captura/base_gestion.html" %}
+{% block heading_icon %}{% include "includes/icono.html" with nombre="qr" only %}{% endblock %}
 {% block title %}Reemplazar etiqueta | EVA{% endblock %}
 {% block heading %}Reemplazar etiqueta{% endblock %}
 {% block subtitle %}Revoca el QR deteriorado y emite otro para la misma bandeja.{% endblock %}
@@ -6,7 +7,7 @@
 <section class="panel capture-operation"><h2>Bandeja {{ bandeja.numero }}</h2>{% include "includes/detalles_tecnicos.html" with valor=etiqueta.codigo etiqueta="Etiqueta vigente" only %}
 <p class="info-box">El servicio y las fotografías conservan sus identificadores. Retira físicamente la etiqueta anterior cuando coloques el nuevo QR.</p>
 <form method="post">{% csrf_token %}{% if form.errors %}<p class="error-summary" role="alert">Revisa el motivo y la confirmación antes de continuar.</p>{% endif %}
-{{ form.as_p }}<div class="gestion-acciones"><button class="button primary-button">Confirmar reemplazo</button>
+{{ form.as_p }}<div class="gestion-acciones"><button class="button primary-button">{% include "includes/icono.html" with nombre="qr" only %} Confirmar reemplazo</button>
 <a class="button secondary-button" href="{% url 'captura:gestion' %}?numero={{ bandeja.numero }}">Volver a la bandeja</a>
 </div></form>
 </section>

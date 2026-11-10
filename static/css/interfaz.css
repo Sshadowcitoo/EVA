@@ -1,0 +1,106 @@
+/* Componentes de presentación compartidos. Los colores operativos viven en eva_pastel.css. */
+.eva-icono {
+  display: inline-block;
+  inline-size: 1.18em;
+  block-size: 1.18em;
+  vertical-align: -.22em;
+  flex: none;
+  pointer-events: none;
+}
+.eva-sello {
+  display: inline-grid;
+  place-items: center;
+  inline-size: 2.25rem;
+  block-size: 2.25rem;
+  flex: none;
+  border: 1px solid var(--eva-border);
+  border-radius: .8rem .8rem .8rem .35rem;
+  background: var(--eva-emphasis);
+  color: var(--eva-action);
+}
+.eva-titulo { display: flex; align-items: center; gap: .75rem; }
+.eva-titulo > span:last-child { min-width: 0; overflow-wrap: anywhere; }
+.eva-titulo .eva-icono { inline-size: 1.4rem; block-size: 1.4rem; }
+.eva-pastel .page-header {
+  background: linear-gradient(110deg, var(--eva-surface), var(--eva-emphasis));
+}
+.eva-pastel .sidebar-brand {
+  border-bottom: 1px solid var(--eva-border);
+  padding-bottom: 1rem;
+}
+.eva-pastel .sidebar-nav { margin-top: 1.45rem; gap: .35rem; }
+.eva-pastel .sidebar-nav .nav-link { display: flex; align-items: center; gap: .65rem; min-width: 0; }
+.eva-pastel .sidebar-nav .nav-link.active { box-shadow: inset 3px 0 var(--eva-action); }
+.eva-pastel .sidebar-nav .nav-link:not(.active) .eva-icono { color: var(--eva-action); }
+.eva-pastel .workspace { min-width: 0; }
+.eva-pastel .page-content { overflow-wrap: anywhere; }
+.eva-pastel .panel {
+  box-shadow: 0 2px 4px #4933110b, 0 10px 24px #49331108;
+}
+.eva-pastel .panel h2 { letter-spacing: -.018em; text-wrap: balance; }
+.eva-pastel .panel :is(table, input, select, textarea) { border-color: var(--eva-border); }
+.eva-pastel .page-content :is(input:not([type=checkbox]):not([type=radio]), select, textarea) {
+  min-width: 0;
+  max-width: 100%;
+}
+.eva-pastel :is(.button, .nav-link) .eva-icono { margin-inline-end: .2em; }
+.eva-pastel .sidebar-nav .nav-link .eva-icono { margin: 0; }
+.eva-pastel :is(.historico-tabla, .rec-tabla) { min-width: 0; max-width: 100%; }
+.eva-pastel :is(.historico-tabla, .rec-tabla) th { background: var(--eva-surface); color: var(--eva-ink); }
+.eva-pastel .eva-estado-panel:not(td) { display: flow-root; }
+.eva-pastel .eva-estado-panel > .eva-mascot-state {
+  float: inline-end;
+  margin: 0 0 .5rem .8rem;
+  inline-size: clamp(56px, 10vw, 82px);
+  block-size: auto;
+  max-block-size: 108px;
+  object-fit: contain;
+}
+.eva-recorrido {
+  background: var(--eva-surface);
+  color: var(--eva-ink);
+  border: 1px solid var(--eva-border);
+  border-radius: .95rem;
+  padding: .8rem;
+  margin-block: 0 1.1rem;
+}
+.eva-recorrido p { margin: 0 0 .55rem; font-weight: 700; }
+.eva-recorrido ol { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: .4rem; margin: 0; padding: 0; list-style: none; }
+.eva-recorrido li {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: .45rem;
+  border: 1px solid transparent;
+  border-radius: .55rem;
+  padding: .55rem .2rem;
+  color: var(--eva-muted);
+  font-size: .875rem;
+}
+.eva-recorrido [aria-current=step] {
+  background: var(--eva-emphasis);
+  border-color: var(--eva-action);
+  color: var(--eva-ink);
+  font-weight: 700;
+}
+.eva-saltar {
+  position: absolute;
+  top: .6rem;
+  left: .6rem;
+  z-index: 10;
+  padding: .6rem 1rem;
+  background: var(--eva-surface);
+  color: var(--eva-action);
+  transform: translateY(-200%);
+}
+.eva-saltar:focus { transform: none; }
+
+@media (max-width: 640px) {
+  .eva-pastel .sidebar-nav { margin-top: .65rem; }
+  .eva-pastel .mobile-menu-toggle :is(.menu-abrir, .menu-cerrar) { white-space: nowrap; }
+  .eva-titulo { gap: .6rem; }
+  .eva-titulo .eva-sello { inline-size: 2rem; block-size: 2rem; }
+  .eva-recorrido li { flex-direction: column; gap: .2rem; font-size: .78rem; }
+  .eva-pastel .rec-acciones > button,
+  .eva-pastel .historico-acciones > button { max-width: 100%; }
+}

@@ -1,18 +1,19 @@
 {% extends "base.html" %}
+{% block heading_icon %}{% include "includes/icono.html" with nombre="indicadores" only %}{% endblock %}
 {% load static %}
 {% block title %}Histórico e indicadores | EVA{% endblock %}
 {% block eyebrow %}SEGUIMIENTO / EVA{% endblock %}
 {% block heading %}Histórico e indicadores{% endblock %}
 {% block subtitle %}Consulta sobrantes visuales por componente y periodo. Horario de Ecuador (America/Guayaquil).{% endblock %}
 {% block navigation %}
-{% if recomendaciones_url %}<a class="nav-link" href="{{ recomendaciones_url }}">Recomendaciones</a>{% endif %}
+{% if recomendaciones_url %}<a class="nav-link" href="{{ recomendaciones_url }}">{% include "includes/icono.html" with nombre="recomendaciones" only %} Recomendaciones</a>{% endif %}
 {% if puede_cocina or puede_administrar_catalogo %}
-<a class="nav-link{% if request.resolver_match.url_name == 'lista' %} active{% endif %}" href="{% url 'historico:lista' %}"{% if request.resolver_match.url_name == 'lista' %} aria-current="page"{% endif %}>Histórico e indicadores</a>
-<a class="nav-link{% if request.resolver_match.url_name == 'comparar' %} active{% endif %}" href="{% url 'historico:comparar' %}"{% if request.resolver_match.url_name == 'comparar' %} aria-current="page"{% endif %}>Comparar periodos</a>
+<a class="nav-link{% if request.resolver_match.url_name == 'lista' %} active{% endif %}" href="{% url 'historico:lista' %}"{% if request.resolver_match.url_name == 'lista' %} aria-current="page"{% endif %}>{% include "includes/icono.html" with nombre="indicadores" only %} Histórico e indicadores</a>
+<a class="nav-link{% if request.resolver_match.url_name == 'comparar' %} active{% endif %}" href="{% url 'historico:comparar' %}"{% if request.resolver_match.url_name == 'comparar' %} aria-current="page"{% endif %}>{% include "includes/icono.html" with nombre="comparar" only %} Comparar periodos</a>
 {% endif %}
-{% url 'analisis:lista' as analisis_url %}{% if puede_cocina and analisis_url %}<a class="nav-link" href="{{ analisis_url }}">Revisión de Cocina</a>{% endif %}
+{% url 'analisis:lista' as analisis_url %}{% if puede_cocina and analisis_url %}<a class="nav-link" href="{{ analisis_url }}">{% include "includes/icono.html" with nombre="revisar" only %} Revisión de Cocina</a>{% endif %}
 {% include 'includes/captura_nav.html' %}
-{% url 'catalogo:platos' as catalogo_url %}{% if puede_administrar_catalogo and catalogo_url %}<a class="nav-link" href="{{ catalogo_url }}">Catálogo</a>{% endif %}
+{% url 'catalogo:platos' as catalogo_url %}{% if puede_administrar_catalogo and catalogo_url %}<a class="nav-link" href="{{ catalogo_url }}">{% include "includes/icono.html" with nombre="catalogo" only %} Catálogo</a>{% endif %}
 {% endblock %}
 {% block content %}
 <link rel="stylesheet" href="{% static 'css/historico.css' %}">

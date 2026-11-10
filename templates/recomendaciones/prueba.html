@@ -1,4 +1,5 @@
 {% extends 'recomendaciones/base.html' %}
+{% block heading_icon %}{% include "includes/icono.html" with nombre="comparar" only %}{% endblock %}
 {% block heading %}Seguimiento de prueba controlada{% endblock %}
 {% block recomendaciones_content %}
 {% if prueba %}
@@ -12,7 +13,7 @@
 {% if prueba.estado == 'REGISTRADA' %}<p>Prueba registrada, todavía sin evaluación. No se puede afirmar mejora.</p>{% elif prueba.estado == 'NO_EVALUABLE' %}<p>No evaluable. Esto no equivale a una mejora de cero puntos.</p>{% endif %}
 <p><a href="{% url 'recomendaciones:detalle' recomendacion_id=prueba.recomendacion_id %}">Ver recomendación y evidencia</a></p>
 {% if bloqueado %}<p><a href="{% url 'recomendaciones:prueba' prueba_id=prueba.id %}">Recargar versión de la prueba antes de evaluar de nuevo</a></p>{% endif %}
-{% if administracion and prueba.puede_evaluar %}<form method="post" action="{% url 'recomendaciones:evaluar_prueba' prueba_id=prueba.id %}" data-rec-submit{% if bloqueado %} data-bloqueado="true"{% endif %}>{% csrf_token %}{% include 'recomendaciones/_campos.html' with formulario=version_form %}<button class="button" type="submit"{% if bloqueado %} disabled{% endif %}>Evaluar prueba</button><p data-envio role="status"></p></form>{% endif %}
+{% if administracion and prueba.puede_evaluar %}<form method="post" action="{% url 'recomendaciones:evaluar_prueba' prueba_id=prueba.id %}" data-rec-submit{% if bloqueado %} data-bloqueado="true"{% endif %}>{% csrf_token %}{% include 'recomendaciones/_campos.html' with formulario=version_form %}<button class="button" type="submit"{% if bloqueado %} disabled{% endif %}>{% include "includes/icono.html" with nombre="revisar" only %} Evaluar prueba</button><p data-envio role="status"></p></form>{% endif %}
 </section>
 {% if prueba.comparacion %}
 <section class="panel"><h2>Comparación de la intervención</h2>

@@ -1,7 +1,8 @@
 {% extends "base.html" %} {% block title %}Registro creado | EVA{% endblock %}
+{% block heading_icon %}{% include "includes/icono.html" with nombre="guardar" only %}{% endblock %}
 {% block heading %}Registro creado{% endblock %} {% block subtitle %}Los datos
 de la bandeja quedaron guardados.{% endblock %} {% block content %}
-<section class="panel confirmation-panel" aria-labelledby="resumen-registro">
+<section class="panel confirmation-panel eva-estado-panel" aria-labelledby="resumen-registro">
   {% include 'includes/mascota.html' with pose='guardado' %}
   <span class="success-label">Guardado correctamente</span>
   <h2 id="resumen-registro">Datos del servicio</h2>
@@ -22,7 +23,7 @@ de la bandeja quedaron guardados.{% endblock %} {% block content %}
       <dd>{{ servicio.fecha_creacion|date:"d/m/Y H:i" }}</dd>
     </div>
   </dl>
-  <p><a class="button primary-button" href="{% url 'captura:resolver_bandeja' %}">Iniciar captura con bandeja</a></p>
+  <p><a class="button primary-button" href="{% url 'captura:resolver_bandeja' %}">{% include "includes/icono.html" with nombre="camara" only %} Iniciar captura con bandeja</a></p>
 
   <details class="eva-secundarias"><summary>Más opciones</summary>
   <a class="button secondary-button" href="{% url 'captura:nueva_bandeja' %}">

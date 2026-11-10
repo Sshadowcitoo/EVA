@@ -10,7 +10,7 @@
     <p>El análisis y la revisión de fotografías se incorporarán en el siguiente bloque.</p>
     <form method="post" action="{% url 'cuentas:logout' %}">
       {% csrf_token %}
-      <button type="submit" class="button secondary-button">Cerrar sesión</button>
+      <button type="submit" class="button secondary-button">{% include "includes/icono.html" with nombre="acceso" only %} Cerrar sesión</button>
     </form>
   </section>
 {% endblock %}

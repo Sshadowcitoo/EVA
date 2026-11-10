@@ -8,13 +8,15 @@
     <link rel="stylesheet" href="{% static 'css/eva.css' %}" />
     <link rel="stylesheet" href="{% static 'css/eva_pastel.css' %}?v=20261109-claridad" />
     <link rel="stylesheet" href="{% static 'css/navegacion.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/interfaz.css' %}" />
     {% block page_styles %}{% endblock %}
   </head>
   <body class="eva-pastel{% block body_classes %}{% endblock %}"{% block body_attributes %}{% endblock %}>
+    <a class="eva-saltar" href="#contenido-principal">Saltar al contenido</a>
     <div class="app-layout">
       <aside class="sidebar">
         <button type="button" class="mobile-menu-toggle" aria-expanded="false" aria-controls="navegacion-principal{% if user.is_authenticated %} sesion-principal{% endif %}">
-          EVA <span class="menu-abrir">Menú ☰</span><span class="menu-cerrar">Cerrar menú ×</span>
+          EVA <span class="menu-abrir">{% include "includes/icono.html" with nombre="menu" only %} Menú</span><span class="menu-cerrar">{% include "includes/icono.html" with nombre="cerrar" only %} Cerrar menú</span>
         </button>
         <div class="sidebar-brand">
           <span class="brand">EVA</span>
@@ -32,12 +34,12 @@
           {% include 'includes/captura_nav.html' %}
 
           {% if puede_administrar_catalogo %}
-          <a class="nav-link" href="{% url 'catalogo:platos' %}">Catálogo</a>
-          <a class="nav-link" href="{% url 'captura:gestion' %}">Bandejas y servicios</a>
+          <a class="nav-link" href="{% url 'catalogo:platos' %}">{% include "includes/icono.html" with nombre="catalogo" only %} Catálogo</a>
+          <a class="nav-link" href="{% url 'captura:gestion' %}">{% include "includes/icono.html" with nombre="bandeja" only %} Bandejas y servicios</a>
           {% endif %}
 
           {% if puede_cocina %}
-          <a class="nav-link" href="{% url 'cuentas:cocina_pendiente' %}">Cocina</a>
+          <a class="nav-link" href="{% url 'cuentas:cocina_pendiente' %}">{% include "includes/icono.html" with nombre="revisar" only %} Cocina</a>
           {% endif %}
 
           {% include 'includes/historico_nav.html' %}
@@ -56,7 +58,7 @@
               <form method="post" action="{{ logout_url }}">
                 {% csrf_token %}
                 <button type="submit" class="nav-link nav-button">
-                  Cerrar sesión
+                  {% include "includes/icono.html" with nombre="acceso" only %} Cerrar sesión
                 </button>
               </form>
             {% endif %}
@@ -72,8 +74,11 @@
             <header class="page-header">
                 <span class="eyebrow">{% block eyebrow %}REGISTRO / EVA{% endblock %}</span>
 
-                <h1>
+                <h1 class="eva-titulo">
+                    <span class="eva-sello">{% block heading_icon %}{% include "includes/icono.html" with nombre="registro" only %}{% endblock %}</span>
+                    <span>
                     {% block heading %}Nueva bandeja{% endblock %}
+                    </span>
                 </h1>
 
                 <p>
@@ -84,7 +89,7 @@
                 {% block header_action %}{% endblock %}
             </header>
 
-            <main class="page-content">
+            <main class="page-content" id="contenido-principal" tabindex="-1">
                 {% block content %}
                 {% endblock %}
             </main>

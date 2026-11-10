@@ -4,5 +4,5 @@
 {% for field in form %}{% if field.is_hidden %}{{ field.errors }}{% else %}
 <div class="historico-campo">{{ field.label_tag }}{{ field }}{{ field.errors }}</div>
 {% endif %}{% endfor %}
-<div class="historico-acciones"><button type="submit" class="button">Consultar</button><a href="{{ request.path }}">Limpiar filtros</a></div>
+<div class="historico-acciones"><button type="submit" class="button">{% include "includes/icono.html" with nombre="buscar" only %} Consultar</button><a href="{{ request.path }}">Limpiar filtros</a></div>
 </form>

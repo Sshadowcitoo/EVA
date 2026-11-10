@@ -1,4 +1,5 @@
 {% extends "captura/base_operacion.html" %}
+{% block heading_icon %}{% include "includes/icono.html" with nombre="celular" only %}{% endblock %}
 {% load static %}
 {% block title %}Capturar con celular | EVA{% endblock %}
 {% block heading %}Capturar con celular{% endblock %}
@@ -17,7 +18,7 @@
     <form method="post" {% if crear_url %}action="{{ crear_url }}"{% endif %}>
       {% csrf_token %}
       {% if crear_form %}{{ crear_form.as_p }}{% endif %}
-      <button class="button primary-button" {% if not operacion_habilitada or not crear_url %}disabled{% endif %}>{% if estado %}Generar otro enlace{% else %}Crear enlace de captura{% endif %}</button>
+      <button class="button primary-button" {% if not operacion_habilitada or not crear_url %}disabled{% endif %}>{% if estado %}Generar otro enlace{% else %}Crear enlace de captura{% endif %} {% include "includes/icono.html" with nombre="qr" only %}</button>
     </form>
   </section>
   <section class="panel capture-link-panel" data-capture-link data-state="{{ estado }}" data-state-url="{{ estado_url }}" data-expires-at="{{ caduca_en }}">

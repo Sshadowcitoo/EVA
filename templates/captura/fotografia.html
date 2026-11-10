@@ -1,4 +1,5 @@
 {% extends "captura/base_operacion.html" %}
+{% block heading_icon %}{% include "includes/icono.html" with nombre="camara" only %}{% endblock %}
 {% block title %}Fotografía del {{ etapa|lower }} | EVA{% endblock %}
 {% block heading %}Fotografía del {{ etapa|lower }}{% endblock %}
 {% block subtitle %}Revisa la bandeja y el plato antes de guardar.{% endblock %}

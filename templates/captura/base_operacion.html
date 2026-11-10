@@ -6,16 +6,14 @@
 {% if not operacion_habilitada %}
 <p class="info-box" role="status">Esta operación aún no está disponible. No se ha guardado ninguna fotografía.</p>
 {% endif %}
+{% block captura_etapas %}
+{% if estado == 'PAR_COMPLETO' %}{% include "includes/recorrido.html" with actual="analisis" only %}
+{% elif estado != 'ANULADO' %}
+  {% if etapa == 'RETORNO' or estado == 'EN_ESPERA_RETORNO' or es_retorno %}{% include "includes/recorrido.html" with actual="retorno" only %}
+  {% elif etapa == 'SERVIDO' or lector_habilitado %}{% include "includes/recorrido.html" with actual="servido" only %}{% endif %}
+{% endif %}
+{% endblock %}
 {% block captura_content %}{% endblock %}
-{% block captura_etapas %}<section class="process-panel" aria-label="Etapas del servicio">
-  <ol class="process-steps">
-    <li><span>01</span> Registro</li>
-    <li {% if etapa == 'SERVIDO' %}class="current" aria-current="step"{% endif %}><span>02</span> Foto servido</li>
-    <li {% if estado == 'EN_ESPERA_RETORNO' %}class="current" aria-current="step"{% endif %}><span>03</span> En espera</li>
-    <li {% if etapa == 'RETORNO' %}class="current" aria-current="step"{% endif %}><span>04</span> Foto retorno</li>
-    <li><span>05</span> Análisis y revisión</li>
-  </ol>
-</section>{% endblock %}
 <script src="{% static 'js/captura.js' %}?v=20261109-mascotas" defer></script>
 <script src="{% static 'js/mascota.js' %}" defer></script>
 {% block captura_scripts %}{% endblock %}

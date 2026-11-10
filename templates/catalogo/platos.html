@@ -15,7 +15,7 @@
     </div>
 
     {% if crear_url %}
-      <a class="button primary-button" href="{{ crear_url }}">Agregar plato</a>
+      <a class="button primary-button" href="{{ crear_url }}">{% include "includes/icono.html" with nombre="registro" only %} Agregar plato</a>
     {% endif %}
   </section>
 
@@ -52,7 +52,7 @@
             </td>
             <td data-label="Acción"><div class="catalog-acciones">
               {% if editar_url %}
-                <a href="{{ editar_url }}">Editar →</a>
+                <a href="{{ editar_url }}">{% include "includes/icono.html" with nombre="editar" only %} Editar →</a>
               {% else %}
                 —
               {% endif %}

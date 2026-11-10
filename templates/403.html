@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% block heading_icon %}{% include "includes/icono.html" with nombre="alerta" only %}{% endblock %}
 
 {% block title %}Acceso no permitido | EVA{% endblock %}
 
@@ -9,7 +10,7 @@
 {% block subtitle %}Tu cuenta no tiene permiso para ver esta pantalla.{% endblock %}
 
 {% block content %}
-  <section class="panel denied-panel" aria-labelledby="titulo-denegado">
+  <section class="panel denied-panel eva-estado-panel" aria-labelledby="titulo-denegado">
     {% include "includes/mascota.html" with pose="alerta" %}
     <h2 id="titulo-denegado">No puedes abrir esta pantalla</h2>
     <p>

@@ -42,3 +42,54 @@ El evaluador informa por imagen y clase, omisiones, máscaras, clases ausentes, 
 ## Estado
 
 25 pruebas unitarias ejecutadas con éxito, 10 de ONNX omitidas por dependencias ausentes. No hubo inferencia nueva, entrenamiento, exportación, medición de CPU sobre pesos ni cambio del motor. Se conservan las barreras actuales de comparabilidad y el umbral operativo. Queda pendiente ejecutar con PyTorch/Ultralytics y OpenCV/ONNX Runtime ya disponibles o autorizados, y reunir máscaras independientes revisadas, prioritariamente pollo con salsa/restos, yuca y menestra. Mantener los pesos vigentes hasta superar retención, evaluación nueva, negativos, pares y paridad. El ZIP privado ya contiene hashes y versiones de los pesos entregados.
+
+## Segunda ejecución privada
+
+Se verificó de nuevo el ZIP y se instaló el entorno virtual CPU sin modificar Python global. Se comprobó el orden de las siete clases de los pesos vigentes y los dos candidatos. A 320 px, `rect=False`, `retina_masks=True`, confianza 0,80, IoU NMS 0,70 y máximo 32, las tres pruebas privadas pasan con Ultralytics 8.4.150. La prueba del encebollado comprueba que se eliminan los píxeles compartidos y que los componentes siguen sin porcentaje.
+
+Ultralytics 8.4.210 utiliza una interpolación intermedia para el recorte del padding en la reconstrucción nativa. Con esa versión, incluso al usar el mismo archivo ONNX en ambos lados, la IoU entre implementaciones fue 0,883 para yuca y 0,887 para pescado en el encebollado. En arroz con menestra y carne fue 0,974–0,989 y en seco fue 1,000. Esto mide concordancia antes del saneamiento. Se fija la versión de referencia en los requisitos de diagnóstico y se conserva el runtime operativo.
+
+```sh
+python -m venv .venv-diagnostico
+. .venv-diagnostico/bin/activate
+python -m pip install --index-url https://download.pytorch.org/whl/cpu 'torch==2.15.0' 'torchvision==0.29.2'
+python -m pip install -r visual_service/requirements-diagnostico.txt
+export YOLO_AUTOINSTALL=false OMP_NUM_THREADS=2 MKL_NUM_THREADS=2
+export EVA_DIAGNOSTICO_PRIVADO=/ruta/privada/EVA_Equipo_B/01_modelo_actual
+python -m unittest discover -s visual_service -t .
+python "$EVA_DIAGNOSTICO_PRIVADO/reproducir.py" --repo "$PWD" --salida /ruta/privada/paridad-pt --referencia pt
+python "$EVA_DIAGNOSTICO_PRIVADO/reproducir.py" --repo "$PWD" --salida /ruta/privada/paridad-onnx --referencia onnx
+```
+
+### Ensayo con un contorno nuevo
+
+Se revisaron tres fuentes adicionales. Se anotó manualmente el pollo visible de [Seco de Pollo. Tabacundo 2026, TupakAmaruIshkay, CC BY-SA 4.0](https://commons.wikimedia.org/wiki/File:Seco_de_Pollo._Tabacundo_2026.jpg) en un recorte que evita componentes vecinos. Se excluyeron de entrenamiento la preparación de JONAVIAG y el [encebollado de Maryte Peralta](https://commons.wikimedia.org/wiki/File:Encebollado..jpg), donde el caldo y la salsa no permiten adjudicar contornos con suficiente confianza. Esta última autora ya aparece en las reservadas y no cuenta como nueva fuente independiente. Las siete fotos reservadas originales quedaron intactas.
+
+Se ajustó el checkpoint vigente con 133 imágenes de entrenamiento y las mismas 20 de validación. El ensayo guardó cuatro puntos de control, con semilla 17 y AdamW. Se detuvo al constatar que ninguno recuperaba el pollo al umbral operativo y que todos perdían el arroz detectado en validación. La preparación, los argumentos, los hashes y el checkpoint descartado están en la entrega privada.
+
+| Componente | n de validación | Vigente detecciones / IoU ≥0,50 | Descartado anterior | Nuevo ajuste |
+| --- | ---: | ---: | ---: | ---: |
+| Yuca | 0 | — | — | — |
+| Pescado | 8 | 0 / 0 | 0 / 0 | 0 / 0 |
+| Arroz | 6 | 1 / 1 | 1 / 1 | 0 / 0 |
+| Pollo | 1 | 0 / 0 | 0 / 0 | 0 / 0 |
+| Menestra | 0 | — | — | — |
+| Carne | 8 | 1 / 1 | 0 / 0 | 3 / 2 |
+| Ensalada | 5 | 0 / 0 | 0 / 0 | 0 / 0 |
+
+El descarte anterior añadió dos detecciones de carne sin etiqueta de referencia y dos puntos intermedios del nuevo ajuste añadieron una detección de yuca sin etiqueta. En el par reservado del simulacro, el vigente reconoce arroz en servido y retorno y el nuevo ajuste pierde ambas detecciones. Ninguno recupera el pollo. En la foto pública reservada con menestra, el vigente detecta arroz y carne y el nuevo ajuste solo detecta arroz. Las fotos nuevas sin contorno se usaron para revisar presencia, sin estimar precisión ni porcentajes de sobrante.
+
+Se mantiene el modelo vigente y el umbral 0,80. El candidato no pasa a ONNX porque no conserva el reconocimiento en el par reservado. Sigue faltando una evaluación independiente con máscaras revisadas de pollo con salsa y restos, yuca y menestra, pares completos de la misma bandeja, negativos y preparaciones separadas por fuente.
+
+### Coste de inferencia en CPU
+
+Proceso nuevo por peso, dos hilos de inferencia, tres fotos conocidas con calentamiento y 30 predicciones medidas por peso. El tiempo incluye preprocesamiento y reconstrucción de máscaras. RSS es el pico de proceso, incluidas bibliotecas y pesos. Resultados locales sin extrapolar a producción.
+
+| Peso | Mediana (ms) | P95 (ms) | RSS pico (MiB) |
+| --- | ---: | ---: | ---: |
+| Vigente PT | 24,2 | 49,4 | 416 |
+| Vigente ONNX | 30,3 | 39,3 | 122 |
+| Descartado anterior PT | 27,6 | 51,4 | 415 |
+| Nuevo ajuste PT | 29,1 | 39,4 | 414 |
+
+Pasaron 50 pruebas de `visual_service`, incluidas las tres privadas de paridad.

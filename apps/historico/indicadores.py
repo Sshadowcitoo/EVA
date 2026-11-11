@@ -6,6 +6,8 @@ import json
 from zoneinfo import ZoneInfo
 
 from django.core.paginator import Paginator
+from ops.presentacion.aislamiento import lote_activo
+
 from .configuration import criterio_presencia
 from .contracts import CONTRACT_VERSION, ZONA_HORARIA
 
@@ -90,7 +92,7 @@ def _resumir(datos, advertencias, filtros, pagina, *, grupo_panel=None):
     paginador = Paginator(filas, 30)
     pagina_actual = paginador.get_page(pagina)
     candidatos = len(datos)
-    return dict(version_contrato=CONTRACT_VERSION, solo_pruebas=False, filtros=filtros,
+    return dict(version_contrato=CONTRACT_VERSION, solo_pruebas=bool(lote_activo()), filtros=filtros,
         filas=list(pagina_actual.object_list),
         paginacion=dict(pagina=pagina_actual.number, paginas=paginador.num_pages, total_filas=len(filas), por_pagina=30),
         resumen=dict(candidatos=candidatos, aptos=aptos, excluidos=candidatos - aptos,

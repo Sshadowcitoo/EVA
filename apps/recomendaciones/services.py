@@ -12,6 +12,8 @@ from django.utils import timezone
 from apps.catalogo.permissions import ADMINISTRACION, COCINA, tiene_rol
 from apps.historico import services as historico
 from apps.historico.contracts import FiltrosInvalidos
+from ops.presentacion.aislamiento import lote_activo
+
 from . import contracts as c, models as m, selectors
 from .filtros import (normalizar_filtros, normalizar_periodo_evaluacion,
                       normalizar_decision, normalizar_prueba, _entero)
@@ -68,7 +70,8 @@ def _capturar(filtros):
     datos, resumen, referencias, firma = selectors.seleccionar(filtros)
     criterios = selectors.criterios_actuales()
     chequeos, categoria = selectors.evaluar(datos, resumen, filtros, criterios)
-    dto = dict(id='', solo_pruebas=False, origen='REAL',
+    lote = lote_activo()
+    dto = dict(id='', solo_pruebas=bool(lote), origen='SIMULADO' if lote else 'REAL',
         suficiencia='SUFICIENTE' if all(ch['cumple'] for ch in chequeos) else 'INSUFICIENTE',
         filtros=filtros, criterios=criterios, resumen=resumen['resumen'], indicadores=resumen['indicadores'],
         grupos=resumen['grupos'], chequeos=chequeos, motivos=[ch['motivo'] for ch in chequeos if not ch['cumple']],
@@ -165,7 +168,9 @@ def generar_recomendacion(evaluacion_id, usuario):
     evaluacion = _buscar(m.EvaluacionEvidencia, evaluacion_id, True)
     dto = _vigente(evaluacion)
     categoria = cargar(evaluacion.snapshot)['categoria']
-    if dto['suficiencia'] != 'SUFICIENTE' or not dto['criterios']['aprobada'] or dto['origen'] != 'REAL' or not categoria:
+    origen_admisible = (dto['origen'] == 'REAL' if not lote_activo()
+                        else dto['solo_pruebas'] and dto['origen'] == 'SIMULADO')
+    if dto['suficiencia'] != 'SUFICIENTE' or not dto['criterios']['aprobada'] or not origen_admisible or not categoria:
         raise c.ConflictoRecomendacion('La evidencia es insuficiente para generar una recomendación.')
     metricas, filtros = dto['indicadores'], dto['filtros']
     explicacion = (f"Regla {dto['criterios']['version']}; periodo {filtros['desde']} a {filtros['hasta']}; "
@@ -236,7 +241,7 @@ def consultar_recomendaciones(filtros, usuario, pagina=1):
         en_observacion=sum(f['decision'] == 'EN_OBSERVACION' for f in filas), obsoletas=sum(not f['vigente'] for f in filas))
     paginador = Paginator(filas, 30)
     page = paginador.get_page(pagina)
-    return dict(version_contrato=c.CONTRACT_VERSION, solo_pruebas=False, filtros=filtros, filas=list(page.object_list),
+    return dict(version_contrato=c.CONTRACT_VERSION, solo_pruebas=bool(lote_activo()), filtros=filtros, filas=list(page.object_list),
         paginacion=dict(pagina=page.number, paginas=paginador.num_pages, total_filas=len(filas), por_pagina=30), resumen=resumen)
 
 

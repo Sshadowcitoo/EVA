@@ -90,6 +90,7 @@
             </header>
 
             <main class="page-content" id="contenido-principal" tabindex="-1">
+                {% if entorno_presentacion %}<p class="info-box" role="note"><strong>Entorno de presentación</strong> · Datos de ejemplo</p>{% endif %}
                 {% block content %}
                 {% endblock %}
             </main>

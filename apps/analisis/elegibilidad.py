@@ -3,10 +3,10 @@
 
 def evaluar_elegibilidad(*, origen, estado_intento, estados_componentes,
                         configuracion_aprobada, evidencia_disponible,
-                        decision=None, intento_id=None, intento_revisado_id=None):
+                        decision=None, intento_id=None, intento_revisado_id=None, origen_esperado="REAL"):
     estados = list(estados_componentes)
     motivos = []
-    if origen != "REAL":
+    if origen != origen_esperado:
         motivos.append("ORIGEN_NO_REAL")
     if estado_intento != "COMPLETADO":
         motivos.append("INTENTO_NO_COMPLETADO")

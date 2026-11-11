@@ -2,6 +2,7 @@
 from decimal import Decimal, InvalidOperation
 from zoneinfo import ZoneInfo
 
+from django.conf import settings
 from django.db.models import F, OuterRef, Prefetch, Q, Subquery
 from django.db.models.functions import Coalesce, TruncTime
 
@@ -10,6 +11,8 @@ from apps.analisis.models import AnalisisServicio, IntentoAnalisis, ResultadoCom
 from apps.captura.models import FotografiaServicio, Servicio
 from apps.captura.contexto import clave_historica
 from apps.captura.protocolo import CRITERIOS
+from ops.presentacion.aislamiento import lote_activo
+
 from .contracts import FiltrosInvalidos, ZONA_HORARIA
 
 
@@ -57,7 +60,14 @@ def seleccionar(filtros):
         analisis_actual_id=Subquery(ultimo.values('pk')[:1]),
         origen_actual=Subquery(ultimo.values('origen')[:1]),
         fecha_servido_analitica=Coalesce(Subquery(ultimo.values('foto_servido__fecha')[:1]), Subquery(primero_servido.values('fecha')[:1])),
-    ).filter(Q(origen_actual__isnull=True) | ~Q(origen_actual='SIMULADO'))
+    )
+    lote = lote_activo()
+    if lote:
+        consulta = consulta.annotate(version_actual=Subquery(ultimo.values('version_modelo')[:1])).filter(pk__in=settings.EVA_PRESENTACION_IDS).filter(
+            Q(origen_actual__isnull=True) | Q(origen_actual='SIMULADO', version_actual=f'presentacion-{lote}')
+        )
+    else:
+        consulta = consulta.filter(Q(origen_actual__isnull=True) | ~Q(origen_actual='SIMULADO'))
     if filtros['plato']:
         consulta = consulta.filter(plato=filtros['plato'])
     if filtros['porcion']:
@@ -90,7 +100,8 @@ def seleccionar(filtros):
         resultados = intento._resultados if intento else []
         revision = intento._revisiones[0] if intento and intento._revisiones else None
         componentes = list(servicio.composicion.all())
-        motivo = motivo_exclusion(servicio, a, intento, resultados, revision, componentes)
+        motivo = motivo_exclusion(servicio, a, intento, resultados, revision, componentes,
+                                  origen_esperado="SIMULADO" if lote else "REAL")
         datos.append(dict(servicio=servicio, analisis=a, intento=intento, resultados=resultados,
                           contexto_clave=clave_historica(servicio),
                           componentes=componentes, motivo=motivo, fecha=servicio.fecha_servido_analitica))
@@ -115,7 +126,7 @@ def _resultado_valido(r):
             and abs(porcentaje - 100 * residual / inicial) <= Decimal('0.0001'))
 
 
-def motivo_exclusion(servicio, analisis, intento, resultados, revision, componentes):
+def motivo_exclusion(servicio, analisis, intento, resultados, revision, componentes, *, origen_esperado="REAL"):
     if servicio.estado_captura == 'ANULADO':
         return 'ANULADO'
     if servicio.fecha_servido_analitica is None:
@@ -148,7 +159,7 @@ def motivo_exclusion(servicio, analisis, intento, resultados, revision, componen
         estados_componentes=[r.estado for r in resultados],
         configuracion_aprobada=all(r.configuracion_aprobada for r in resultados),
         evidencia_disponible=False, decision=revision.decision,
-        intento_id=intento.pk, intento_revisado_id=revision.intento_id)
+        intento_id=intento.pk, intento_revisado_id=revision.intento_id, origen_esperado=origen_esperado)
     if not elegibilidad['apto_historico'] or any(not _resultado_valido(r) for r in resultados):
         return 'CRITERIOS_INVALIDOS'
     return None

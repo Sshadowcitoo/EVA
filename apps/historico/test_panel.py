@@ -21,7 +21,7 @@ class PanelHistoricoTests(BaseHistorico):
             self.caso(0, fecha=fecha(5), contexto=CONTEXTO)
         self.caso(93, fecha=fecha(19), contexto=CONTEXTO)
         self.caso(100, fecha=fecha(19), contexto=CONTEXTO, origen='SIMULADO')
-        self.client.force_login(self.cocina)
+        self.client.force_login(self.admin)
         url = reverse('historico:lista')
         filtros = dict(componente='arroz', desde='2026-10-05', hasta='2026-10-25')
         primera = self.client.get(url, filtros)
@@ -75,7 +75,7 @@ class PanelHistoricoTests(BaseHistorico):
 
     def test_sin_evidencia_no_publica_barras(self):
         self.caso(50, decision='RECHAZADO', contexto=CONTEXTO)
-        self.client.force_login(self.cocina)
+        self.client.force_login(self.admin)
         response = self.client.get(reverse('historico:lista'))
         self.assertContains(response, 'Evidencia insuficiente')
         self.assertNotContains(response, '<meter')

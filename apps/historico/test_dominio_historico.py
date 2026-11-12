@@ -37,6 +37,8 @@ class BaseHistorico(TestCase):
         call_command('configurar_roles', stdout=StringIO())
         cls.cocina = get_user_model().objects.create_user('cocina_fixture')
         cls.cocina.groups.add(Group.objects.get(name='Cocina'))
+        cls.admin = get_user_model().objects.create_user('admin_historico_fixture')
+        cls.admin.groups.add(Group.objects.get(name='Administración'))
         cls.registro = get_user_model().objects.create_user('registro_fixture')
         cls.registro.groups.add(Group.objects.get(name='Registro'))
 

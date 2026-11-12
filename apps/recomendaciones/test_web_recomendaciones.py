@@ -49,7 +49,7 @@ class RecomendacionesWebTests(TestCase):
         for rol,user in self.usuarios.items():
             self.client.force_login(user)
             for url in LECTURAS:
-                with self.subTest(rol=rol,url=url):self.assertEqual(self.client.get(url).status_code,200 if rol in ('Cocina','Administración') else 403)
+                with self.subTest(rol=rol,url=url):self.assertEqual(self.client.get(url).status_code,200 if rol == 'Administración' else 403)
             for url,datos in ESCRITURAS:
                 with self.subTest(rol=rol,url=url):self.assertEqual(self.client.post(url,datos).status_code,302 if rol=='Administración' else 403)
 
@@ -72,9 +72,15 @@ class RecomendacionesWebTests(TestCase):
     def test_cache_privada_y_cocina_sin_acciones_administrativas(self):
         self.client.force_login(self.usuarios['Cocina'])
         for url in LECTURAS:
-            r=self.client.get(url);self.assertIn('no-store',r['Cache-Control']);self.assertIn('private',r['Cache-Control'])
+            r=self.client.get(url);self.assertEqual(r.status_code,403)
             for accion in ('Evaluar evidencia</button>','Guardar decisión con justificación','Generar recomendación</button>','Registrar prueba controlada</button>','Evaluar prueba</button>'):
-                self.assertNotContains(r,accion)
+                self.assertNotContains(r,accion,status_code=403)
+        self.client.force_login(self.usuarios['Administración'])
+        for url in LECTURAS:
+            respuesta=self.client.get(url)
+            self.assertEqual(respuesta.status_code,200)
+            self.assertIn('no-store',respuesta['Cache-Control'])
+            self.assertIn('private',respuesta['Cache-Control'])
 
     def test_capacidades_del_servidor_controlan_acciones(self):
         caso=detalle_fixture('aceptada');caso['capacidades']={k:False for k in caso['capacidades']}
@@ -85,7 +91,7 @@ class RecomendacionesWebTests(TestCase):
 
     def test_lista_vacia_y_contadores_no_son_servicios(self):
         self.servicios['consultar_recomendaciones'].return_value=lista_fixture(True)
-        r=self.client.get(LISTA);self.assertContains(r,'No hay evaluaciones');self.assertContains(r,'Se cuentan evaluaciones, no servicios');self.assertContains(r,'Datos de prueba')
+        r=self.client.get(LISTA);self.assertContains(r,'No hay evaluaciones');self.assertContains(r,'Se cuentan evaluaciones, no servicios');self.assertContains(r,'Datos de ejemplo')
 
     def test_filtros_paginacion_y_valores_conservados(self):
         datos=lista_fixture();datos['paginacion'].update(pagina=2,paginas=3,total_filas=65);self.servicios['consultar_recomendaciones'].return_value=datos
@@ -118,14 +124,14 @@ class RecomendacionesWebTests(TestCase):
         for escenario in ('insuficiente','configuracion_pendiente','sin_datos','simulada'):
             self.servicios['obtener_evaluacion'].return_value=detalle_fixture(escenario)
             r=self.client.get(EVALUACION);self.assertContains(r,'Evidencia insuficiente');self.assertNotContains(r,'Generar recomendación</button>');self.assertNotContains(r,'Propuesta: MANTENER')
-            self.assertContains(r,'Datos de prueba')
+            self.assertContains(r,'Datos de ejemplo')
 
     def test_obsoleta_historial_y_ceros_distintos_de_ausencias(self):
         self.servicios['obtener_recomendacion'].return_value=detalle_fixture('obsoleta')
         r=self.client.get(DETALLE);self.assertContains(r,'Evidencia desactualizada');self.assertNotContains(r,'Guardar decisión con justificación')
         for escenario in ('aceptada','descartada','en_observacion'):
             self.servicios['obtener_recomendacion'].return_value=detalle_fixture(escenario)
-            r=self.client.get(DETALLE);self.assertContains(r,'Historial de decisiones');self.assertContains(r,'Justificación humana de prueba.');self.assertContains(r,'administracion_fixture')
+            r=self.client.get(DETALLE);self.assertContains(r,'Ver decisiones anteriores');self.assertContains(r,'Justificación humana de prueba.');self.assertContains(r,'administracion_fixture')
         caso=detalle_fixture('sin_datos');caso['evaluacion']['indicadores']['intensidad']=0
         self.servicios['obtener_evaluacion'].return_value=caso;r=self.client.get(EVALUACION);self.assertContains(r,'0,00 %');self.assertContains(r,'No disponible')
 

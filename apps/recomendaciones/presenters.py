@@ -13,7 +13,13 @@ DECISIONES_VISIBLES = {'ACEPTADA':'Aceptada', 'DESCARTADA':'Descartada', 'EN_OBS
 def textos_caso(caso):
     recomendacion = caso['recomendacion'] if caso else None
     decision = caso['decision_actual'] if caso else None
-    return dict(categoria_visible=CATEGORIAS_VISIBLES.get(recomendacion['categoria'], recomendacion['categoria']) if recomendacion else None,
+    filtros = caso['evaluacion']['filtros'] if caso else {}
+    nombres = {'seco_de_pollo': 'Seco de pollo', 'encebollado': 'Encebollado',
+               'arroz_menestra_carne': 'Arroz con menestra y carne', 'estandar': 'Estándar'}
+    grupo_visible = ' · '.join(nombres.get(str(filtros.get(k)), str(filtros.get(k)).replace('_', ' ').capitalize())
+                             for k in ('plato', 'componente', 'porcion') if filtros.get(k))
+    return dict(grupo_visible=grupo_visible,
+                categoria_visible=CATEGORIAS_VISIBLES.get(recomendacion['categoria'], recomendacion['categoria']) if recomendacion else None,
                 decision_visible=DECISIONES_VISIBLES.get(decision['decision'], decision['decision']) if decision else None,
                 historial_visible=[{**x, 'decision_visible':DECISIONES_VISIBLES.get(x['decision'],x['decision'])} for x in caso['historial_decisiones']] if caso else [])
 

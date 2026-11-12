@@ -56,7 +56,7 @@ class DemostracionHTTPTests(TestCase):
             self.client.force_login(self.usuarios[rol])
             for url in (reverse('historico:lista'), reverse('recomendaciones:lista')):
                 respuesta = self.client.get(url)
-                self.assertEqual(respuesta.status_code, 200)
-                self.assertNotContains(respuesta, '/historico/demostracion/')
-                self.assertNotContains(respuesta, '/recomendaciones/demostracion/')
-                self.assertNotContains(respuesta, 'Prototipo académico')
+                self.assertEqual(respuesta.status_code, 200 if rol == 'Administración' else 403)
+                self.assertNotContains(respuesta, '/historico/demostracion/', status_code=respuesta.status_code)
+                self.assertNotContains(respuesta, '/recomendaciones/demostracion/', status_code=respuesta.status_code)
+                self.assertNotContains(respuesta, 'Prototipo académico', status_code=respuesta.status_code)

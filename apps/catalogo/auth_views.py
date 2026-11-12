@@ -1,4 +1,6 @@
 from django.contrib.auth.views import LoginView
+from django.contrib.auth.decorators import login_required
+from django.core.exceptions import PermissionDenied
 from django.shortcuts import redirect, render
 from django.urls import NoReverseMatch, reverse
 
@@ -35,7 +37,17 @@ class EvaLoginView(LoginView):
         return super().form_valid(form)
 
     def get_default_redirect_url(self):
-        return destino_por_rol(self.request.user)
+        try:
+            return reverse('inicio')
+        except NoReverseMatch:
+            return destino_por_rol(self.request.user)
+
+
+@login_required
+def inicio(request):
+    if destino_por_rol(request.user) is None:
+        raise PermissionDenied
+    return render(request, 'cuentas/inicio.html')
 
 
 @roles_required(COCINA)

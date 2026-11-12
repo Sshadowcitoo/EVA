@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Inicio | EVA{% endblock %}
+{% block eyebrow %}TE DAMOS LA BIENVENIDA{% endblock %}
+{% block heading %}¿Qué vamos a hacer hoy?{% endblock %}
+{% block subtitle %}Elige una tarea para empezar. Siempre puedes volver a Inicio desde el menú.{% endblock %}
+{% block content %}
+<section class="panel eva-welcome">
+  <div><h2>Hola, {{ user.first_name|default:user.username }}</h2><p>Cada plato nos ayuda a aprender y a reducir el desperdicio.</p></div>
+  <img src="{% static 'img/eva-mascota-bienvenida.png' %}" alt="" width="125" height="145">
+</section>
+<div class="eva-home-grid">
+{% if puede_registrar %}
+<a class="panel eva-home-card" href="{% url 'captura:resolver_bandeja' %}">{% include 'includes/icono.html' with nombre='camara' only %}<h2>Registrar un plato</h2><p>Busca la bandeja y toma la foto antes de servir.</p><strong>Empezar →</strong></a>
+<a class="panel eva-home-card" href="{% url 'captura:buscar_retorno' %}">{% include 'includes/icono.html' with nombre='bandeja' only %}<h2>Registrar el retorno</h2><p>Toma la foto cuando el plato vuelva a Cocina.</p><strong>Buscar bandeja →</strong></a>
+{% endif %}
+{% if puede_cocina %}
+<a class="panel eva-home-card" href="{% url 'analisis:pendientes_revision' %}">{% include 'includes/icono.html' with nombre='revisar' only %}<h2>Revisar platos</h2><p>Compara las fotos y confirma los resultados pendientes.</p><strong>Ir a Cocina →</strong></a>
+<a class="panel eva-home-card" href="{% url 'analisis:lista' %}">{% include 'includes/icono.html' with nombre='indicadores' only %}<h2>Análisis anteriores</h2><p>Busca un plato y consulta sus resultados y revisiones.</p><strong>Consultar análisis →</strong></a>
+{% endif %}
+{% if puede_administrar_catalogo %}
+<a class="panel eva-home-card" href="{% url 'historico:lista' %}">{% include 'includes/icono.html' with nombre='indicadores' only %}<h2>Ver resultados</h2><p>Descubre qué sobra y cómo cambia con el tiempo.</p><strong>Ver indicadores →</strong></a>
+<a class="panel eva-home-card" href="{% url 'recomendaciones:lista' %}">{% include 'includes/icono.html' with nombre='recomendaciones' only %}<h2>Consultar recomendaciones</h2><p>Encuentra sugerencias para aprovechar mejor cada porción.</p><strong>Ver sugerencias →</strong></a>
+<a class="panel eva-home-card" href="{% url 'historico:comparar' %}">{% include 'includes/icono.html' with nombre='comparar' only %}<h2>Comparar dos periodos</h2><p>Comprueba si hubo más o menos sobrantes entre dos fechas.</p><strong>Comparar →</strong></a>
+{% endif %}
+{% if puede_administrar_catalogo %}
+<a class="panel eva-home-card" href="{% url 'catalogo:platos' %}">{% include 'includes/icono.html' with nombre='catalogo' only %}<h2>Organizar el menú</h2><p>Actualiza platos, componentes y tamaños de porción.</p><strong>Abrir catálogo →</strong></a>
+<a class="panel eva-home-card" href="{% url 'captura:gestion' %}">{% include 'includes/icono.html' with nombre='qr' only %}<h2>Gestionar bandejas</h2><p>Consulta las bandejas y reemplaza las etiquetas cuando lo necesites.</p><strong>Ver bandejas →</strong></a>
+{% endif %}
+</div>
+{% endblock %}

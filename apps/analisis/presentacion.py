@@ -1,6 +1,7 @@
 """DTO de la interfaz de Jean; sin claves privadas ni cifras del navegador."""
 from django.urls import reverse
 from .evidencia import color_clave
+from ops.presentacion.aislamiento import lote_activo
 
 
 def contexto(analisis, intento):
@@ -26,6 +27,8 @@ def contexto(analisis, intento):
                                          componente=comp.componente_nombre, etapa=mascara.etapa))
     datos = dict(caso=caso, resultados=resultados, mascaras=mascaras,
                  estado_url=reverse('analisis:estado', args=[analisis.pk]))
+    if lote_activo():
+        datos['nota_presentacion'] = servicio.contexto_snapshot.get('nota_presentacion', '')
     for etapa, foto in [('servido', analisis.foto_servido), ('retorno', analisis.foto_retorno)]:
         if foto.disponible:
             datos['foto_' + etapa + '_url'] = reverse('analisis:foto', args=[analisis.pk, foto.pk])

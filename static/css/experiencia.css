@@ -1,0 +1,38 @@
+/* Accesos por tarea y detalle progresivo, sin cambiar las reglas de negocio. */
+.eva-welcome { display: flex; align-items: center; justify-content: space-between; gap: 20px; margin-bottom: 20px; }
+.eva-welcome img { width: 125px; max-height: 145px; object-fit: contain; }
+.eva-welcome h2 { font-size: 27px; margin: 0 0 10px; }
+.eva-welcome p { color: var(--eva-muted); line-height: 1.6; }
+.eva-home-grid, .rec-sugerencias { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+.eva-home-card { display: flex; flex-direction: column; align-items: flex-start; color: var(--eva-ink); text-decoration: none; min-width: 0; transition: border-color .15s; }
+.eva-home-card:hover { border-color: var(--eva-action); }
+.eva-home-card > .eva-icono { width: 30px; height: 30px; color: var(--eva-action); }
+.eva-home-card h2 { font-size: 19px; margin: 16px 0 8px; }
+.eva-home-card p { margin: 0 0 20px; color: var(--eva-muted); line-height: 1.6; }
+.eva-home-card strong { margin-top: auto; color: var(--eva-action); }
+.rec-sugerencia { display: flex; flex-direction: column; align-items: flex-start; }
+.rec-sugerencia .button { margin-top: auto; }
+.rec-sugerencia h2 { font-size: 23px; }
+.rec-recomendacion-principal { border-left: 5px solid var(--eva-action); }
+.rec-recomendacion-principal h2 { font-size: 27px; margin: 12px 0; }
+.rec-recomendacion-principal > p { max-width: 65ch; }
+.rec-detalles > summary, .eva-comparacion-filtros > summary { cursor: pointer; min-height: 44px; align-content: center; font-weight: 600; }
+.rec-detalles[open] > summary { margin-bottom: 16px; }
+.rec-detalles > .panel { margin-block: 14px; box-shadow: none; }
+.eva-periodos-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+.eva-periodos-grid > * { min-width: 0; overflow-wrap: anywhere; }
+.eva-periodos-grid fieldset { border: 1px solid var(--eva-border); border-radius: 12px; padding: 16px; margin: 0; }
+.eva-periodos-grid legend { font-weight: 700; padding-inline: 6px; }
+.eva-periodos-grid p { color: var(--eva-muted); }
+.eva-comparacion-form { display: grid; gap: 18px; }
+.eva-comparacion-conclusion { border-left: 5px solid var(--eva-action); }
+.eva-conclusion { font-size: 23px; font-weight: 600; max-width: 45ch; }
+.eva-home-card:focus-visible, .rec-detalles > summary:focus-visible, .eva-comparacion-filtros > summary:focus-visible { outline: 3px solid var(--eva-action); outline-offset: 4px; }
+.page-content > .info-box[role=note] { margin: 0 0 12px; padding: 6px 12px; font-size: 12px; }
+@media (max-width: 700px) {
+ .eva-home-grid, .rec-sugerencias, .eva-periodos-grid { grid-template-columns: minmax(0, 1fr); }
+ .eva-welcome { align-items: flex-start; gap: 12px; }
+ .eva-welcome img { width: 74px; }
+ .eva-welcome h2 { font-size: 21px; }
+ .eva-conclusion { font-size: 20px; }
+}

@@ -8,14 +8,16 @@
 
 {% block navigation %}
   {% url 'analisis:lista' as lista_url %}
+  {% url 'analisis:pendientes_revision' as pendientes_url %}
 
   {% include 'includes/captura_nav.html' %}
 
   {% if puede_cocina %}
     {% if lista_url %}
       <a class="nav-link{% if request.resolver_match.namespace == 'analisis' %} active{% endif %}"
-         href="{{ lista_url }}"
-         {% if request.resolver_match.view_name == 'analisis:lista' %}aria-current="page"{% endif %}>{% include "includes/icono.html" with nombre="revisar" only %} Pendientes</a>
+         href="{{ pendientes_url|default:lista_url }}"
+         {% if request.resolver_match.view_name == 'analisis:pendientes_revision' %}aria-current="page"{% endif %}>{% include "includes/icono.html" with nombre="revisar" only %} Pendientes de revisión</a>
+      <a class="nav-link{% if request.resolver_match.view_name == 'analisis:lista' %} active{% endif %}" href="{{ lista_url }}"{% if request.resolver_match.view_name == 'analisis:lista' %} aria-current="page"{% endif %}>{% include 'includes/icono.html' with nombre='indicadores' only %} Análisis anteriores</a>
     {% else %}
       <span class="nav-link unavailable">Pendientes<small>Pendiente de conexión</small></span>
     {% endif %}

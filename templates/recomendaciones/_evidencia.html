@@ -1,4 +1,5 @@
-{% if caso.evaluacion.solo_pruebas %}<p class="rec-aviso"><strong>Datos de prueba</strong> · Las cifras, la aprobación y los criterios de esta muestra no son válidos para operación real.</p>{% endif %}
+<details class="panel rec-detalles"><summary>Por qué aparece esta recomendación</summary>
+{% if caso.evaluacion.solo_pruebas %}<p class="muted">Datos de ejemplo · No corresponden a servicios reales.</p>{% endif %}
 {% if not caso.evaluacion.vigente %}<section class="rec-aviso"><h2>Evidencia desactualizada</h2><p>Consulta una evaluación vigente antes de decidir. El snapshot anterior se conserva.</p>{% for motivo in caso.evaluacion.motivos_vigencia %}<div>{% include 'historico/_motivo_exclusion.html' with motivo=motivo only %}</div>{% endfor %}</section>{% endif %}
 <section class="panel">
   <h2>{% if caso.evaluacion.suficiencia == 'INSUFICIENTE' %}Evidencia insuficiente{% else %}Evidencia suficiente{% endif %}</h2>
@@ -26,3 +27,5 @@
 </section>
 <section class="panel"><h2>Criterios aplicados</h2><p>Versión: {{ caso.evaluacion.criterios.version|default_if_none:'Pendiente' }} · {% if caso.evaluacion.criterios.aprobada %}Aprobados{% else %}Sin aprobación{% endif %}</p><p>{{ caso.evaluacion.criterios.descripcion }}</p><details class="eva-tecnico"><summary>Detalles técnicos · Parámetros</summary><pre>{{ parametros }}</pre></details></section>
 <details class="panel"><summary>Detalles técnicos · Referencias de evidencia</summary><ul>{% for referencia in caso.evaluacion.referencias %}<li>Servicio {{ referencia.servicio_id }} · Intento {{ referencia.intento_id }} · Revisión {{ referencia.revision_id }} (v{{ referencia.version_revision }})</li>{% empty %}<li>Sin referencias disponibles.</li>{% endfor %}</ul></details>
+{% if caso.recomendacion %}<details><summary>Explicación de la regla aplicada</summary><p>{{ caso.recomendacion.explicacion }}</p></details>{% endif %}
+</details>

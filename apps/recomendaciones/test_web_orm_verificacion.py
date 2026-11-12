@@ -65,7 +65,7 @@ class OperacionRealHTTPTests(BaseHTTP):
         self.captura_html('insuficiente-operativa',response)
         self.captura_html('lista-operativa',self.client.get(reverse('recomendaciones:lista')))
         self.client.force_login(self.cocina)
-        self.captura_html('cocina-operativa',self.client.get(reverse('recomendaciones:lista')))
+        self.assertEqual(self.client.get(reverse('recomendaciones:lista')).status_code,403)
         self.client.force_login(self.admin)
         rechazo=self.client.post(reverse('recomendaciones:generar',args=[m.EvaluacionEvidencia.objects.get().pk]))
         self.assertEqual(rechazo.status_code,409)
@@ -153,7 +153,7 @@ class EscenariosHipoteticosHTTPTests(BaseHTTP):
             for user in (self.cocina,self.registro,self.staff):
                 self.client.force_login(user)
                 for url in lecturas:
-                    self.assertEqual(self.client.get(url).status_code,200 if user==self.cocina else 403)
+                    self.assertEqual(self.client.get(url).status_code,403)
                 for url,datos in escrituras:self.assertEqual(self.client.post(url,datos).status_code,403)
             self.assertEqual(self.conteos(),antes)
             cliente=Client(enforce_csrf_checks=True);cliente.force_login(self.admin)
@@ -165,8 +165,8 @@ class EscenariosHipoteticosHTTPTests(BaseHTTP):
             self.assertEqual(m.EvaluacionPrueba.objects.count(),1)
             self.client.force_login(self.cocina)
             consulta=self.client.get(reverse('recomendaciones:detalle',args=[r.pk]))
-            self.assertNotContains(consulta,'Guardar decisión con justificación')
-            self.assertNotContains(consulta,'Registrar prueba controlada</button>')
+            self.assertNotContains(consulta,'Guardar decisión con justificación',status_code=403)
+            self.assertNotContains(consulta,'Registrar prueba controlada</button>',status_code=403)
 
     def test_get_no_escribe_y_respuestas_privadas_con_recursos_existentes(self):
         with self.contexto_hipotetico():

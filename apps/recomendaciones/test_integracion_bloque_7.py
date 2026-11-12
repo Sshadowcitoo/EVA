@@ -35,8 +35,8 @@ class IntegracionRecomendacionesTests(BaseHistorico):
     def test_get_roles_navegacion_y_no_escritura(self):
         self.caso()
         self.client.force_login(self.cocina)
-        self.assertEqual(self.client.get(reverse('recomendaciones:lista')).status_code, 200)
-        self.assertContains(self.client.get(reverse('historico:lista')), 'href="/recomendaciones/"')
+        self.assertEqual(self.client.get(reverse('recomendaciones:lista')).status_code, 403)
+        self.assertEqual(self.client.get(reverse('historico:lista')).status_code, 403)
         self.assertEqual(self.client.get(reverse('recomendaciones:evaluar')).status_code, 403)
         self.assertEqual(m.EvaluacionEvidencia.objects.count(), 0)
         self.client.force_login(self.registro)

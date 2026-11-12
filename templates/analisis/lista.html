@@ -2,7 +2,7 @@
 {% block heading_icon %}{% include "includes/icono.html" with nombre="revisar" only %}{% endblock %}
 
 {% block heading %}{% if solo_revision %}Pendientes de Cocina{% else %}Lista de análisis{% endif %}{% endblock %}
-{% block subtitle %}{% if solo_revision %}Abre los casos pendientes y revisa su evidencia.{% else %}Consulta los pares completos y el estado de cada análisis.{% endif %}{% endblock %}
+{% block subtitle %}{% if solo_revision %}Revisa los platos pendientes y confirma lo que ves en las fotos.{% else %}Encuentra un plato y consulta el resultado de sus fotografías.{% endif %}{% endblock %}
 
 {% block analisis_content %}
 {% url 'analisis:pendientes_revision' as pendientes_url %}
@@ -34,7 +34,7 @@
     <h2>Historial</h2>
     <p class="muted">Revisa registros y decisiones anteriores.</p>
     <p class="analisis-dato">
-      {% if historial_url %}<a href="{{ historial_url }}">Ver registros →</a>{% else %}Pendiente de conexión{% endif %}
+      {% if puede_cocina %}<a href="{% url 'analisis:lista' %}">Ver análisis anteriores →</a>{% elif historial_url %}<a href="{{ historial_url }}">Ver registros →</a>{% else %}Pendiente de conexión{% endif %}
     </p>
   </article>
 </section>

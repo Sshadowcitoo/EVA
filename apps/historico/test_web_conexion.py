@@ -27,6 +27,8 @@ class ConexionHistoricoTests(TestCase):
     def setUpTestData(cls):
         call_command('cargar_catalogo_demo', verbosity=0)
         call_command('configurar_roles', stdout=StringIO())
+        cls.admin = get_user_model().objects.create_user('admin_conexion')
+        cls.admin.groups.add(Group.objects.get(name='Administración'))
         cls.registro = get_user_model().objects.create_user('registro_conexion')
         cls.registro.groups.add(Group.objects.get(name='Registro'))
         cls.cocina = get_user_model().objects.create_user('cocina_conexion')
@@ -53,7 +55,7 @@ class ConexionHistoricoTests(TestCase):
     def test_historico_lee_orm_y_actualiza_exclusiones_tras_rechazo(self):
         for valor in (0,10,30,60):
             servicio, intento = self.caso(valor)
-        self.client.force_login(self.cocina)
+        self.client.force_login(self.admin)
         filtros = dict(plato='seco_de_pollo', componente='arroz', desde='2026-10-01', hasta='2026-10-07')
         response = self.client.get('/historico/', filtros)
         self.assertEqual(response.status_code, 200)
@@ -72,7 +74,7 @@ class ConexionHistoricoTests(TestCase):
 
     def test_presentacion_agrupa_componentes_sin_cambiar_filas_ni_totales(self):
         servicio, _ = self.caso(0)
-        self.client.force_login(self.cocina)
+        self.client.force_login(self.admin)
         respuesta = self.client.get('/historico/')
         self.assertEqual(respuesta.status_code, 200)
         datos = respuesta.context['datos']
@@ -104,7 +106,7 @@ class ConexionHistoricoTests(TestCase):
     def test_comparacion_informa_contexto_ausente_sin_fabricar_diferencias(self):
         self.caso(25, dia=3)
         self.caso(10, dia=10)
-        self.client.force_login(self.cocina)
+        self.client.force_login(self.admin)
         response = self.client.get('/historico/comparar/', dict(plato='seco_de_pollo', componente='arroz', referencia_desde='2026-10-01', referencia_hasta='2026-10-07', comparado_desde='2026-10-08', comparado_hasta='2026-10-14'))
         self.assertEqual(response.status_code, 200)
         datos = response.context['comparacion']

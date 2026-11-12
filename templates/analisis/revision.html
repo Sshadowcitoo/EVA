@@ -3,9 +3,10 @@
 {% load static %}
 
 {% block heading %}Revisión de Cocina{% endblock %}
-{% block subtitle %}Compara las evidencias y registra tu decisión sobre este resultado exacto.{% endblock %}
+{% block subtitle %}Mira las dos fotos y dinos si el resultado coincide con lo que observas.{% endblock %}
 
 {% block analisis_content %}
+{% if nota_presentacion %}<p class="info-box">{{ nota_presentacion }}</p>{% endif %}
 {% include "includes/recorrido.html" with actual="revision" only %}
 {% if caso.origen == 'SIMULADO' %}
 <p class="info-box analisis-simulado">SIMULADO: solo prueba del flujo. No válido para indicadores operativos.</p>

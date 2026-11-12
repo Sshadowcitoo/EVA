@@ -15,6 +15,7 @@ from . import evidencia, motor, services
 from .configuration import criterios_componente
 from .models import AnalisisServicio, ArtefactoAnalisis
 from .presentacion import contexto
+from ops.presentacion.aislamiento import lote_activo
 
 
 def _permiso(request, nombre):
@@ -45,6 +46,11 @@ def lista(request, solo_revision=False):
     servicios = Servicio.objects.filter(estado_captura='PAR_COMPLETO').order_by('-fecha_creacion', '-pk')
     ultimos = AnalisisServicio.objects.filter(servicio_id=OuterRef('servicio_id')).order_by('-creado_en', '-pk').values('pk')[:1]
     alcance = AnalisisServicio.objects.filter(pk=Subquery(ultimos), servicio__estado_captura='PAR_COMPLETO')
+    presentacion = bool(lote_activo())
+    if presentacion:
+        # El histórico sintético alimenta los gráficos; Cocina muestra capturas.
+        servicios = servicios.exclude(pk__in=settings.EVA_PRESENTACION_IDS)
+        alcance = alcance.exclude(servicio_id__in=settings.EVA_PRESENTACION_IDS)
     pendientes = alcance.filter(intento_vigente__estado='COMPLETADO').exclude(intento_vigente__revisiones__vigente=True)
     if solo_revision:
         servicios = servicios.filter(pk__in=pendientes.values('servicio_id'))
@@ -60,8 +66,10 @@ def lista(request, solo_revision=False):
             datos = dict(plato_nombre=servicio.get_plato_display(), porcion_nombre=servicio.get_tipo_porcion_display(),
                          servicio_id=str(servicio.pk), fecha=servicio.fecha_creacion, estado='', detalle_url=reverse('analisis:par', args=[servicio.pk]))
         casos.append(datos)
-    nulos = alcance.filter(origen='REAL', intento_vigente__resultados__estado='NO_CONCLUYENTE').values('servicio_id').distinct().count()
-    resumen = dict(no_concluyentes=nulos, por_revisar=pendientes.filter(origen='REAL').values('servicio_id').distinct().count())
+    visibles = alcance if presentacion else alcance.filter(origen='REAL')
+    pendientes_visibles = pendientes if presentacion else pendientes.filter(origen='REAL')
+    nulos = visibles.filter(intento_vigente__resultados__estado='NO_CONCLUYENTE').values('servicio_id').distinct().count()
+    resumen = dict(no_concluyentes=nulos, por_revisar=pendientes_visibles.values('servicio_id').distinct().count())
     return render(request, 'analisis/lista_operativa.html', dict(casos=casos, resumen=resumen, pagina=page, solo_revision=solo_revision))
 
 

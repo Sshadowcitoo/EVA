@@ -1,0 +1,79 @@
+/* Composición compacta de Indicadores; no modifica las demás pantallas. */
+.eva-indicadores .page-header { min-height: 0; padding: 12px 22px; column-gap: 16px; }
+.eva-indicadores .page-header h1 { font-size: clamp(21px, 2vw, 28px); margin: 5px 0; }
+.eva-indicadores .page-header .eva-sello { width: 30px; height: 30px; }
+.eva-indicadores .page-header p { font-size: 12px; }
+.eva-indicadores .page-content { padding: 12px 20px 28px; }
+.eva-indicadores .page-content > .info-box { padding: 6px 12px; margin: 0 0 10px; font-size: 12px; }
+.eva-indicadores .historico { gap: 10px; }
+.eva-indicadores .eva-toolbar { background: transparent; box-shadow: none; border: 0; padding: 0; }
+.eva-indicadores .eva-toolbar > summary { display: flex; align-items: center; flex-wrap: wrap; gap: 8px 14px; padding: 0; }
+.eva-toolbar summary > strong, .eva-filter-chip { border: 1px solid var(--eva-border); border-radius: 8px; padding: 8px 12px; background: var(--eva-surface); font-size: 12px; }
+.eva-indicadores .eva-toolbar summary > .muted { margin: 0; }
+.eva-indicadores .eva-toolbar[open] { padding-bottom: 12px; }
+.eva-indicadores .eva-example-note { order: 5; padding: 6px 12px; margin: 0; font-size: 12px; }
+.eva-indicadores .eva-metrics { gap: 12px; }
+.eva-indicadores .eva-metric { padding: 13px 15px; border-radius: 10px; }
+.eva-indicadores .eva-metric h2 { font-size: 10px; margin: 0 0 7px; }
+.eva-indicadores .eva-metric strong { font-size: clamp(22px, 2.1vw, 31px); }
+.eva-indicadores .eva-metric p { font-size: 11px; margin: 6px 0 0; }
+.eva-indicadores .eva-metric:nth-child(2) strong { color: #476b2b; }
+.eva-indicadores .eva-metric:nth-child(3) strong { color: #a44c12; }
+.eva-indicadores .eva-charts { gap: 12px; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); }
+.eva-indicadores .eva-chart { border-radius: 10px; padding: 14px 16px; min-width: 0; box-shadow: 0 2px 5px #49331108; }
+.eva-indicadores .eva-chart h2 { font-size: 14px; margin: 0 0 4px; }
+.eva-indicadores .eva-chart > p { font-size: 11px; line-height: 1.45; margin-bottom: 10px; }
+.eva-indicadores .eva-trend { display: block; height: 144px; max-height: none; }
+.eva-indicadores .eva-trend[hidden] { display: none; }
+.eva-indicadores .eva-trend-line { stroke: #b47a00; }
+.eva-indicadores .eva-trend-point { fill: #b47a00; }
+.eva-indicadores .eva-trend-partial { fill: var(--eva-surface); stroke: #b47a00; }
+.eva-indicadores .eva-chart .eva-chart-scale { font-size: 10px; margin: 0; }
+.eva-indicadores .eva-week-details summary { min-height: 30px; font-size: 11px; }
+.eva-coverage { display: flex; align-items: center; justify-content: center; gap: 24px; min-height: 165px; }
+.eva-donut { --coverage: 0%; flex: none; display: grid; place-items: center; width: 156px; height: 156px; border-radius: 50%; background: conic-gradient(#6d913d var(--coverage), #f6d775 0); position: relative; }
+.eva-donut::before { content: ''; position: absolute; inset: 27px; border-radius: 50%; background: var(--eva-surface); }
+.eva-donut strong { position: relative; font-size: 25px; }
+.eva-coverage-legend { list-style: none; padding: 0; margin: 0; max-width: 180px; font-size: 12px; }
+.eva-coverage-legend li { margin: 12px 0; line-height: 1.5; }
+.eva-coverage-legend strong { display: block; padding-left: 20px; }
+.eva-key { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 8px; }
+.eva-key-apto { background: #6d913d; }.eva-key-excluido { background: #f6d775; border: 1px solid #b08a30; }
+.eva-indicadores .eva-bar-label { font-size: 12px; }
+.eva-indicadores .eva-bar meter { height: 22px; margin-top: 7px; }
+.eva-indicadores .eva-bar meter::-webkit-meter-optimum-value { background: #e99245; }
+.eva-indicadores .eva-bar:nth-of-type(odd) meter::-webkit-meter-optimum-value { background: #e57e79; }
+.eva-indicadores .eva-bar meter::-moz-meter-bar { background: #d07a3b; }
+.eva-columns-layout { display: flex; gap: 12px; margin-top: 14px; }
+.eva-column-axis { height: 120px; display: flex; flex-direction: column; justify-content: space-between; flex: none; font-size: 10px; color: var(--eva-muted); }
+.eva-columns { display: flex; flex: 1; gap: 16px; min-width: 0; overflow-x: auto; padding-top: 8px; }
+.eva-column { flex: 1; min-width: 66px; max-width: 180px; text-align: center; }
+.eva-column-plot { height: 112px; position: relative; display: flex; align-items: flex-end; justify-content: center; background: repeating-linear-gradient(to top, var(--eva-border) 0, var(--eva-border) 1px, transparent 1px, transparent 25%); border-bottom: 1px solid var(--eva-border); }
+.eva-column-fill { width: 58%; min-height: 1px; background: #e99245; border-radius: 5px 5px 0 0; position: relative; }
+.eva-column:nth-child(even) .eva-column-fill { background: #7ba94a; }
+.eva-column-fill strong { position: absolute; bottom: calc(100% + 5px); left: 50%; transform: translateX(-50%); white-space: nowrap; font-size: 12px; }
+.eva-column-label { display: block; overflow-wrap: anywhere; margin-top: 7px; font-size: 12px; font-weight: 600; }
+.eva-column-label small { display: block; font-weight: 400; color: var(--eva-muted); }
+.eva-indicadores .eva-picker-details, .eva-indicadores .eva-tecnico { font-size: 12px; }
+.eva-indicadores .eva-picker-details > summary { min-height: 28px; }
+.eva-indicadores .eva-group-details > summary, .eva-indicadores .eva-history-details > summary { font-size: 12px; min-height: 38px; }
+.eva-indicadores .eva-history-details { padding: 0 14px; }
+@media (min-width: 1000px) { .eva-indicadores .app-layout { grid-template-columns: 204px minmax(0, 1fr); } }
+@media (max-width: 1050px) { .eva-coverage { gap: 12px; }.eva-donut { width: 125px; height: 125px; }.eva-donut::before { inset: 22px; } }
+@media (max-width: 850px) {
+ .eva-indicadores .eva-metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+ .eva-indicadores .eva-charts { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 640px) {
+ .eva-indicadores .page-header { padding: 14px 16px; }
+ .eva-indicadores .page-content { padding: 12px; }
+ .eva-indicadores .eva-header-action { margin-top: 10px; }
+ .eva-indicadores .eva-toolbar > summary { gap: 7px; }
+ .eva-indicadores .eva-toolbar summary > .muted { flex-basis: 100%; }
+ .eva-filter-chip { max-width: 100%; overflow-wrap: anywhere; }
+ .eva-indicadores .eva-metric { padding: 12px; }
+ .eva-indicadores .eva-metric h2 { font-size: 10px; }
+ .eva-indicadores .eva-metric p { font-size: 11px; }
+ .eva-coverage { gap: 18px; }.eva-coverage-legend { max-width: 145px; }
+ .eva-indicadores .eva-week-details[open] { overflow-x: auto; }
+}

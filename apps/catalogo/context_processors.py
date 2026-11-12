@@ -4,7 +4,7 @@ from django.urls import NoReverseMatch, reverse
 
 def roles_eva(request):
     """Navegación según roles; las vistas mantienen la autorización real."""
-    consultar = tiene_rol(request.user, COCINA, ADMINISTRACION)
+    consultar = tiene_rol(request.user, ADMINISTRACION)
     def ruta(nombre):
         if consultar:
             try:

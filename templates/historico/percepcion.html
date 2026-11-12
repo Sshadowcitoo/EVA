@@ -1,7 +1,7 @@
 {% extends 'historico/base.html' %}
 {% block heading_icon %}{% include "includes/icono.html" with nombre="mensaje" only %}{% endblock %}
 {% block heading %}Percepción de la porción{% endblock %}
-{% block subtitle %}Respuesta declarada y opcional, separada de la medición visual.{% endblock %}
+{% block subtitle %}Si el comensal lo desea, registra cómo le pareció el tamaño de la porción.{% endblock %}
 {% block historico_content %}
 <section class="panel historico-percepcion" aria-labelledby="percepcion-titulo"><h2 id="percepcion-titulo">Respuesta del comensal</h2>
 {% if servicio %}<p>{{ servicio.get_plato_display }} · {{ servicio.fecha_creacion|date:"d/m/Y H:i" }}</p>{% endif %}

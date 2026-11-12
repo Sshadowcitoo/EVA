@@ -1,15 +1,36 @@
 {% extends 'historico/base.html' %}
+{% block title %}Comparar periodos | EVA{% endblock %}
 {% block heading_icon %}{% include "includes/icono.html" with nombre="comparar" only %}{% endblock %}
 {% block heading %}Comparar periodos{% endblock %}
-{% block subtitle %}Mismos filtros, dos periodos sin superposición. Diferencias en puntos porcentuales.{% endblock %}
+{% block subtitle %}Elige dos periodos y descubre si hubo más o menos sobrantes.{% endblock %}
 {% block historico_content %}
-{% include 'historico/_filtros.html' %}
+<details class="panel eva-comparacion-filtros"{% if not comparacion or form.errors %} open{% endif %}><summary>Elegir el plato y las fechas</summary>
+<p>Compara el mismo plato y tamaño de porción en dos periodos diferentes.</p>
+<form method="get" class="eva-comparacion-form">
+{{ form.non_field_errors }}
+<div class="historico-filtros">{% for field in form %}{% if field.name == 'plato' or field.name == 'componente' or field.name == 'porcion' %}<div class="historico-campo">{{ field.label_tag }}{{ field }}{{ field.errors }}</div>{% endif %}{% endfor %}</div>
+<div class="eva-periodos-grid">
+<fieldset><legend>1. Primer periodo</legend><p>El punto de partida.</p><div class="historico-campo"><label for="{{ form.referencia_desde.id_for_label }}">Desde</label>{{ form.referencia_desde }}{{ form.referencia_desde.errors }}</div><div class="historico-campo"><label for="{{ form.referencia_hasta.id_for_label }}">Hasta</label>{{ form.referencia_hasta }}{{ form.referencia_hasta.errors }}</div></fieldset>
+<fieldset><legend>2. Segundo periodo</legend><p>Las fechas con las que lo vas a comparar.</p><div class="historico-campo"><label for="{{ form.comparado_desde.id_for_label }}">Desde</label>{{ form.comparado_desde }}{{ form.comparado_desde.errors }}</div><div class="historico-campo"><label for="{{ form.comparado_hasta.id_for_label }}">Hasta</label>{{ form.comparado_hasta }}{{ form.comparado_hasta.errors }}</div></fieldset>
+</div>
+<details class="rec-detalles"{% if form.hora_desde.errors or form.hora_hasta.errors %} open{% endif %}><summary>Limitar a un horario (opcional)</summary><div class="historico-filtros"><div class="historico-campo">{{ form.hora_desde.label_tag }}{{ form.hora_desde }}{{ form.hora_desde.errors }}</div><div class="historico-campo">{{ form.hora_hasta.label_tag }}{{ form.hora_hasta }}{{ form.hora_hasta.errors }}</div></div></details>
+<div class="historico-acciones"><button type="submit">Comparar periodos</button><a href="{% url 'historico:comparar' %}">Empezar de nuevo</a></div>
+</form></details>
 {% if comparacion %}
+<section class="panel eva-comparacion-conclusion"><h2>¿Qué cambió?</h2>
+{% if comparacion.comparable and comparacion.diferencias.intensidad_pp is not None %}
+<p class="eva-conclusion">{% if comparacion.diferencias.intensidad_pp < 0 %}Hubo menos sobrante visual en el segundo periodo.{% elif comparacion.diferencias.intensidad_pp > 0 %}Hubo más sobrante visual en el segundo periodo.{% else %}El sobrante visual medio se mantuvo igual.{% endif %}</p>
+<p>Compara los porcentajes de abajo para ver la diferencia.</p><p class="muted">El resultado muestra una diferencia entre periodos; por sí solo no explica qué la causó.</p>
+{% else %}<p class="eva-conclusion">Todavía no podemos comparar estos resultados.</p><p>Puede faltar información revisada o haber diferencias entre los platos, porciones o condiciones. Consulta los detalles para saber qué falta.</p>{% endif %}
+</section>
+<div class="eva-periodos-grid"><section class="panel"><h2>Primer periodo</h2><p>{{ comparacion.referencia.filtros.desde|date:'d/m/Y' }} – {{ comparacion.referencia.filtros.hasta|date:'d/m/Y' }}</p><p>Sobrante visual medio: <strong>{% if comparacion.referencia.indicadores.intensidad is not None %}{{ comparacion.referencia.indicadores.intensidad|floatformat:2 }} %{% else %}No disponible{% endif %}</strong></p><p>{{ comparacion.referencia.resumen.aptos }} servicios revisados y aptos.</p></section><section class="panel"><h2>Segundo periodo</h2><p>{{ comparacion.comparado.filtros.desde|date:'d/m/Y' }} – {{ comparacion.comparado.filtros.hasta|date:'d/m/Y' }}</p><p>Sobrante visual medio: <strong>{% if comparacion.comparado.indicadores.intensidad is not None %}{{ comparacion.comparado.indicadores.intensidad|floatformat:2 }} %{% else %}No disponible{% endif %}</strong></p><p>{{ comparacion.comparado.resumen.aptos }} servicios revisados y aptos.</p></section></div>
+<details class="panel rec-detalles"><summary>Ver los detalles de la comparación</summary>
 <section class="panel"><h2>Resultado de la comparación</h2>
 {% if comparacion.comparable %}<p>Periodos comparables según los criterios aplicados.</p>{% else %}<p class="historico-aviso">Periodos no comparables. No se puede afirmar una mejora.</p>{% endif %}
 {% for motivo in comparacion.motivos %}<div>{% include 'historico/_motivo_exclusion.html' with motivo=motivo only %}</div>{% endfor %}
 <dl><dt>Diferencia de prevalencia (comparado − referencia)</dt><dd>{% if comparacion.diferencias.prevalencia_pp is not None %}{{ comparacion.diferencias.prevalencia_pp|floatformat:2 }} pp{% else %}No disponible{% endif %}</dd>
 <dt>Diferencia de intensidad (comparado − referencia)</dt><dd>{% if comparacion.diferencias.intensidad_pp is not None %}{{ comparacion.diferencias.intensidad_pp|floatformat:2 }} pp{% else %}No disponible{% endif %}</dd></dl><p class="muted">Una diferencia observada no demuestra una causa ni una mejora causal.</p></section>
 <div class="historico-comparacion"><section><h2>Referencia</h2><p>{{ comparacion.referencia.filtros.desde|date:'d/m/Y' }} – {{ comparacion.referencia.filtros.hasta|date:'d/m/Y' }}</p>{% include 'historico/_resumen.html' with datos=comparacion.referencia %}</section><section><h2>Comparado</h2><p>{{ comparacion.comparado.filtros.desde|date:'d/m/Y' }} – {{ comparacion.comparado.filtros.hasta|date:'d/m/Y' }}</p>{% include 'historico/_resumen.html' with datos=comparacion.comparado %}</section></div>
-{% else %}{% if not error %}<p>Selecciona ambos periodos para consultar su comparabilidad.</p>{% endif %}{% endif %}
+</details>
+{% else %}{% if not error %}<p>Elige las fechas y pulsa «Comparar periodos» para ver el resultado.</p>{% endif %}{% endif %}
 {% endblock %}

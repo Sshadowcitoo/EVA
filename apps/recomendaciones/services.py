@@ -21,8 +21,7 @@ from .serialization import cargar, guardar, huella
 
 
 def _permiso(usuario, escritura=False):
-    roles = (ADMINISTRACION,) if escritura else (COCINA, ADMINISTRACION)
-    if usuario is None or not tiene_rol(usuario, *roles):
+    if usuario is None or not tiene_rol(usuario, ADMINISTRACION):
         raise PermissionDenied('No tienes permiso para esta operación.')
 
 

@@ -35,10 +35,10 @@ class BloqueIntegradoTests(TestCase):
 
     def test_login_redirige_a_pantalla_real_permitida_por_rol(self):
         for nombre, destino in (
-            ("registro", "captura:nueva_bandeja"),
-            ("administracion", "catalogo:platos"),
-            ("cocina", "analisis:pendientes_revision"),
-            ("mixto", "captura:nueva_bandeja"),
+            ("registro", "inicio"),
+            ("administracion", "inicio"),
+            ("cocina", "inicio"),
+            ("mixto", "inicio"),
         ):
             with self.subTest(rol=nombre):
                 self.client.logout()
@@ -62,7 +62,7 @@ class BloqueIntegradoTests(TestCase):
         destino = reverse("catalogo:componentes")
         response = self.client.get(login, {"next": destino})
         self.assertContains(response, f'value="{destino}"')
-        for next_url, esperado in ((destino, destino), ("https://example.invalid/", reverse("catalogo:platos"))):
+        for next_url, esperado in ((destino, destino), ("https://example.invalid/", reverse("inicio"))):
             self.client.logout()
             response = self.client.post(login, {
                 "username": "administracion", "password": self.clave, "next": next_url,

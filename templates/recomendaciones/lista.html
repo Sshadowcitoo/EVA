@@ -1,8 +1,8 @@
 {% extends 'recomendaciones/base.html' %}
 {% block recomendaciones_content %}
 <details class="panel rec-controles"{% if form.errors %} open{% endif %}>
-  <summary>Consultar evaluaciones</summary>
-  <p class="muted">Fechas inclusivas y horas del mismo día, en America/Guayaquil. Los contadores usan todo el conjunto filtrado y pueden solaparse.</p>
+  <summary>Buscar recomendaciones</summary>
+  <p class="muted">Elige el plato y las fechas que quieres consultar.</p>
   <form method="get" class="rec-form-grid">
     {% include 'recomendaciones/_campos.html' with formulario=form omitir_ocultos=True %}
     <div class="rec-acciones"><button type="submit" class="button">{% include "includes/icono.html" with nombre="buscar" only %} Consultar</button><a href="{% url 'recomendaciones:lista' %}">Limpiar filtros</a></div>
@@ -10,18 +10,30 @@
 </details>
 {% if administracion %}
 <details class="panel rec-controles"{% if evaluacion_form.errors or bloqueado %} open{% endif %}>
-  <summary>Evaluar evidencia</summary>
-  <p>No genera una propuesta automáticamente. Usa criterios del servidor; si faltan condiciones, la evidencia será insuficiente.</p>
+  <summary>Consultar una nueva recomendación</summary>
+  <p>Selecciona el plato y las fechas. Primero comprobaremos si hay suficientes servicios revisados.</p>
   <form method="post" action="{% url 'recomendaciones:evaluar' %}" class="rec-form-grid" data-rec-submit{% if bloqueado %} data-bloqueado="true"{% endif %}>
     {% csrf_token %}
-    {% include 'recomendaciones/_campos.html' with formulario=evaluacion_form %}
+    {% for campo in evaluacion_form %}{% if campo.name != 'version_criterios' %}<div class="rec-campo">{{ campo.label_tag }}{{ campo }}{{ campo.errors }}</div>{% endif %}{% endfor %}
+    {{ evaluacion_form.non_field_errors }}
+    <details class="rec-detalles"{% if evaluacion_form.version_criterios.errors %} open{% endif %}><summary>Opciones avanzadas</summary><div class="rec-campo">{{ evaluacion_form.version_criterios.label_tag }}{{ evaluacion_form.version_criterios }}{{ evaluacion_form.version_criterios.errors }}</div></details>
     <div class="rec-acciones"><button type="submit" class="button"{% if bloqueado %} disabled{% endif %}>{% include "includes/icono.html" with nombre="revisar" only %} Evaluar evidencia</button><span data-envio role="status"></span></div>
   </form>
 </details>
 {% endif %}
 {% if datos %}
-{% if datos.solo_pruebas %}<p class="rec-aviso"><strong>Datos de prueba</strong> · Cifras y aprobaciones ilustrativas, sin validez para operación real.</p>{% endif %}
-<section class="panel">
+<section class="rec-sugerencias" aria-label="Tus recomendaciones">
+{% for fila in filas_presentadas %}
+<article class="panel rec-sugerencia"><p class="eyebrow">{{ fila.plato_nombre }} · {{ fila.porcion_nombre }}</p><h2>{{ fila.categoria_visible|default_if_none:'Todavía sin recomendación' }}</h2>
+<p>{{ fila.componente_nombre }} · {{ fila.evaluada_en|date:'d/m/Y' }}</p>
+{% if not fila.vigente %}<p class="rec-aviso">Necesita actualizarse antes de decidir.</p>{% elif fila.suficiencia != 'SUFICIENTE' %}<p>Faltan servicios revisados para sugerir un cambio.</p>{% endif %}
+<p>{% if fila.decision_visible %}Decisión: {{ fila.decision_visible }}{% else %}Pendiente de tu revisión{% endif %}</p>
+{% if fila.recomendacion_id %}<a class="button" href="{% url 'recomendaciones:detalle' recomendacion_id=fila.recomendacion_id %}">Ver recomendación →</a>{% else %}<a class="button" href="{% url 'recomendaciones:evaluacion' evaluacion_id=fila.evaluacion_id %}">Ver qué falta →</a>{% endif %}
+</article>
+{% empty %}<section class="panel eva-estado-panel">{% include 'includes/mascota.html' with pose='carga' only %}<h2>Todavía no hay recomendaciones</h2><p>Consulta otro periodo o registra más servicios revisados para empezar.</p></section>{% endfor %}
+</section>
+<details class="panel rec-detalles"><summary>Ver el listado detallado y los recuentos</summary>
+{% if datos.solo_pruebas %}<p class="muted">Datos de ejemplo · No corresponden a servicios reales.</p>{% endif %}
   <h2>Evaluaciones del periodo</h2>
   <dl class="rec-contadores"><div><dt>Total</dt><dd>{{ datos.resumen.total }}</dd></div><div><dt>Insuficientes</dt><dd>{{ datos.resumen.insuficientes }}</dd></div><div><dt>Sin decisión</dt><dd>{{ datos.resumen.sin_decision }}</dd></div><div><dt>En observación</dt><dd>{{ datos.resumen.en_observacion }}</dd></div><div><dt>Obsoletas</dt><dd>{{ datos.resumen.obsoletas }}</dd></div></dl>
   <p class="rec-ayuda-tabla muted">Desplaza la tabla para consultar todas las columnas.</p>
@@ -35,7 +47,7 @@
       <td>{{ fila.evaluada_en|date:'d/m/Y H:i' }}<small>{% if fila.recomendacion_id %}<a href="{% url 'recomendaciones:detalle' recomendacion_id=fila.recomendacion_id %}">Ver recomendación</a>{% else %}<a href="{% url 'recomendaciones:evaluacion' evaluacion_id=fila.evaluacion_id %}">Ver evidencia</a>{% endif %}</small></td>
     </tr>{% empty %}<tr><td class="eva-estado-panel" colspan="6">{% include "includes/mascota.html" with pose="carga" only %}No hay evaluaciones para estos filtros. No equivale a ausencia de sobrantes ni a una recomendación de mantener.</td></tr>{% endfor %}</tbody></table>
   </div>
-  <nav class="rec-acciones" aria-label="Páginas de evaluaciones">{% if enlaces.anterior %}<a href="{{ enlaces.anterior }}">← Anterior</a>{% endif %}<span>Página {{ datos.paginacion.pagina }} de {{ datos.paginacion.paginas }}</span>{% if enlaces.siguiente %}<a href="{{ enlaces.siguiente }}">Siguiente →</a>{% endif %}</nav>
-</section>
+</details>
+<nav class="rec-acciones" aria-label="Páginas de recomendaciones">{% if enlaces.anterior %}<a href="{{ enlaces.anterior }}">← Anterior</a>{% endif %}<span>Página {{ datos.paginacion.pagina }} de {{ datos.paginacion.paginas }}</span>{% if enlaces.siguiente %}<a href="{{ enlaces.siguiente }}">Siguiente →</a>{% endif %}</nav>
 {% endif %}
 {% endblock %}

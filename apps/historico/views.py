@@ -1,17 +1,20 @@
 """Adaptación HTTP del histórico. Los servicios conservan las reglas de negocio."""
 from uuid import UUID
+from urllib.parse import urlencode
 
 from django.contrib import messages
+from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.http import Http404
 from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.views.decorators.http import require_GET, require_http_methods
 from apps.captura.models import AsignacionBandeja, Servicio
-from apps.catalogo.permissions import ADMINISTRACION, COCINA, REGISTRO, roles_required
+from apps.catalogo.permissions import ADMINISTRACION, REGISTRO, roles_required
 from . import services
 from .contracts import BackendHistoricoNoDisponible, ConflictoPercepcion, FiltrosInvalidos, ServicioNoDisponible
 from .forms import ComparacionForm, FiltrosForm, PercepcionForm, agregar_errores
+from ops.presentacion.aislamiento import lote_activo
 
 
 def _validacion(form, exc):
@@ -52,9 +55,12 @@ def _servicios_presentados(datos):
     return servicios.values()
 
 
-@roles_required(COCINA, ADMINISTRACION)
+@roles_required(ADMINISTRACION)
 @require_GET
 def lista(request):
+    iniciales = getattr(settings, 'EVA_PRESENTACION_FILTROS_INICIALES', None)
+    if lote_activo() and not request.GET and iniciales:
+        return redirect(reverse('historico:lista') + '?' + urlencode(iniciales))
     opciones = None
     error = None
     try:
@@ -81,9 +87,12 @@ def lista(request):
         filtros_panel=[(k, v) for k, v in request.GET.items() if k in form.fields and k != 'page']), status=status)
 
 
-@roles_required(COCINA, ADMINISTRACION)
+@roles_required(ADMINISTRACION)
 @require_GET
 def comparar(request):
+    iniciales = getattr(settings, 'EVA_PRESENTACION_COMPARACION_INICIAL', None)
+    if lote_activo() and not request.GET and iniciales:
+        return redirect(reverse('historico:comparar') + '?' + urlencode(iniciales))
     error, opciones, datos = None, None, None
     try:
         opciones = services.opciones_historico()

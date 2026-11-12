@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="{% static 'css/eva_pastel.css' %}?v=20261109-claridad" />
     <link rel="stylesheet" href="{% static 'css/navegacion.css' %}" />
     <link rel="stylesheet" href="{% static 'css/interfaz.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/experiencia.css' %}" />
     {% block page_styles %}{% endblock %}
   </head>
   <body class="eva-pastel{% block body_classes %}{% endblock %}"{% block body_attributes %}{% endblock %}>
@@ -30,6 +31,7 @@
             {% if puede_administrar_catalogo %}<span>Administración</span>{% endif %}
           </p>
           {% endif %}
+          {% url 'inicio' as inicio_url %}{% if inicio_url and user.is_authenticated %}<a class="nav-link{% if request.resolver_match.url_name == 'inicio' %} active{% endif %}" href="{{ inicio_url }}"{% if request.resolver_match.url_name == 'inicio' %} aria-current="page"{% endif %}>{% include 'includes/icono.html' with nombre='catalogo' only %} Inicio</a>{% endif %}
           {% block navigation %}
           {% include 'includes/captura_nav.html' %}
 
@@ -39,7 +41,8 @@
           {% endif %}
 
           {% if puede_cocina %}
-          <a class="nav-link" href="{% url 'cuentas:cocina_pendiente' %}">{% include "includes/icono.html" with nombre="revisar" only %} Cocina</a>
+          <a class="nav-link" href="{% url 'cuentas:cocina_pendiente' %}">{% include "includes/icono.html" with nombre="revisar" only %} Pendientes de revisión</a>
+          {% url 'analisis:lista' as analisis_anteriores_url %}{% if analisis_anteriores_url %}<a class="nav-link" href="{{ analisis_anteriores_url }}">{% include 'includes/icono.html' with nombre='indicadores' only %} Análisis anteriores</a>{% endif %}
           {% endif %}
 
           {% include 'includes/historico_nav.html' %}

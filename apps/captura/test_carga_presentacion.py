@@ -60,7 +60,7 @@ class PresentacionLocalTests(TransactionTestCase):
                 respuesta = self.client.get(reverse('historico:lista'), filtros)
                 self.assertContains(respuesta, 'Datos de prueba')
                 self.assertTrue(respuesta.context['datos']['solo_pruebas'])
-                self.assertContains(self.client.get(reverse('recomendaciones:lista')), 'Datos de prueba')
+                self.assertContains(self.client.get(reverse('recomendaciones:lista')), 'Datos de ejemplo')
                 with override_settings(SETTINGS_MODULE='config.settings'):
                     # Los 240 análisis siguen excluidos bajo el selector operativo.
                     datos = services.consultar_historico(filtros)

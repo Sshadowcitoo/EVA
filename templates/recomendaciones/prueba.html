@@ -1,6 +1,7 @@
 {% extends 'recomendaciones/base.html' %}
 {% block heading_icon %}{% include "includes/icono.html" with nombre="comparar" only %}{% endblock %}
-{% block heading %}Seguimiento de prueba controlada{% endblock %}
+{% block heading %}Seguimiento de un cambio{% endblock %}
+{% block subtitle %}Consulta cómo resultó el cambio y decide si conviene mantenerlo.{% endblock %}
 {% block recomendaciones_content %}
 {% if prueba %}
 {% if not caso.evaluacion.vigente %}<section class="rec-aviso" role="alert"><h2>Evidencia vinculada desactualizada</h2><p>La prueba y sus resultados anteriores se conservan. No admite nuevas evaluaciones con esta evidencia.</p>{% for motivo in caso.evaluacion.motivos_vigencia %}<div>{% include 'historico/_motivo_exclusion.html' with motivo=motivo only %}</div>{% endfor %}</section>{% endif %}

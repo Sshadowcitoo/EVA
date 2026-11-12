@@ -89,7 +89,7 @@ class IntegracionContextoHistoricoTests(TestCase):
         return a,i
 
     def historico(self,**extra):
-        self.client.force_login(self.cocina)
+        self.client.force_login(self.admin)
         respuesta=self.client.get(reverse('historico:lista'),{**FILTROS,**extra})
         self.assertEqual(respuesta.status_code,200)
         return respuesta.context['datos']
@@ -170,7 +170,7 @@ class IntegracionContextoHistoricoTests(TestCase):
     def test_comparacion_periodos_con_lotes_distintos_y_contexto_igual(self):
         for dia,lote,porcentaje in [(3,'lote-referencia',40),(10,'lote-comparado',20)]:
             s=self.capturar(dia=dia,lote=lote);self.medicion_historica(s,porcentaje)
-        self.client.force_login(self.cocina)
+        self.client.force_login(self.admin)
         respuesta=self.client.get(reverse('historico:comparar'),dict(plato='seco_de_pollo',componente='arroz',porcion='estandar',
             referencia_desde='2026-11-01',referencia_hasta='2026-11-07',comparado_desde='2026-11-08',comparado_hasta='2026-11-14'))
         self.assertEqual(respuesta.status_code,200)

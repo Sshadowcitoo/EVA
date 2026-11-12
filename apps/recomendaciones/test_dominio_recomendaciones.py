@@ -69,7 +69,7 @@ class DominioRecomendacionesTests(BaseHistorico):
         segundo = self.evaluar()
         self.assertEqual(primero['evaluacion']['id'], segundo['evaluacion']['id'])
         self.assertEqual(m.EvaluacionEvidencia.objects.count(), 1)
-        dto = services.obtener_evaluacion(primero['evaluacion']['id'], self.cocina)
+        dto = services.obtener_evaluacion(primero['evaluacion']['id'], self.admin)
         self.assertEqual(set(dto), set(c.DetalleCaso.__annotations__))
         self.assertEqual(set(dto['evaluacion']), set(c.EvaluacionEvidencia.__annotations__))
         self.assertEqual(dto['evaluacion']['suficiencia'], 'INSUFICIENTE')
@@ -158,8 +158,8 @@ class DominioRecomendacionesTests(BaseHistorico):
             self.assertEqual(len(ultimo['historial_decisiones']), 2)
             self.assertEqual(ultimo['version_esperada'], 2)
             self.assertFalse(ultimo['capacidades']['puede_registrar_prueba'])
-            cocina = services.obtener_recomendacion(rid, self.cocina)
-            self.assertFalse(cocina['capacidades']['puede_decidir'])
+            with self.assertRaises(PermissionDenied):
+                services.obtener_recomendacion(rid, self.cocina)
             with self.assertRaises(PermissionDenied):
                 services.decidir_recomendacion(rid, 'ACEPTADA', 'Texto', self.cocina, 2)
 
@@ -218,12 +218,12 @@ class DominioRecomendacionesTests(BaseHistorico):
     def test_lista_filtra_y_cuenta_evaluaciones_no_servicios(self):
         self.caso()
         self.evaluar()
-        lista = services.consultar_recomendaciones(services.normalizar_filtros(dict(suficiencia='INSUFICIENTE')), self.cocina)
+        lista = services.consultar_recomendaciones(services.normalizar_filtros(dict(suficiencia='INSUFICIENTE')), self.admin)
         self.assertEqual(set(lista), set(c.ListaRecomendaciones.__annotations__))
         self.assertEqual(lista['resumen']['total'], 1)
         self.assertEqual(lista['resumen']['sin_decision'], 0)
         self.assertEqual(len(lista['filas']), 1)
-        self.assertEqual(services.consultar_recomendaciones(dict(suficiencia='SUFICIENTE'), self.cocina)['filas'], [])
+        self.assertEqual(services.consultar_recomendaciones(dict(suficiencia='SUFICIENTE'), self.admin)['filas'], [])
 
     def test_configuracion_cambia_vigencia(self):
         self.caso()

@@ -6,7 +6,7 @@ from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views.decorators.cache import never_cache
 from django.views.decorators.http import require_GET, require_POST
-from apps.catalogo.permissions import roles_required, tiene_rol, COCINA, ADMINISTRACION
+from apps.catalogo.permissions import roles_required, tiene_rol, ADMINISTRACION
 from . import services
 from .presenters import parametros_texto, textos_caso, filas_visibles
 from .contracts import BackendRecomendacionesNoDisponible, CasoNoDisponible, ConflictoRecomendacion, ParametrosInvalidos
@@ -51,7 +51,7 @@ def _render_detalle(request, caso=None, status=200, error=None, decision_form=No
 
 
 @never_cache
-@roles_required(COCINA, ADMINISTRACION)
+@roles_required(ADMINISTRACION)
 @require_GET
 def lista(request):
     opciones, datos, error, status = None, None, None, 200
@@ -100,7 +100,7 @@ def evaluar(request):
 
 
 @never_cache
-@roles_required(COCINA, ADMINISTRACION)
+@roles_required(ADMINISTRACION)
 @require_GET
 def evaluacion(request, evaluacion_id):
     try:
@@ -112,7 +112,7 @@ def evaluacion(request, evaluacion_id):
 
 
 @never_cache
-@roles_required(COCINA, ADMINISTRACION)
+@roles_required(ADMINISTRACION)
 @require_GET
 def detalle(request, recomendacion_id):
     try:
@@ -195,7 +195,7 @@ def registrar_prueba(request, recomendacion_id):
 
 
 @never_cache
-@roles_required(COCINA, ADMINISTRACION)
+@roles_required(ADMINISTRACION)
 @require_GET
 def prueba(request, prueba_id):
     try:

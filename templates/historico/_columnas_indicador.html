@@ -1,0 +1,18 @@
+{% load l10n %}
+<article class="panel eva-chart eva-portions-card">
+  <h2>Sobrante por porción</h2>
+  <p class="muted">Perfiles descriptivos · Mismo plato y componente · Muestras separadas.</p>
+  {% if perfiles %}
+  <div class="eva-columns-layout">
+    <div class="eva-column-axis" aria-hidden="true"><span>100 %</span><span>75 %</span><span>50 %</span><span>25 %</span><span>0 %</span></div>
+    <div class="eva-columns">
+    {% for perfil in perfiles %}
+      <div class="eva-column">
+        <div class="eva-column-plot"><div class="eva-column-fill" style="height: {{ perfil.intensidad|unlocalize }}%"><strong>{{ perfil.intensidad|floatformat:2 }} %</strong></div></div>
+        <span class="eva-column-label">{{ perfil.nombre }}<small>n = {{ perfil.n }}</small></span>
+      </div>
+    {% endfor %}
+    </div>
+  </div>
+  {% else %}{% include 'historico/_vacio_indicador.html' %}{% endif %}
+</article>

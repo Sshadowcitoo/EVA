@@ -32,7 +32,7 @@ class HistoricoWebTests(TestCase):
             cls.usuarios[rol] = user
 
     def setUp(self):
-        self.client.force_login(self.usuarios['Cocina'])
+        self.client.force_login(self.usuarios['Administración'])
         self.opciones = patch('apps.historico.services.opciones_historico', return_value=opciones_fixture()).start()
         self.addCleanup(patch.stopall)
 
@@ -43,8 +43,8 @@ class HistoricoWebTests(TestCase):
         for rol, user in self.usuarios.items():
             self.client.force_login(user)
             with patch('apps.historico.services.consultar_panel', return_value=_panel_fixture(historico_fixture())), patch('apps.historico.services.obtener_percepcion', return_value=percepcion_fixture()):
-                self.assertEqual(self.client.get('/historico/').status_code, 200 if rol in ('Cocina', 'Administración') else 403)
-                self.assertEqual(self.client.get('/historico/comparar/').status_code, 200 if rol in ('Cocina', 'Administración') else 403)
+                self.assertEqual(self.client.get('/historico/').status_code, 200 if rol == 'Administración' else 403)
+                self.assertEqual(self.client.get('/historico/comparar/').status_code, 200 if rol == 'Administración' else 403)
                 self.assertEqual(self.client.get(PERCEPCION).status_code, 200 if rol == 'Registro' else 403)
                 self.assertEqual(self.client.post(PERCEPCION, {}).status_code, 400 if rol == 'Registro' else 403)
         user = self.usuarios['Sin rol']
@@ -70,7 +70,7 @@ class HistoricoWebTests(TestCase):
 
     def test_roles_multiples_suman_accesos(self):
         user = self.usuarios['Registro']
-        user.groups.add(Group.objects.get(name='Cocina'))
+        user.groups.add(Group.objects.get(name='Administración'))
         self.client.force_login(user)
         with patch('apps.historico.services.consultar_panel', return_value=_panel_fixture(historico_fixture())), patch('apps.historico.services.obtener_percepcion', return_value=percepcion_fixture()):
             self.assertEqual(self.client.get('/historico/').status_code, 200)

@@ -28,4 +28,6 @@
     crear('circle', {cx: x(i), cy: y(semana.intensidad), r: 4, class: semana.parcial ? 'eva-trend-point eva-trend-partial' : 'eva-trend-point'});
   });
   svg.removeAttribute('hidden');
+  // Sin JavaScript la tabla permanece abierta; con el gráfico puede desplegarse.
+  svg.parentElement?.querySelector('.eva-week-details')?.removeAttribute('open');
 })();

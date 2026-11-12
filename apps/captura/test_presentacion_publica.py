@@ -18,7 +18,7 @@ class PresentacionPublicaTests(SimpleTestCase):
         env.update(EVA_PRESENTACION_PUBLICA='1', EVA_PRESENTACION_HOST='example.invalid',
                    EVA_PRESENTACION_SECRET_KEY=clave, EVA_PRESENTACION_LOTE='prueba',
                    EVA_PRESENTACION_RAIZ=str(raiz))
-        codigo = "from config import settings_presentacion as s; import json; print(json.dumps([s.DEBUG,s.FORCE_SCRIPT_NAME,s.SESSION_COOKIE_NAME,s.CSRF_COOKIE_NAME,s.SESSION_COOKIE_SECURE,s.CSRF_COOKIE_SECURE,s.DATABASES['default']['NAME'].__str__()]))"
+        codigo = "from config import settings_presentacion as s; import json; print(json.dumps([s.DEBUG,s.FORCE_SCRIPT_NAME,s.SESSION_COOKIE_NAME,s.CSRF_COOKIE_NAME,s.SESSION_COOKIE_SECURE,s.CSRF_COOKIE_SECURE,s.DATABASES['default']['NAME'].__str__(),s.LOGIN_URL,s.LOGOUT_REDIRECT_URL]))"
         return subprocess.run([sys.executable, '-c', codigo], cwd=settings.BASE_DIR,
                               env=env, text=True, capture_output=True, timeout=20)
 
@@ -32,6 +32,7 @@ class PresentacionPublicaTests(SimpleTestCase):
             valores = json.loads(resultado.stdout)
             self.assertEqual(valores[:6], [False, '/presentacion', 'eva_presentacion_session', 'eva_presentacion_csrf', True, True])
             self.assertEqual(Path(valores[6]), raiz / 'presentacion.sqlite3')
+            self.assertEqual(valores[7:], ['cuentas:login', 'cuentas:login'])
 
     def test_solo_proxy_local_y_modulo_explicito(self):
         middleware = solo_loopback(lambda request: HttpResponse('ok'))

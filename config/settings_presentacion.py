@@ -54,6 +54,7 @@ if os.environ.get('EVA_PRESENTACION_PUBLICA') == '1':
     SECRET_KEY = clave
     ALLOWED_HOSTS = [host]
     FORCE_SCRIPT_NAME = '/presentacion'
+    LOGIN_URL = LOGOUT_REDIRECT_URL = 'cuentas:login'
     STATIC_URL = '/static/'
     SESSION_COOKIE_NAME = 'eva_presentacion_session'
     CSRF_COOKIE_NAME = 'eva_presentacion_csrf'

@@ -163,7 +163,7 @@ class RecomendacionesWebTests(TestCase):
             self.servicios['registrar_prueba'].reset_mock();r=self.client.post(REGISTRAR,{**ENSAYO,**cambios});self.assertEqual(r.status_code,400);self.servicios['registrar_prueba'].assert_not_called()
 
     def test_detalles_de_prueba_sin_comparacion_y_no_evaluable(self):
-        for estado,texto in [('REGISTRADA','todavía sin evaluación'),('NO_EVALUABLE','No evaluable'),('EVALUADA','0,00 pp')]:
+        for estado,texto in [('REGISTRADA','La prueba ya está guardada'),('NO_EVALUABLE','Aún no podemos evaluar el cambio'),('EVALUADA','0,00 pp')]:
             self.servicios['obtener_prueba'].return_value=prueba_fixture(estado)
             r=self.client.get(PRUEBA);self.assertContains(r,texto)
         self.servicios['obtener_prueba'].return_value=prueba_fixture('NO_EVALUABLE')

@@ -26,6 +26,7 @@
 {% for fila in filas_presentadas %}
 <article class="panel rec-sugerencia"><p class="eyebrow">{{ fila.plato_nombre }} · {{ fila.porcion_nombre }}</p><h2>{{ fila.categoria_visible|default_if_none:'Todavía sin recomendación' }}</h2>
 <p>{{ fila.componente_nombre }} · {{ fila.evaluada_en|date:'d/m/Y' }}</p>
+{% if fila.vigente and fila.suficiencia == 'SUFICIENTE' and fila.categoria %}{% include 'recomendaciones/_orientacion.html' with categoria=fila.categoria componente=fila.componente_nombre ampliada=False only %}{% endif %}
 {% if not fila.vigente %}<p class="rec-aviso">Necesita actualizarse antes de decidir.</p>{% elif fila.suficiencia != 'SUFICIENTE' %}<p>Faltan servicios revisados para sugerir un cambio.</p>{% endif %}
 <p>{% if fila.decision_visible %}Decisión: {{ fila.decision_visible }}{% else %}Pendiente de tu revisión{% endif %}</p>
 {% if fila.recomendacion_id %}<a class="button" href="{% url 'recomendaciones:detalle' recomendacion_id=fila.recomendacion_id %}">Ver recomendación →</a>{% else %}<a class="button" href="{% url 'recomendaciones:evaluacion' evaluacion_id=fila.evaluacion_id %}">Ver qué falta →</a>{% endif %}

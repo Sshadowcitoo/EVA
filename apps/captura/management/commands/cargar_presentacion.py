@@ -197,7 +197,10 @@ class Command(BaseCommand):
                                            'Decisión ficticia para el recorrido de presentación.', admin, 0)
             self.registrar(recomendacion.decisiones.get())
             if categoria == 'PRUEBA_CONTROLADA':
-                detalle = services.registrar_prueba(recomendacion.pk, 'Revisar el tamaño de la porción de menestra.',
+                detalle = services.registrar_prueba(recomendacion.pk,
+                                                    'Antes: menestra de consistencia más espesa.\n'
+                                                    'Durante el ajuste: preparación menos espesa.\n'
+                                                    'Se mantiene la misma cantidad servida. Se cambia solo la consistencia.',
                                                     cocina.pk, dict(referencia_desde='2026-10-05',
                                                     referencia_hasta='2026-10-18', intervencion_desde='2026-10-19',
                                                     intervencion_hasta='2026-11-01'), admin)

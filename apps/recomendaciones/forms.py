@@ -99,7 +99,11 @@ class DecisionForm(VersionForm):
 
 
 class PruebaForm(forms.Form):
-    cambio = forms.CharField(label='Cambio propuesto', max_length=MAX_TEXTO, widget=forms.Textarea(attrs={'rows':3}))
+    cambio = forms.CharField(
+        label='¿Qué vas a cambiar?', max_length=MAX_TEXTO,
+        help_text='Describe cómo era antes y cómo quedará durante el ajuste. Indica la cantidad, la preparación o la presentación que acuerdes con Cocina.',
+        widget=forms.Textarea(attrs={'rows':4, 'placeholder':'Antes: … Durante el ajuste: … Se mantiene igual: …'}),
+    )
     responsable_id = forms.TypedChoiceField(label='Responsable', coerce=int, empty_value=None)
     referencia_desde = fecha('Antes del cambio: desde', True)
     referencia_hasta = fecha('Antes del cambio: hasta (incluido)', True)

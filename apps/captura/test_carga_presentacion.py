@@ -58,9 +58,9 @@ class PresentacionLocalTests(TransactionTestCase):
                 filtros = dict(desde='2026-10-05', hasta='2026-11-01', plato='seco_de_pollo',
                                componente='pollo', porcion='estandar')
                 respuesta = self.client.get(reverse('historico:lista'), filtros)
-                self.assertContains(respuesta, 'Datos de prueba')
+                self.assertContains(respuesta, 'datos son de ejemplo')
                 self.assertTrue(respuesta.context['datos']['solo_pruebas'])
-                self.assertContains(self.client.get(reverse('recomendaciones:lista')), 'Datos de ejemplo')
+                self.assertContains(self.client.get(reverse('recomendaciones:lista')), 'datos son de ejemplo')
                 with override_settings(SETTINGS_MODULE='config.settings'):
                     # Los 240 análisis siguen excluidos bajo el selector operativo.
                     datos = services.consultar_historico(filtros)

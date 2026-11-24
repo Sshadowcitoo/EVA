@@ -3,6 +3,6 @@
   {% if field.is_hidden %}
     {% if not omitir_ocultos %}{{ field }}{% endif %}{{ field.errors }}
   {% else %}
-    <div class="rec-campo">{{ field.label_tag }}{{ field }}{{ field.errors }}</div>
+    <div class="rec-campo">{{ field.label_tag }}{{ field }}{% if field.help_text %}<p class="muted">{{ field.help_text }}</p>{% endif %}{{ field.errors }}</div>
   {% endif %}
 {% endfor %}

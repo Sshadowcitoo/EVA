@@ -1,6 +1,7 @@
 """Formularios web; los normalizadores públicos conservan las reglas del contrato."""
 from django import forms
 from . import services
+from .presenters import CATEGORIAS_VISIBLES
 from .contracts import CATEGORIAS, DECISIONES, SUFICIENCIA, MAX_TEXTO, ParametrosInvalidos
 
 
@@ -43,7 +44,7 @@ class HistoricoForm(forms.Form):
 
 
 class FiltrosForm(HistoricoForm):
-    categoria = forms.ChoiceField(label='Categoría', choices=[('', 'Todas')]+list(CATEGORIAS), required=False)
+    categoria = forms.ChoiceField(label='Categoría', choices=[('', 'Todas')]+[(valor, CATEGORIAS_VISIBLES.get(valor, etiqueta)) for valor, etiqueta in CATEGORIAS], required=False)
     decision = forms.ChoiceField(label='Decisión', choices=[('', 'Todas')]+list(DECISIONES), required=False)
     suficiencia = forms.ChoiceField(label='Evidencia', choices=[('', 'Todas')]+list(SUFICIENCIA), required=False)
     page = forms.IntegerField(label='Página', required=False, min_value=1, widget=forms.HiddenInput)
@@ -100,10 +101,10 @@ class DecisionForm(VersionForm):
 class PruebaForm(forms.Form):
     cambio = forms.CharField(label='Cambio propuesto', max_length=MAX_TEXTO, widget=forms.Textarea(attrs={'rows':3}))
     responsable_id = forms.TypedChoiceField(label='Responsable', coerce=int, empty_value=None)
-    referencia_desde = fecha('Referencia: desde', True)
-    referencia_hasta = fecha('Referencia: hasta (incluido)', True)
-    intervencion_desde = fecha('Intervención: desde', True)
-    intervencion_hasta = fecha('Intervención: hasta (incluido)', True)
+    referencia_desde = fecha('Antes del cambio: desde', True)
+    referencia_hasta = fecha('Antes del cambio: hasta (incluido)', True)
+    intervencion_desde = fecha('Durante el cambio: desde', True)
+    intervencion_hasta = fecha('Durante el cambio: hasta (incluido)', True)
 
     def __init__(self, *args, opciones=None, **kwargs):
         super().__init__(*args, **kwargs)

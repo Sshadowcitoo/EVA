@@ -66,9 +66,9 @@
             <div class="analisis-estado">
               {% include "analisis/_estado.html" with estado=caso.estado %}
               {% if caso.origen == "SIMULADO" %}
-                <span class="origen-chip origen-simulado">Simulado</span>
+                <details class="eva-tecnico"><summary>Origen del registro</summary><p>Origen: Simulado · {{ caso.plato_nombre }}{% if caso.bandeja_numero %} · Bandeja {{ caso.bandeja_numero }}{% endif %}</p></details>
               {% elif caso.origen == "REAL" %}
-                <span class="origen-chip">Real</span>
+                <details class="eva-tecnico"><summary>Origen del registro</summary><p>Origen: Real · {{ caso.plato_nombre }}{% if caso.bandeja_numero %} · Bandeja {{ caso.bandeja_numero }}{% endif %}</p></details>
               {% endif %}
             </div>
           </td>

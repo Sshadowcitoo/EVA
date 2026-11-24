@@ -6,7 +6,7 @@
 <dt>Modalidad</dt><dd>{{ servicio.contexto_snapshot.modalidad.nombre }}</dd>
 <dt>Lote de preparación</dt><dd>{{ servicio.contexto_snapshot.lote_preparacion }}</dd>
 <dt>Franja del servido</dt><dd>{{ servicio.contexto_snapshot.franja.nombre|default:'Pendiente de aceptar la foto del servido' }}</dd>
-<dt>Versión del contexto</dt><dd>{{ servicio.contexto_snapshot.version }}</dd>
+<div data-eva-tecnico data-titulo="Versión del contexto"><dt>Versión del contexto</dt><dd>{{ servicio.contexto_snapshot.version }}</dd></div>
 </dl>
 </section>
 {% else %}

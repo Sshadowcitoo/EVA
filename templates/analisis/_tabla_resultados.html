@@ -8,16 +8,15 @@ Uso: {% include "analisis/_tabla_resultados.html" with titulo_id="hallazgos" %} 
     <tr>
     <th scope="col">Componente</th>
     <th scope="col">Sobrante visual</th>
-    <th scope="col">Confianza</th>
     <th scope="col">Estado</th>
     </tr>
 </thead>
 <tbody>
     {% for resultado in resultados %}
     <tr>
-        <td data-label="Componente"><span class="analisis-celda">{% if resultado.color_clave and resultado.color_clave|stringformat:"s" in "12345678" %}<span class="leyenda-punto c{{ resultado.color_clave }}" aria-hidden="true"></span>{% endif %}{{ resultado.componente }}</span></td>
-        <td data-label="Sobrante visual">{{ resultado.porcentaje_texto|default:"No concluyente" }}</td>
-        <td data-label="Confianza">{{ resultado.confianza_texto|default:"Sin dato" }}</td>
+        <td data-label="Componente"><span class="analisis-celda">{% if resultado.color_clave and resultado.color_clave|stringformat:"s" in "12345678" %}<span class="leyenda-punto c{{ resultado.color_clave }}" aria-hidden="true"></span>{% endif %}{{ resultado.componente }}</span>
+        <details class="eva-tecnico"><summary>Detección de {{ resultado.componente }}</summary><p>Puntuación del detector: {{ resultado.confianza_texto|default:"Sin dato" }}. No equivale a precisión ni a porcentaje de sobrante.</p></details></td>
+        <td data-label="Sobrante visual">{% if resultado.estado == 'CONCLUYENTE' %}{{ resultado.porcentaje_texto|default:'Sin medida' }}{% else %}Sin medida{% endif %}</td>
         <td data-label="Estado"><div class="analisis-celda">
         {% if resultado.estado == "NO_CONCLUYENTE" or resultado.motivo %}
             <span class="estado-chip estado-aviso">No concluyente</span>
@@ -30,7 +29,7 @@ Uso: {% include "analisis/_tabla_resultados.html" with titulo_id="hallazgos" %} 
         </div></td>
     </tr>
     {% empty %}
-    <tr><td class="empty-row" colspan="4">Aún no hay resultados aceptados del motor.</td></tr>
+    <tr><td class="empty-row" colspan="3">Aún no hay resultados aceptados del motor.</td></tr>
     {% endfor %}
 </tbody>
 </table>

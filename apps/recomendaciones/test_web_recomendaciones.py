@@ -163,7 +163,7 @@ class RecomendacionesWebTests(TestCase):
             self.servicios['registrar_prueba'].reset_mock();r=self.client.post(REGISTRAR,{**ENSAYO,**cambios});self.assertEqual(r.status_code,400);self.servicios['registrar_prueba'].assert_not_called()
 
     def test_detalles_de_prueba_sin_comparacion_y_no_evaluable(self):
-        for estado,texto in [('REGISTRADA','La prueba ya está guardada'),('NO_EVALUABLE','Aún no podemos evaluar el cambio'),('EVALUADA','0,00 pp')]:
+        for estado,texto in [('REGISTRADA','El ajuste ya está guardado'),('NO_EVALUABLE','Aún no podemos evaluar el cambio'),('EVALUADA','0,00 pp')]:
             self.servicios['obtener_prueba'].return_value=prueba_fixture(estado)
             r=self.client.get(PRUEBA);self.assertContains(r,texto)
         self.servicios['obtener_prueba'].return_value=prueba_fixture('NO_EVALUABLE')
@@ -173,7 +173,7 @@ class RecomendacionesWebTests(TestCase):
         self.assertEqual(self.client.post(EVALUAR_PRUEBA,{'version_esperada':1}).status_code,302)
         self.servicios['evaluar_prueba'].assert_called_once_with(UUID(PID),self.usuarios['Administración'],1)
         self.servicios['evaluar_prueba'].side_effect=ConflictoRecomendacion()
-        r=self.client.post(EVALUAR_PRUEBA,{'version_esperada':1});self.assertContains(r,'Recargar versión de la prueba',status_code=409)
+        r=self.client.post(EVALUAR_PRUEBA,{'version_esperada':1});self.assertContains(r,'Actualizar la página antes de comparar de nuevo',status_code=409)
         self.assertEqual(self.client.post(EVALUAR_PRUEBA,{'version_esperada':-1}).status_code,400)
 
     def test_cada_servicio_pendiente_es_503_explicito(self):

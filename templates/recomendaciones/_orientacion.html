@@ -3,13 +3,13 @@
 {% if ampliada %}<p><strong>Siguiente paso:</strong> sigue registrando los sobrantes y la opinión del comensal sobre el tamaño de la porción. Vuelve a revisar la recomendación si cambia el patrón.</p>{% endif %}
 {% elif categoria == 'REVISAR_PORCION' %}
 <p>Comprueba con Cocina si la cantidad servida de {% if componente %}{{ componente|lower }}{% else %}este alimento{% endif %} se ajusta a lo que consumen los comensales. La sugerencia es revisar la porción, no reducirla automáticamente.</p>
-{% if ampliada %}<p><strong>Siguiente paso:</strong> revisa los sobrantes del periodo y la opinión de los comensales. Si decides ajustar la cantidad, registra una prueba temporal y compara sus resultados antes de mantener el cambio.</p>{% endif %}
+{% if ampliada %}<p><strong>Siguiente paso:</strong> revisa los sobrantes del periodo y la opinión de los comensales. Si decides ajustar la cantidad, registra un ajuste temporal y compara sus resultados antes de mantener el cambio.</p>{% endif %}
 {% elif categoria == 'REVISAR_PREPARACION' %}
 <p>Revisa con Cocina cómo se prepara y presenta {% if componente %}{{ componente|lower }}{% else %}este alimento{% endif %}, antes de decidir si conviene cambiar la cantidad servida.</p>
 {% if ampliada %}<p><strong>Siguiente paso:</strong> identifica un aspecto concreto que quieras probar, registra el cambio y observa si varían los sobrantes y la opinión del comensal. Esta recomendación no identifica por sí sola la causa del sobrante.</p>{% endif %}
 {% elif categoria == 'PRUEBA_CONTROLADA' %}
-<p>Prueba un ajuste temporal en {% if componente %}{{ componente|lower }}{% else %}este alimento{% endif %} y comprueba qué ocurre antes de aplicarlo de forma permanente.</p>
-{% if ampliada %}<p><strong>Siguiente paso:</strong> acuerda con Cocina qué vas a cambiar y durante qué fechas. Registra la prueba y compara periodos compatibles para decidir si mantienes el ajuste o vuelves a la situación anterior.</p>{% endif %}
+<p>Realiza un ajuste temporal en {% if componente %}{{ componente|lower }}{% else %}este alimento{% endif %} y comprueba qué ocurre antes de aplicarlo de forma permanente.</p>
+{% if ampliada %}<p><strong>Siguiente paso:</strong> acuerda con Cocina qué vas a cambiar y durante qué fechas. Registra el ajuste y compara periodos compatibles para decidir si mantienes el ajuste o vuelves a la situación anterior.</p>{% endif %}
 {% else %}
 <p>Consulta los detalles de esta sugerencia antes de decidir el siguiente paso.</p>
 {% endif %}

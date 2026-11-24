@@ -31,13 +31,13 @@
 </form>{% endif %}{% endif %}
 <details class="rec-detalles"><summary>Ver decisiones anteriores</summary><ol>{% for decision in historial_visible %}<li><strong>{{ decision.decision_visible }}</strong> · {{ decision.autor_visible }} · {{ decision.fecha|date:'d/m/Y H:i' }}<p>{{ decision.justificacion }}</p>{% if decision.sustituye_id %}{% include "includes/detalles_tecnicos.html" with valor=decision.sustituye_id etiqueta="Decisión sustituida" only %}{% endif %}</li>{% empty %}<li>Aún no hay decisiones.</li>{% endfor %}</ol></details>
 </section>
-<details class="panel rec-detalles"{% if prueba_form.is_bound %} open{% endif %}><summary id="rec-pruebas">Probar un cambio y ver su seguimiento</summary>
-<ul>{% for prueba in caso.pruebas %}<li><a href="{% url 'recomendaciones:prueba' prueba_id=prueba.id %}">{{ prueba.estado }} · {{ prueba.cambio }}</a><p>{{ prueba.responsable_nombre }} · {{ prueba.registrada_en|date:'d/m/Y H:i' }} · v{{ prueba.version }}</p></li>{% empty %}<li>No hay pruebas registradas.</li>{% endfor %}</ul>
+<details class="panel rec-detalles"{% if prueba_form.is_bound %} open{% endif %}><summary id="rec-pruebas">Registrar un ajuste y ver su seguimiento</summary>
+<ul>{% for prueba in caso.pruebas %}<li><a href="{% url 'recomendaciones:prueba' prueba_id=prueba.id %}">{{ prueba.cambio }}</a><p>{{ prueba.responsable_nombre }} · {{ prueba.registrada_en|date:'d/m/Y H:i' }}</p></li>{% empty %}<li>Todavía no hay ajustes registrados.</li>{% endfor %}</ul>
 {% if administracion %}{% if caso.capacidades.puede_registrar_prueba or prueba_form.is_bound %}
-<h3>Registrar prueba</h3><p>Solo desde una recomendación aceptada y vigente. La intervención debe comenzar después de la referencia. No escribas datos personales del comensal.</p>
+<h3>Registrar un ajuste</h3><p>Solo desde una recomendación aceptada y vigente. La intervención debe comenzar después de la referencia. No escribas datos personales del comensal.</p>
 <form method="post" action="{% url 'recomendaciones:registrar_prueba' recomendacion_id=caso.recomendacion.id %}" data-rec-submit{% if bloqueado or not caso.capacidades.puede_registrar_prueba %} data-bloqueado="true"{% endif %}>
 {% csrf_token %}{% include 'recomendaciones/_campos.html' with formulario=prueba_form %}
-<button type="submit" class="button"{% if bloqueado or not caso.capacidades.puede_registrar_prueba %} disabled{% endif %}>{% include "includes/icono.html" with nombre="registro" only %} Registrar prueba controlada</button><p data-envio role="status"></p>
+<button type="submit" class="button"{% if bloqueado or not caso.capacidades.puede_registrar_prueba %} disabled{% endif %}>{% include "includes/icono.html" with nombre="registro" only %} Guardar ajuste</button><p data-envio role="status"></p>
 </form>{% endif %}{% endif %}
 </details>
 {% include 'recomendaciones/_evidencia.html' %}

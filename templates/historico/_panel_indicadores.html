@@ -1,5 +1,5 @@
 {% if not es_demostracion %}
-{% if datos.solo_pruebas %}<p class="historico-aviso eva-example-note"><strong>Datos de prueba</strong> · No corresponden a servicios reales ni a parámetros aprobados.</p>{% endif %}
+{% if datos.solo_pruebas %}<details class="eva-tecnico"><summary>Origen de los datos</summary><p class="historico-aviso eva-example-note"><strong>Datos de prueba</strong> · No corresponden a servicios reales ni a parámetros aprobados.</p></details>{% endif %}
 {% for aviso in datos.advertencias %}<p class="historico-aviso">{{ aviso }}</p>{% endfor %}
 {% endif %}
 {% if panel.opciones|length > 1 %}

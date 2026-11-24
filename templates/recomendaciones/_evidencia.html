@@ -1,5 +1,5 @@
-<details class="panel rec-detalles"><summary>Por qué aparece esta recomendación</summary>
-{% if caso.evaluacion.solo_pruebas %}<p class="muted">Datos de ejemplo · No corresponden a servicios reales.</p>{% endif %}
+<details class="panel eva-tecnico"><summary>Por qué aparece esta recomendación</summary>
+{% if caso.evaluacion.solo_pruebas %}<details class="eva-tecnico"><summary>Origen de los datos</summary><p class="muted">Datos de ejemplo · No corresponden a servicios reales.</p></details>{% endif %}
 {% if not caso.evaluacion.vigente %}<section class="rec-aviso"><h2>Evidencia desactualizada</h2><p>Consulta una evaluación vigente antes de decidir. El snapshot anterior se conserva.</p>{% for motivo in caso.evaluacion.motivos_vigencia %}<div>{% include 'historico/_motivo_exclusion.html' with motivo=motivo only %}</div>{% endfor %}</section>{% endif %}
 <section class="panel">
   <h2>{% if caso.evaluacion.suficiencia == 'INSUFICIENTE' %}Evidencia insuficiente{% else %}Evidencia suficiente{% endif %}</h2>

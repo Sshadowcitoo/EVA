@@ -33,8 +33,8 @@
 </article>
 {% empty %}<section class="panel eva-estado-panel">{% include 'includes/mascota.html' with pose='carga' only %}<h2>Todavía no hay recomendaciones</h2><p>Consulta otro periodo o registra más servicios revisados para empezar.</p></section>{% endfor %}
 </section>
-<details class="panel rec-detalles"><summary>Ver el listado detallado y los recuentos</summary>
-{% if datos.solo_pruebas %}<p class="muted">Datos de ejemplo · No corresponden a servicios reales.</p>{% endif %}
+<details class="panel eva-tecnico"><summary>Listado y recuentos</summary>
+{% if datos.solo_pruebas %}<details class="eva-tecnico"><summary>Origen de los datos</summary><p class="muted">Datos de ejemplo · No corresponden a servicios reales.</p></details>{% endif %}
   <h2>Evaluaciones del periodo</h2>
   <dl class="rec-contadores"><div><dt>Total</dt><dd>{{ datos.resumen.total }}</dd></div><div><dt>Insuficientes</dt><dd>{{ datos.resumen.insuficientes }}</dd></div><div><dt>Sin decisión</dt><dd>{{ datos.resumen.sin_decision }}</dd></div><div><dt>En observación</dt><dd>{{ datos.resumen.en_observacion }}</dd></div><div><dt>Obsoletas</dt><dd>{{ datos.resumen.obsoletas }}</dd></div></dl>
   <p class="rec-ayuda-tabla muted">Desplaza la tabla para consultar todas las columnas.</p>

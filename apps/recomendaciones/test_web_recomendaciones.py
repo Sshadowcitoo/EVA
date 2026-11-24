@@ -93,6 +93,20 @@ class RecomendacionesWebTests(TestCase):
         self.servicios['consultar_recomendaciones'].return_value=lista_fixture(True)
         r=self.client.get(LISTA);self.assertContains(r,'Todavía no hay recomendaciones');self.assertEqual(r.context['datos']['resumen']['total'],0);self.assertContains(r,'datos son de ejemplo')
 
+    def test_nueva_evaluacion_envia_version_vigente_oculta(self):
+        respuesta = self.client.get(LISTA)
+        version = respuesta.context['evaluacion_form']['version_criterios'].value()
+        self.assertEqual(version, 'fixture-v1')
+        self.assertContains(respuesta, 'name="version_criterios" value="fixture-v1"')
+        respuesta = self.client.post(EVALUAR, {**FILTROS, 'version_criterios': version})
+        self.assertEqual(respuesta.status_code, 302)
+        self.assertEqual(self.servicios['evaluar_evidencia'].call_args.args[1], version)
+
+    def test_version_enviada_invalida_no_se_sustituye_por_vigente(self):
+        respuesta = self.client.post(EVALUAR, {**FILTROS, 'version_criterios': 'inventada'})
+        self.assertEqual(respuesta.status_code, 400)
+        self.servicios['evaluar_evidencia'].assert_not_called()
+
     def test_filtros_paginacion_y_valores_conservados(self):
         datos=lista_fixture();datos['paginacion'].update(pagina=2,paginas=3,total_filas=65);self.servicios['consultar_recomendaciones'].return_value=datos
         r=self.client.get(LISTA,{**FILTROS,'categoria':'REVISAR_PORCION','page':2})

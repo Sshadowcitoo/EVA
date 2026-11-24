@@ -68,6 +68,9 @@ class EvaluacionForm(HistoricoForm):
         kwargs.setdefault('auto_id', 'evaluar_%s')
         super().__init__(*args, opciones=opciones, **kwargs)
         self.fields['version_criterios'].choices = [('', 'Sin versión seleccionada' if (opciones or {}).get('versiones_criterios') else 'No hay versiones disponibles')] + [(x['version'], x['version']+' · '+x['descripcion']) for x in (opciones or {}).get('versiones_criterios',[])]
+        versiones = (opciones or {}).get('versiones_criterios', [])
+        if not self.is_bound and len(versiones) == 1:
+            self.initial['version_criterios'] = versiones[0]['version']
         conservar_seleccion(self, 'version_criterios', opciones)
 
     def clean(self):

@@ -36,3 +36,9 @@
  .eva-welcome h2 { font-size: 21px; }
  .eva-conclusion { font-size: 20px; }
 }
+.eva-tecnico-final { margin-top: 28px; }
+.eva-tecnico-final > summary { cursor: pointer; min-height: 44px; align-content: center; font-weight: 600; }
+.eva-tecnico-bloque { margin-top: 20px; overflow-wrap: anywhere; }
+.eva-tecnico-bloque h2 { font-size: 18px; }
+.eva-tecnico-bloque pre { white-space: pre-wrap; overflow-wrap: anywhere; }
+.eva-tecnico-bloque code { overflow-wrap: anywhere; }

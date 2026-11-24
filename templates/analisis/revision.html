@@ -6,10 +6,10 @@
 {% block subtitle %}Mira las dos fotos y dinos si el resultado coincide con lo que observas.{% endblock %}
 
 {% block analisis_content %}
-{% if nota_presentacion %}<p class="info-box">{{ nota_presentacion }}</p>{% endif %}
+{% if nota_presentacion %}<details class="eva-tecnico"><summary>Origen de los datos</summary><p class="info-box">{{ nota_presentacion }}</p></details>{% endif %}
 {% include "includes/recorrido.html" with actual="revision" only %}
 {% if caso.origen == 'SIMULADO' %}
-<p class="info-box analisis-simulado">SIMULADO: solo prueba del flujo. No válido para indicadores operativos.</p>
+<details class="eva-tecnico"><summary>Origen de los datos</summary><p class="info-box analisis-simulado">SIMULADO: solo prueba del flujo. No válido para indicadores operativos.</p></details>
 {% endif %}
 
 <div class="panel revision-resumen">
@@ -78,7 +78,7 @@
 
 {% if not puede_confirmar %}
     <p id="confirmar-ayuda" class="info-box">
-    {% if caso.origen == "SIMULADO" %}Un resultado simulado solo prueba el flujo: no se puede confirmar como evidencia.
+    {% if caso.origen == "SIMULADO" %}Este resultado no reúne las condiciones para confirmarlo. Puedes dejarlo pendiente de una nueva evaluación.
     {% elif not foto_servido_url or not foto_retorno_url %}No hay evidencia disponible ahora: no se puede confirmar a ciegas.
     {% else %}No se puede confirmar sin evidencia disponible y criterios técnicos aprobados.{% endif %}
     </p>
@@ -95,14 +95,14 @@
 </div>
 
 <div class="revision-lateral">
-<aside class="panel revision-identificacion" aria-labelledby="rev-id">
+<aside data-eva-tecnico data-titulo="Datos del servicio" class="panel revision-identificacion" aria-labelledby="rev-id">
 <h2 id="rev-id">Registro e identificación</h2>
 <dl class="revision-datos">
     <div><dt>Plato</dt><dd>{{ caso.plato_nombre|default:"—" }}</dd></div>
     <div><dt>Porción</dt><dd>{{ caso.porcion_nombre|default:"—" }}</dd></div>
     {% if caso.bandeja_numero %}<div><dt>Bandeja</dt><dd>{{ caso.bandeja_numero }}</dd></div>{% endif %}
     <div><dt>Estado del análisis</dt><dd>{% include "analisis/_estado.html" with estado=caso.estado %}</dd></div>
-    <div><dt>Origen</dt><dd>{% if caso.origen == "SIMULADO" %}<span class="origen-chip origen-simulado">Simulado</span>{% elif caso.origen == "REAL" %}<span class="origen-chip">Real</span>{% else %}—{% endif %}</dd></div>
+    <div data-eva-tecnico data-titulo="Origen del registro"><dt>Origen</dt><dd>{% if caso.origen == "SIMULADO" %}<span class="origen-chip origen-simulado">Simulado</span>{% elif caso.origen == "REAL" %}<span class="origen-chip">Real</span>{% else %}—{% endif %}</dd></div>
 </dl>
 {% include "includes/detalles_tecnicos.html" with valor=caso.servicio_id etiqueta="Servicio" only %}
 <details class="eva-tecnico"><summary>Detalles técnicos · Análisis</summary>
@@ -130,7 +130,7 @@
 </aside>
 </div>
 
-<section class="panel revision-secuencia" aria-labelledby="rev-secuencia">
+<section data-eva-tecnico data-titulo="Recorrido del registro" class="panel revision-secuencia" aria-labelledby="rev-secuencia">
 <h2 id="rev-secuencia">Secuencia de evidencia</h2>
 <p class="muted">Servido → retorno → validación → análisis → revisión de cocina.</p>
 </section>

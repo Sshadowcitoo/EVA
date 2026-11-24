@@ -6,7 +6,7 @@ def parametros_texto(caso):
     return json.dumps(caso['evaluacion']['criterios']['parametros'], ensure_ascii=False, indent=2, default=str) if caso else ''
 
 
-CATEGORIAS_VISIBLES = {'MANTENER':'Mantener', 'REVISAR_PORCION':'Revisar porción', 'REVISAR_PREPARACION':'Revisar preparación', 'PRUEBA_CONTROLADA':'Prueba controlada'}
+CATEGORIAS_VISIBLES = {'MANTENER':'Mantener', 'REVISAR_PORCION':'Revisar porción', 'REVISAR_PREPARACION':'Revisar preparación', 'PRUEBA_CONTROLADA':'Revisar un ajuste'}
 DECISIONES_VISIBLES = {'ACEPTADA':'Aceptada', 'DESCARTADA':'Descartada', 'EN_OBSERVACION':'En observación'}
 
 

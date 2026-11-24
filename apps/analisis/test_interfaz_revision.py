@@ -47,7 +47,7 @@ class RevisionCocinaTests(SimpleTestCase):
     def test_razon_visible_cuando_confirmar_esta_bloqueado(self):
         simulado = revision(puede_confirmar=False, caso={**CASO, "origen": "SIMULADO"})
         self.assertIn("SIMULADO", simulado)
-        self.assertIn("no se puede confirmar como evidencia", simulado)
+        self.assertIn("Este resultado no reúne las condiciones para confirmarlo", simulado)
         sin_fotos = revision(puede_confirmar=False, foto_servido_url="", foto_retorno_url="")
         self.assertIn("no se puede confirmar a ciegas", sin_fotos)
         generico = revision(puede_confirmar=False)

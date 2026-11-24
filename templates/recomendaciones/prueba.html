@@ -4,17 +4,17 @@
 {% block subtitle %}Consulta cómo resultó el cambio y decide si conviene mantenerlo.{% endblock %}
 {% block recomendaciones_content %}
 {% if prueba %}
-{% if not caso.evaluacion.vigente %}<section class="rec-aviso" role="alert"><h2>Evidencia vinculada desactualizada</h2><p>La prueba y sus resultados anteriores se conservan. No admite nuevas evaluaciones con esta evidencia.</p>{% for motivo in caso.evaluacion.motivos_vigencia %}<div>{% include 'historico/_motivo_exclusion.html' with motivo=motivo only %}</div>{% endfor %}</section>{% endif %}
-{% if administracion and not prueba.puede_evaluar %}<p class="rec-aviso">La evaluación de esta prueba no está habilitada. Revisa la vigencia de la evidencia y la aceptación vinculada.</p>{% endif %}
-{% if caso.evaluacion.solo_pruebas %}<p class="rec-aviso"><strong>Datos de prueba</strong> · No acreditan resultados reales.</p>{% endif %}
-<section class="panel"><h2>{% if prueba.estado == 'REGISTRADA' %}Registrada{% elif prueba.estado == 'EVALUADA' %}Evaluada{% else %}No evaluable{% endif %}</h2><p>{{ prueba.cambio }}</p><p>Responsable: {{ prueba.responsable_nombre }} · Registrada por {{ prueba.registrada_por }} · {{ prueba.registrada_en|date:'d/m/Y H:i' }}</p><details class="rec-detalles"><summary>Ver datos del registro</summary><p>Versión {{ prueba.version }}</p></details>
+{% if not caso.evaluacion.vigente %}<section class="rec-aviso" role="alert"><h2>Evidencia vinculada desactualizada</h2><p>El ajuste y sus resultados anteriores se conservan. No admite nuevas evaluaciones con esta evidencia.</p>{% for motivo in caso.evaluacion.motivos_vigencia %}<div>{% include 'historico/_motivo_exclusion.html' with motivo=motivo only %}</div>{% endfor %}</section>{% endif %}
+{% if administracion and not prueba.puede_evaluar %}<p class="rec-aviso">La evaluación de este ajuste no está habilitada. Revisa la vigencia de la evidencia y la aceptación vinculada.</p>{% endif %}
+{% if caso.evaluacion.solo_pruebas %}<details class="eva-tecnico"><summary>Origen de los datos</summary><p class="rec-aviso"><strong>Datos de prueba</strong> · No acreditan resultados reales.</p></details>{% endif %}
+<section class="panel"><h2>{% if prueba.estado == 'REGISTRADA' %}Registrada{% elif prueba.estado == 'EVALUADA' %}Evaluada{% else %}No evaluable{% endif %}</h2><p>{{ prueba.cambio }}</p><p>Responsable: {{ prueba.responsable_nombre }} · Registrada por {{ prueba.registrada_por }} · {{ prueba.registrada_en|date:'d/m/Y H:i' }}</p><details class="eva-tecnico"><summary>Datos del registro</summary><p>Versión {{ prueba.version }}</p></details>
 {% include "includes/detalles_tecnicos.html" with valor=prueba.aceptacion_id etiqueta="Aceptación vinculada" only %}
-<dl class="rec-periodos"><div><dt>Antes del cambio</dt><dd>{{ prueba.periodos.referencia_desde|date:'d/m/Y' }} – {{ prueba.periodos.referencia_hasta|date:'d/m/Y' }}</dd></div><div><dt>Durante la prueba del cambio</dt><dd>{{ prueba.periodos.intervencion_desde|date:'d/m/Y' }} – {{ prueba.periodos.intervencion_hasta|date:'d/m/Y' }}</dd></div></dl>
+<dl class="rec-periodos"><div><dt>Antes del cambio</dt><dd>{{ prueba.periodos.referencia_desde|date:'d/m/Y' }} – {{ prueba.periodos.referencia_hasta|date:'d/m/Y' }}</dd></div><div><dt>Durante el cambio</dt><dd>{{ prueba.periodos.intervencion_desde|date:'d/m/Y' }} – {{ prueba.periodos.intervencion_hasta|date:'d/m/Y' }}</dd></div></dl>
 {% for motivo in prueba.motivos %}<div class="rec-aviso">{% include 'historico/_motivo_exclusion.html' with motivo=motivo only %}</div>{% endfor %}
-{% if prueba.estado == 'REGISTRADA' %}<p>La prueba ya está guardada. Pulsa «Evaluar prueba» para comparar los resultados de ambos periodos.</p>{% elif prueba.estado == 'NO_EVALUABLE' %}<p>Aún no podemos evaluar el cambio. Revisa los avisos para saber qué información falta.</p>{% endif %}
+{% if prueba.estado == 'REGISTRADA' %}<p>El ajuste ya está guardado. Pulsa «Comparar resultados» para comparar los resultados de ambos periodos.</p>{% elif prueba.estado == 'NO_EVALUABLE' %}<p>Aún no podemos evaluar el cambio. Revisa los avisos para saber qué información falta.</p>{% endif %}
 <p><a href="{% url 'recomendaciones:detalle' recomendacion_id=prueba.recomendacion_id %}">Ver recomendación y evidencia</a></p>
-{% if bloqueado %}<p><a href="{% url 'recomendaciones:prueba' prueba_id=prueba.id %}">Recargar versión de la prueba antes de evaluar de nuevo</a></p>{% endif %}
-{% if administracion and prueba.puede_evaluar %}<form method="post" action="{% url 'recomendaciones:evaluar_prueba' prueba_id=prueba.id %}" data-rec-submit{% if bloqueado %} data-bloqueado="true"{% endif %}>{% csrf_token %}{% include 'recomendaciones/_campos.html' with formulario=version_form %}<button class="button" type="submit"{% if bloqueado %} disabled{% endif %}>{% include "includes/icono.html" with nombre="revisar" only %} Evaluar prueba</button><p data-envio role="status"></p></form>{% endif %}
+{% if bloqueado %}<p><a href="{% url 'recomendaciones:prueba' prueba_id=prueba.id %}">Actualizar la página antes de comparar de nuevo</a></p>{% endif %}
+{% if administracion and prueba.puede_evaluar %}<form method="post" action="{% url 'recomendaciones:evaluar_prueba' prueba_id=prueba.id %}" data-rec-submit{% if bloqueado %} data-bloqueado="true"{% endif %}>{% csrf_token %}{% include 'recomendaciones/_campos.html' with formulario=version_form %}<button class="button" type="submit"{% if bloqueado %} disabled{% endif %}>{% include "includes/icono.html" with nombre="revisar" only %} Comparar resultados</button><p data-envio role="status"></p></form>{% endif %}
 </section>
 {% if prueba.comparacion %}
 <section class="panel"><h2>¿Qué ocurrió con el cambio?</h2>
@@ -28,12 +28,12 @@
 <p><strong>¿Qué hacer ahora?</strong> Revisa estos resultados con Cocina y la opinión de los comensales antes de decidir si mantienes el ajuste.</p>
 {% else %}<p>No podemos comparar estos periodos de forma fiable. Revisa los avisos antes de sacar una conclusión.</p>{% endif %}
 <p>La comparación muestra lo que ocurrió entre ambos periodos, pero no permite asegurar que el ajuste haya sido la causa.</p>
-<details class="rec-detalles"><summary>Ver cifras y detalles de la comparación</summary>
+<details class="eva-tecnico"><summary>Cifras de la comparación</summary>
 {% if not prueba.comparacion.comparable %}<p class="rec-aviso">Periodos no comparables. No se afirma una mejora.</p>{% endif %}
 {% for motivo in prueba.comparacion.motivos %}<div>{% include 'historico/_motivo_exclusion.html' with motivo=motivo only %}</div>{% endfor %}
 <dl><dt>Diferencia de prevalencia (intervención − referencia)</dt><dd>{% if prueba.comparacion.diferencias.prevalencia_pp is not None %}{{ prueba.comparacion.diferencias.prevalencia_pp|floatformat:2 }} pp{% else %}No disponible{% endif %}</dd><dt>Diferencia de intensidad (intervención − referencia)</dt><dd>{% if prueba.comparacion.diferencias.intensidad_pp is not None %}{{ prueba.comparacion.diferencias.intensidad_pp|floatformat:2 }} pp{% else %}No disponible{% endif %}</dd></dl><p>El cambio de porción es una intervención deliberada; una diferencia observada no demuestra causalidad.</p>
 <h3>Antes del cambio</h3>{% include 'historico/_resumen.html' with datos=prueba.comparacion.referencia %}
-<h3>Durante la prueba del cambio</h3>{% include 'historico/_resumen.html' with datos=prueba.comparacion.comparado %}
+<h3>Durante el cambio</h3>{% include 'historico/_resumen.html' with datos=prueba.comparacion.comparado %}
 </details></section>
 {% else %}<p>Todavía no hay una comparación disponible.</p>{% endif %}
 {% elif version_form.is_bound %}<section class="panel"><h2>Solicitud sin confirmar</h2>{% include 'recomendaciones/_campos.html' with formulario=version_form %}</section>{% endif %}

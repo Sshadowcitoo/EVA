@@ -55,3 +55,20 @@ class OrientacionConcretaTests(SimpleTestCase):
             html = render_to_string('recomendaciones/prueba.html', contexto)
             self.assertIn(mensaje, html)
             self.assertIn('no permite asegurar que el ajuste haya sido la causa', html)
+
+    def test_descripcion_del_cambio_se_muestra_completa_y_escapada(self):
+        from .testing.fixtures import prueba_fixture
+        contexto = prueba_fixture('EVALUADA')
+        contexto['prueba']['cambio'] = 'Antes: más espesa.\nDurante: menos espesa.\nMisma cantidad. <script>mal</script>'
+        html = render_to_string('recomendaciones/prueba.html', contexto)
+        self.assertIn('Qué cambio se registró', html)
+        self.assertIn('Antes: más espesa.<br>Durante: menos espesa.', html)
+        self.assertIn('Misma cantidad. &lt;script&gt;', html)
+        self.assertNotIn('<script>mal</script>', html)
+        self.assertIn('el sistema no realiza el cambio en la cocina', html)
+
+    def test_formulario_pide_antes_y_despues_sin_cambiar_el_campo(self):
+        from .forms import PruebaForm
+        formulario = PruebaForm()
+        self.assertEqual(formulario.fields['cambio'].max_length, 1000)
+        self.assertIn('cómo era antes y cómo quedará', formulario.fields['cambio'].help_text)

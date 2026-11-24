@@ -7,7 +7,7 @@
   {% for perfil in perfiles %}
   {% with indice=forloop.counter|stringformat:'s' %}
   <div class="eva-bar">
-    <div class="eva-bar-label"><span id="{{ prefijo|add:indice }}">{{ perfil.nombre }} <small>· n = {{ perfil.n }}</small></span><strong>{{ perfil.intensidad|floatformat:2 }} %</strong></div>
+    <div class="eva-bar-label"><span id="{{ prefijo|add:indice }}">{{ perfil.nombre }} <small>· {{ perfil.n }} servicios</small></span><strong>{{ perfil.intensidad|floatformat:2 }} %</strong></div>
     <meter aria-labelledby="{{ prefijo|add:indice }}" min="0" max="100" value="{{ perfil.intensidad|unlocalize }}"></meter>
   </div>
   {% endwith %}

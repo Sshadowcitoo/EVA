@@ -70,7 +70,7 @@ class ConexionHistoricoTests(TestCase):
         response = self.client.get('/historico/', filtros)
         self.assertEqual(response.context['datos']['resumen']['excluidos'], 1)
         self.assertEqual(response.context['datos']['indicadores']['n'], 3)
-        self.assertContains(response, 'RECHAZADO')
+        self.assertContains(response, 'Rechazado en revisión')
 
     def test_presentacion_agrupa_componentes_sin_cambiar_filas_ni_totales(self):
         servicio, _ = self.caso(0)
@@ -97,7 +97,7 @@ class ConexionHistoricoTests(TestCase):
         self.assertEqual(PercepcionServicio.objects.count(), 1)
         response = self.client.post(url, dict(categoria='EXCESIVA', motivo='Propuesta obsoleta', version_esperada=0))
         self.assertContains(response, 'Propuesta obsoleta', status_code=409)
-        self.assertContains(response, 'Versión 1', status_code=409)
+        self.assertContains(response, 'Respuesta vigente', status_code=409)
         self.assertEqual(PercepcionServicio.objects.get().categoria, 'ADECUADA')
         self.assertEqual(self.client.post(url, dict(categoria='EXCESIVA', motivo='', version_esperada=1)).status_code, 302)
         self.assertEqual(PercepcionServicio.objects.count(), 2)
@@ -113,5 +113,5 @@ class ConexionHistoricoTests(TestCase):
         self.assertFalse(datos['comparable'])
         self.assertIn('SIN_CONTEXTO_HISTORICO', datos['motivos'])
         self.assertIsNone(datos['diferencias']['intensidad_pp'])
-        self.assertContains(response, 'Periodos no comparables')
+        self.assertContains(response, 'Todavía no podemos comparar estos resultados')
         self.assertFalse(datos['referencia']['solo_pruebas'])

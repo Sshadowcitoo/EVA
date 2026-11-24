@@ -15,16 +15,12 @@
 {% include "includes/detalles_tecnicos.html" with valor=caso.servicio_id etiqueta="Servicio" only %}
 <div class="analisis-estado">
 {% include "analisis/_estado.html" with estado=caso.estado %}
-{% if caso.origen == "SIMULADO" %}<details class="eva-tecnico"><summary>Origen del registro</summary><p>Origen: Simulado · {{ caso.plato_nombre }}{% if caso.bandeja_numero %} · Bandeja {{ caso.bandeja_numero }}{% endif %}</p></details>
-{% elif caso.origen == "REAL" %}<details class="eva-tecnico"><summary>Origen del registro</summary><p>Origen: Real · {{ caso.plato_nombre }}{% if caso.bandeja_numero %} · Bandeja {{ caso.bandeja_numero }}{% endif %}</p></details>{% endif %}
+{% if caso.origen == "SIMULADO" %}
+{% elif caso.origen == "REAL" %}{% endif %}
 </div>
-<details class="eva-tecnico"><summary>Detalles técnicos · Análisis</summary>
-  <p>Modelo: {{ caso.version_modelo|default:"Sin configurar" }}</p>
-  {% if caso.intento_numero %}<p>Intento {{ caso.intento_numero }}</p>{% endif %}
-  {% if caso.duracion_texto %}<p>Duración {{ caso.duracion_texto }}</p>{% endif %}
-</details>
-{% if caso.origen == 'SIMULADO' %}
-<details class="eva-tecnico"><summary>Origen de los datos</summary><p class="info-box">SIMULADO: prueba del flujo. No válido para indicadores operativos.</p></details>
+
+{% if caso.origen == 'SIMULADO' and not entorno_presentacion %}
+<details class="eva-informacion"><summary>Sobre estos datos</summary><p>Estos datos son de ejemplo y no corresponden a servicios reales.</p></details>
 {% endif %}
 </section>
 

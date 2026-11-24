@@ -86,11 +86,11 @@ class HistoricoWebTests(TestCase):
             self.assertEqual(self.client.delete(PERCEPCION).status_code, 405)
 
     def test_estados_sin_datos_sin_aptos_y_configuracion(self):
-        for escenario, texto in [('con_datos', '0,00 %'), ('sin_datos', 'Esto no significa cero sobrantes'), ('sin_aptos', 'No hay servicios aptos'), ('configuracion_pendiente', 'Pendiente de aprobación')]:
+        for escenario, texto in [('con_datos', '0,00 %'), ('sin_datos', 'Esto no significa cero sobrantes'), ('sin_aptos', 'No hay servicios aptos'), ('configuracion_pendiente', 'No disponible')]:
             with self.subTest(escenario=escenario), patch('apps.historico.services.consultar_panel', return_value=_panel_fixture(historico_fixture(escenario))):
                 response = self.client.get('/historico/')
                 self.assertContains(response, texto)
-                self.assertContains(response, 'Datos de prueba')
+                self.assertContains(response, 'datos son de ejemplo')
         with patch('apps.historico.services.consultar_panel', return_value=_panel_fixture(historico_fixture('configuracion_pendiente'))):
             self.assertContains(self.client.get('/historico/'), '25,00 %')
 
@@ -99,7 +99,7 @@ class HistoricoWebTests(TestCase):
         for url in ('/historico/', '/historico/comparar/'):
             response = self.client.get(url)
             self.assertContains(response, 'pendiente de conexión', status_code=503)
-            self.assertNotContains(response, 'Datos de prueba', status_code=503)
+            self.assertNotContains(response, 'datos son de ejemplo', status_code=503)
         self.registro()
         with patch('apps.historico.services.obtener_percepcion', side_effect=BackendHistoricoNoDisponible()), patch('apps.historico.services.registrar_percepcion') as guardar:
             self.assertEqual(self.client.post(PERCEPCION, dict(categoria='ADECUADA', version_esperada=0)).status_code, 503)
@@ -137,7 +137,7 @@ class HistoricoWebTests(TestCase):
         with patch('apps.historico.services.consultar_panel', return_value=_panel_fixture(datos)):
             response = self.client.get('/historico/')
             self.assertContains(response, 'Hay varios grupos: no se combinan sus medias.')
-            self.assertContains(response, 'n = 4', count=2)
+            self.assertContains(response, '<strong>4 servicios</strong>', count=2)
 
     def test_campos_escapados_y_fechas_de_ecuador(self):
         datos = historico_fixture()
@@ -168,7 +168,7 @@ class HistoricoWebTests(TestCase):
                 self.assertEqual(response.status_code, 200)
                 self.assertEqual(comparar.call_args.args[0]['desde'].day, 1)
                 self.assertEqual(comparar.call_args.args[1]['desde'].day, 8)
-                self.assertContains(response, '0,00 pp' if comparable else 'Periodos no comparables')
+                self.assertContains(response, 'El sobrante visual medio se mantuvo igual' if comparable else 'Todavía no podemos comparar estos resultados')
 
     def test_comparacion_rechaza_solapamiento_y_periodos_incompletos(self):
         for cambios in [dict(comparado_desde='2026-10-07'), dict(referencia_desde=''), dict(comparado_hasta='2026-10-01'), dict(hora_desde='22:00', hora_hasta='03:00')]:
@@ -213,7 +213,7 @@ class HistoricoWebTests(TestCase):
         vigente['version'] = 2
         with patch('apps.historico.services.obtener_percepcion', side_effect=[percepcion_fixture(), vigente]), patch('apps.historico.services.registrar_percepcion', side_effect=ConflictoPercepcion()) as guardar:
             response = self.client.post(PERCEPCION, dict(categoria='EXCESIVA', motivo='<mi propuesta>', version_esperada=0))
-            self.assertContains(response, 'Versión 2', status_code=409)
+            self.assertContains(response, 'Respuesta vigente', status_code=409)
             self.assertContains(response, '&lt;mi propuesta&gt;', status_code=409)
             self.assertContains(response, 'data-bloqueado="true"', status_code=409)
             guardar.assert_called_once()
@@ -241,7 +241,7 @@ class HistoricoWebTests(TestCase):
         datos.update(referencia=historico_fixture('sin_datos'), comparado=historico_fixture('sin_datos'), motivos=['SIN_DATOS'])
         with patch('apps.historico.services.comparar_periodos', return_value=datos):
             response = self.client.get('/historico/comparar/', PERIODOS)
-            self.assertContains(response, 'SIN_DATOS')
+            self.assertContains(response, 'No hay servicios registrados para estas fechas')
             self.assertNotContains(response, '0,00 pp')
             self.assertContains(response, 'Esto no significa cero sobrantes', count=2)
 

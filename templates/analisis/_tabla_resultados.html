@@ -15,7 +15,7 @@ Uso: {% include "analisis/_tabla_resultados.html" with titulo_id="hallazgos" %} 
     {% for resultado in resultados %}
     <tr>
         <td data-label="Componente"><span class="analisis-celda">{% if resultado.color_clave and resultado.color_clave|stringformat:"s" in "12345678" %}<span class="leyenda-punto c{{ resultado.color_clave }}" aria-hidden="true"></span>{% endif %}{{ resultado.componente }}</span>
-        <details class="eva-tecnico"><summary>Detección de {{ resultado.componente }}</summary><p>Puntuación del detector: {{ resultado.confianza_texto|default:"Sin dato" }}. No equivale a precisión ni a porcentaje de sobrante.</p></details></td>
+        </td>
         <td data-label="Sobrante visual">{% if resultado.estado == 'CONCLUYENTE' %}{{ resultado.porcentaje_texto|default:'Sin medida' }}{% else %}Sin medida{% endif %}</td>
         <td data-label="Estado"><div class="analisis-celda">
         {% if resultado.estado == "NO_CONCLUYENTE" or resultado.motivo %}

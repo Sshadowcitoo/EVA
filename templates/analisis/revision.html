@@ -6,10 +6,10 @@
 {% block subtitle %}Mira las dos fotos y dinos si el resultado coincide con lo que observas.{% endblock %}
 
 {% block analisis_content %}
-{% if nota_presentacion %}<details class="eva-tecnico"><summary>Origen de los datos</summary><p class="info-box">{{ nota_presentacion }}</p></details>{% endif %}
+{% if nota_presentacion and not entorno_presentacion %}<details class="eva-informacion"><summary>Sobre estos datos</summary><p>Estos datos son de ejemplo y no corresponden a servicios reales.</p></details>{% endif %}
 {% include "includes/recorrido.html" with actual="revision" only %}
-{% if caso.origen == 'SIMULADO' %}
-<details class="eva-tecnico"><summary>Origen de los datos</summary><p class="info-box analisis-simulado">SIMULADO: solo prueba del flujo. No válido para indicadores operativos.</p></details>
+{% if caso.origen == 'SIMULADO' and not entorno_presentacion %}
+<details class="eva-informacion"><summary>Sobre estos datos</summary><p>Estos datos son de ejemplo y no corresponden a servicios reales.</p></details>
 {% endif %}
 
 <div class="panel revision-resumen">
@@ -95,22 +95,7 @@
 </div>
 
 <div class="revision-lateral">
-<aside data-eva-tecnico data-titulo="Datos del servicio" class="panel revision-identificacion" aria-labelledby="rev-id">
-<h2 id="rev-id">Registro e identificación</h2>
-<dl class="revision-datos">
-    <div><dt>Plato</dt><dd>{{ caso.plato_nombre|default:"—" }}</dd></div>
-    <div><dt>Porción</dt><dd>{{ caso.porcion_nombre|default:"—" }}</dd></div>
-    {% if caso.bandeja_numero %}<div><dt>Bandeja</dt><dd>{{ caso.bandeja_numero }}</dd></div>{% endif %}
-    <div><dt>Estado del análisis</dt><dd>{% include "analisis/_estado.html" with estado=caso.estado %}</dd></div>
-    <div data-eva-tecnico data-titulo="Origen del registro"><dt>Origen</dt><dd>{% if caso.origen == "SIMULADO" %}<span class="origen-chip origen-simulado">Simulado</span>{% elif caso.origen == "REAL" %}<span class="origen-chip">Real</span>{% else %}—{% endif %}</dd></div>
-</dl>
-{% include "includes/detalles_tecnicos.html" with valor=caso.servicio_id etiqueta="Servicio" only %}
-<details class="eva-tecnico"><summary>Detalles técnicos · Análisis</summary>
-  <p>Modelo: {{ caso.version_modelo|default:"Sin configurar" }}</p>
-  {% if caso.intento_numero %}<p>Intento {{ caso.intento_numero }}</p>{% endif %}
-  {% if caso.duracion_texto %}<p>Duración {{ caso.duracion_texto }}</p>{% endif %}
-</details>
-</aside>
+
 
 <aside class="panel revision-vigente" aria-labelledby="rev-vigente">
 <h2 id="rev-vigente">Revisión de cocina</h2>
@@ -130,9 +115,9 @@
 </aside>
 </div>
 
-<section data-eva-tecnico data-titulo="Recorrido del registro" class="panel revision-secuencia" aria-labelledby="rev-secuencia">
-<h2 id="rev-secuencia">Secuencia de evidencia</h2>
-<p class="muted">Servido → retorno → validación → análisis → revisión de cocina.</p>
+<section class="panel eva-informacion revision-secuencia" aria-labelledby="rev-secuencia">
+<h2 id="rev-secuencia">Cómo avanza el registro</h2>
+<p class="muted">Primero se guardan las fotos del servido y del retorno. Después se analizan y Cocina revisa el resultado.</p>
 </section>
 </div>
 {% endblock %}

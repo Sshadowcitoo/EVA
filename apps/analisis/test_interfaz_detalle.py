@@ -45,12 +45,12 @@ class DetalleAnalisisTests(SimpleTestCase):
     def test_completado_muestra_leyenda_y_no_concluyente_con_motivo(self):
         html = detalle(caso={**CASO, "estado": "COMPLETADO"}, resultados=RESULTADOS)
         self.assertIn("24 %", html)
-        self.assertIn("91 %", html)
+        self.assertNotIn("91 %", html)
         self.assertIn("leyenda-punto c1", html)
         self.assertEqual(html.count("leyenda-punto"), 1)  # sin color estable no se dibuja punto
         self.assertIn("No concluyente", html)
         self.assertIn("El componente está oculto", html)
-        self.assertIn("OCULTACION", html)
+        self.assertNotIn("OCULTACION", html)
         self.assertNotIn("0 %", html.replace("24 %", "").replace("91 %", ""))
 
     def test_reintento_no_aparece_si_el_analisis_termino_bien(self):
@@ -67,18 +67,18 @@ class DetalleAnalisisTests(SimpleTestCase):
         self.assertIn("Máscara de Arroz sobre el servido", html)
         self.assertNotIn("sobre el retorno", html)
 
-    def test_simulado_intento_y_duracion_son_visibles(self):
+    def test_origen_legible_sin_intentos_ni_duracion_interna(self):
         html = detalle(caso={**CASO, "origen": "SIMULADO", "estado": "COMPLETADO", "intento_numero": 2, "duracion_texto": "12 s"})
-        self.assertIn("SIMULADO", html)
-        self.assertIn("Intento 2", html)
-        self.assertIn("Duración 12 s", html)
+        self.assertIn("datos son de ejemplo", html)
+        self.assertNotIn("Intento 2", html)
+        self.assertNotIn("Duración 12 s", html)
 
     def test_bandeja_y_servicio_se_rotulan_sin_confundirse(self):
         servicio = "7c9e6679-7425-40de-944b-e07fc1f90ae7"
         html = detalle(caso={**CASO, "estado": "COMPLETADO", "bandeja_numero": "EVA-001", "servicio_id": servicio})
         self.assertIn("Bandeja EVA-001", html)
         self.assertNotIn("Registro EVA-001", html)
-        self.assertIn(servicio, html)
+        self.assertNotIn(servicio, html)
 
     def test_consulta_automatica_ofrece_reintento_manual_oculto(self):
         html = detalle(caso={**CASO, "estado": "EN_PROCESO"}, estado_url="/analisis/1/estado/")

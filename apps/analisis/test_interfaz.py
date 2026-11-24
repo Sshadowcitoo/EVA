@@ -12,9 +12,10 @@ class InterfazAnalisisTests(SimpleTestCase):
     def test_simulado_y_no_concluyente_explicitos(self):
         html = render_to_string("analisis/detalle.html", {"caso": {"origen": "SIMULADO"},
             "resultados": [{"componente": "Pescado", "motivo": "OCULTACION"}]})
-        self.assertIn("SIMULADO", html)
+        self.assertIn("datos son de ejemplo", html)
         self.assertIn("No concluyente", html)
-        self.assertIn("OCULTACION", html)
+        self.assertNotIn("OCULTACION", html)
+        self.assertIn("El componente está oculto", html)
 
     def test_lista_vacia_es_estado_legible(self):
         self.assertIn("No hay análisis disponibles", render_to_string("analisis/lista.html", {}))

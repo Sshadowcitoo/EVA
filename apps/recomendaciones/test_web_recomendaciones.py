@@ -91,7 +91,7 @@ class RecomendacionesWebTests(TestCase):
 
     def test_lista_vacia_y_contadores_no_son_servicios(self):
         self.servicios['consultar_recomendaciones'].return_value=lista_fixture(True)
-        r=self.client.get(LISTA);self.assertContains(r,'No hay evaluaciones');self.assertContains(r,'Se cuentan evaluaciones, no servicios');self.assertContains(r,'Datos de ejemplo')
+        r=self.client.get(LISTA);self.assertContains(r,'Todavía no hay recomendaciones');self.assertEqual(r.context['datos']['resumen']['total'],0);self.assertContains(r,'datos son de ejemplo')
 
     def test_filtros_paginacion_y_valores_conservados(self):
         datos=lista_fixture();datos['paginacion'].update(pagina=2,paginas=3,total_filas=65);self.servicios['consultar_recomendaciones'].return_value=datos
@@ -123,12 +123,12 @@ class RecomendacionesWebTests(TestCase):
     def test_escenarios_insuficientes_no_generan_ajuste(self):
         for escenario in ('insuficiente','configuracion_pendiente','sin_datos','simulada'):
             self.servicios['obtener_evaluacion'].return_value=detalle_fixture(escenario)
-            r=self.client.get(EVALUACION);self.assertContains(r,'Evidencia insuficiente');self.assertNotContains(r,'Generar recomendación</button>');self.assertNotContains(r,'Propuesta: MANTENER')
-            self.assertContains(r,'Datos de ejemplo')
+            r=self.client.get(EVALUACION);self.assertContains(r,'Todavía falta información para sugerir un cambio');self.assertNotContains(r,'Generar recomendación</button>');self.assertNotContains(r,'Propuesta: MANTENER')
+            self.assertContains(r,'datos son de ejemplo')
 
     def test_obsoleta_historial_y_ceros_distintos_de_ausencias(self):
         self.servicios['obtener_recomendacion'].return_value=detalle_fixture('obsoleta')
-        r=self.client.get(DETALLE);self.assertContains(r,'Evidencia desactualizada');self.assertNotContains(r,'Guardar decisión con justificación')
+        r=self.client.get(DETALLE);self.assertContains(r,'La información cambió desde esta consulta');self.assertNotContains(r,'Guardar decisión con justificación')
         for escenario in ('aceptada','descartada','en_observacion'):
             self.servicios['obtener_recomendacion'].return_value=detalle_fixture(escenario)
             r=self.client.get(DETALLE);self.assertContains(r,'Ver decisiones anteriores');self.assertContains(r,'Justificación humana de prueba.');self.assertContains(r,'administracion_fixture')
@@ -163,7 +163,7 @@ class RecomendacionesWebTests(TestCase):
             self.servicios['registrar_prueba'].reset_mock();r=self.client.post(REGISTRAR,{**ENSAYO,**cambios});self.assertEqual(r.status_code,400);self.servicios['registrar_prueba'].assert_not_called()
 
     def test_detalles_de_prueba_sin_comparacion_y_no_evaluable(self):
-        for estado,texto in [('REGISTRADA','El ajuste ya está guardado'),('NO_EVALUABLE','Aún no podemos evaluar el cambio'),('EVALUADA','0,00 pp')]:
+        for estado,texto in [('REGISTRADA','El ajuste ya está guardado'),('NO_EVALUABLE','Aún no podemos evaluar el cambio'),('EVALUADA','La proporción de servicios con sobrantes se mantuvo igual')]:
             self.servicios['obtener_prueba'].return_value=prueba_fixture(estado)
             r=self.client.get(PRUEBA);self.assertContains(r,texto)
         self.servicios['obtener_prueba'].return_value=prueba_fixture('NO_EVALUABLE')
@@ -204,8 +204,8 @@ class RecomendacionesWebTests(TestCase):
     def test_textos_escapados_y_exito_no_fabricado_por_get(self):
         caso=detalle_fixture('aceptada');caso['recomendacion']['explicacion']='<script>mal</script>';caso['evaluacion']['criterios']['parametros']={'<clave>':'<valor>'}
         self.servicios['obtener_recomendacion'].return_value=caso
-        r=self.client.get(DETALLE+'?guardada=1');self.assertContains(r,'&lt;script&gt;');self.assertNotContains(r,'<script>mal</script>');self.assertNotContains(r,'Decisión guardada.')
-        self.assertContains(r,'&lt;valor&gt;')
+        r=self.client.get(DETALLE+'?guardada=1');self.assertNotContains(r,'&lt;script&gt;');self.assertNotContains(r,'<script>mal</script>');self.assertNotContains(r,'Decisión guardada.')
+        self.assertNotContains(r,'&lt;valor&gt;')
 
     def test_guardado_prg_y_reenvio_pasa_a_idempotencia_del_servidor(self):
         for _ in range(2):self.assertEqual(self.client.post(DECIDIR,DECISION).status_code,302)
@@ -216,7 +216,7 @@ class RecomendacionesWebTests(TestCase):
         self.servicios['opciones_recomendaciones'].side_effect=BackendRecomendacionesNoDisponible()
         r=self.client.post(EVALUAR,{**FILTROS,'version_criterios':'fixture-v1'})
         self.assertContains(r,'Selección enviada: seco_de_pollo',status_code=503)
-        self.assertContains(r,'Selección enviada: fixture-v1',status_code=503)
+        self.assertContains(r,'name="version_criterios" value="fixture-v1"',status_code=503)
         self.servicios['evaluar_evidencia'].assert_not_called()
         r=self.client.post(REGISTRAR,ENSAYO)
         self.assertContains(r,'Cambio supervisado',status_code=503)

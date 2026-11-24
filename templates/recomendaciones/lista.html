@@ -16,12 +16,13 @@
     {% csrf_token %}
     {% for campo in evaluacion_form %}{% if campo.name != 'version_criterios' %}<div class="rec-campo">{{ campo.label_tag }}{{ campo }}{{ campo.errors }}</div>{% endif %}{% endfor %}
     {{ evaluacion_form.non_field_errors }}
-    <details class="rec-detalles"{% if evaluacion_form.version_criterios.errors %} open{% endif %}><summary>Opciones avanzadas</summary><div class="rec-campo">{{ evaluacion_form.version_criterios.label_tag }}{{ evaluacion_form.version_criterios }}{{ evaluacion_form.version_criterios.errors }}</div></details>
+    {{ evaluacion_form.version_criterios.as_hidden }}{{ evaluacion_form.version_criterios.errors }}
     <div class="rec-acciones"><button type="submit" class="button"{% if bloqueado %} disabled{% endif %}>{% include "includes/icono.html" with nombre="revisar" only %} Evaluar evidencia</button><span data-envio role="status"></span></div>
   </form>
 </details>
 {% endif %}
 {% if datos %}
+{% if datos.solo_pruebas and not entorno_presentacion %}<details class="eva-informacion"><summary>Sobre estos datos</summary><p>Estos datos son de ejemplo y no corresponden a servicios reales.</p></details>{% endif %}
 <section class="rec-sugerencias" aria-label="Tus recomendaciones">
 {% for fila in filas_presentadas %}
 <article class="panel rec-sugerencia"><p class="eyebrow">{{ fila.plato_nombre }} · {{ fila.porcion_nombre }}</p><h2>{{ fila.categoria_visible|default_if_none:'Todavía sin recomendación' }}</h2>
@@ -33,22 +34,7 @@
 </article>
 {% empty %}<section class="panel eva-estado-panel">{% include 'includes/mascota.html' with pose='carga' only %}<h2>Todavía no hay recomendaciones</h2><p>Consulta otro periodo o registra más servicios revisados para empezar.</p></section>{% endfor %}
 </section>
-<details class="panel eva-tecnico"><summary>Listado y recuentos</summary>
-{% if datos.solo_pruebas %}<details class="eva-tecnico"><summary>Origen de los datos</summary><p class="muted">Datos de ejemplo · No corresponden a servicios reales.</p></details>{% endif %}
-  <h2>Evaluaciones del periodo</h2>
-  <dl class="rec-contadores"><div><dt>Total</dt><dd>{{ datos.resumen.total }}</dd></div><div><dt>Insuficientes</dt><dd>{{ datos.resumen.insuficientes }}</dd></div><div><dt>Sin decisión</dt><dd>{{ datos.resumen.sin_decision }}</dd></div><div><dt>En observación</dt><dd>{{ datos.resumen.en_observacion }}</dd></div><div><dt>Obsoletas</dt><dd>{{ datos.resumen.obsoletas }}</dd></div></dl>
-  <p class="rec-ayuda-tabla muted">Desplaza la tabla para consultar todas las columnas.</p>
-  <div class="rec-tabla" tabindex="0" role="region" aria-label="Evaluaciones; desplazamiento horizontal disponible">
-    <table><caption>Se cuentan evaluaciones, no servicios</caption><thead><tr><th scope="col">Grupo</th><th scope="col">Evidencia / muestra</th><th scope="col">Propuesta</th><th scope="col">Decisión</th><th scope="col">Vigencia</th><th scope="col">Fecha / detalle</th></tr></thead>
-    <tbody>{% for fila in filas_presentadas %}<tr>
-      <td>{{ fila.plato_nombre }}<small>{{ fila.componente_nombre }} · {{ fila.porcion_nombre }}</small></td>
-      <td>{{ fila.suficiencia_visible }}<small>n = {{ fila.n }}</small></td>
-      <td>{{ fila.categoria_visible|default_if_none:'Sin propuesta' }}</td><td>{{ fila.decision_visible|default_if_none:'Sin decisión' }}</td>
-      <td>{% if fila.vigente %}Vigente{% else %}Obsoleta{% endif %}</td>
-      <td>{{ fila.evaluada_en|date:'d/m/Y H:i' }}<small>{% if fila.recomendacion_id %}<a href="{% url 'recomendaciones:detalle' recomendacion_id=fila.recomendacion_id %}">Ver recomendación</a>{% else %}<a href="{% url 'recomendaciones:evaluacion' evaluacion_id=fila.evaluacion_id %}">Ver evidencia</a>{% endif %}</small></td>
-    </tr>{% empty %}<tr><td class="eva-estado-panel" colspan="6">{% include "includes/mascota.html" with pose="carga" only %}No hay evaluaciones para estos filtros. No equivale a ausencia de sobrantes ni a una recomendación de mantener.</td></tr>{% endfor %}</tbody></table>
-  </div>
-</details>
+
 <nav class="rec-acciones" aria-label="Páginas de recomendaciones">{% if enlaces.anterior %}<a href="{{ enlaces.anterior }}">← Anterior</a>{% endif %}<span>Página {{ datos.paginacion.pagina }} de {{ datos.paginacion.paginas }}</span>{% if enlaces.siguiente %}<a href="{{ enlaces.siguiente }}">Siguiente →</a>{% endif %}</nav>
 {% endif %}
 {% endblock %}

@@ -104,7 +104,7 @@ class IntegracionContextoHistoricoTests(TestCase):
     def comprobar_obsoleta(self,e,snapshot):
         self.client.force_login(self.admin)
         detalle=self.client.get(reverse('recomendaciones:evaluacion',args=[e.pk]))
-        self.assertContains(detalle,'Evidencia desactualizada')
+        self.assertContains(detalle,'La información cambió desde esta consulta')
         self.assertFalse(detalle.context['caso']['evaluacion']['vigente'])
         self.assertFalse(detalle.context['caso']['capacidades']['puede_generar'])
         rechazo=self.client.post(reverse('recomendaciones:generar',args=[e.pk]))

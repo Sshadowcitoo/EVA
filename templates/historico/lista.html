@@ -59,9 +59,7 @@
         <strong>{{ componente.componente_nombre }}</strong>
         <span>{% if componente.porcentaje_visual is not None %}{{ componente.porcentaje_visual|floatformat:2 }} % de sobrante visual{% else %}Sobrante no disponible{% endif %}</span>
         {% if componente.motivo_exclusion %}{% include 'historico/_motivo_exclusion.html' with motivo=componente.motivo_exclusion %}{% endif %}
-        <details class="eva-tecnico"><summary>Detalles técnicos · Estado</summary>
-          <p>Estado: <code>{{ componente.estado }}</code> · Origen: <code>{{ componente.origen|default_if_none:'Sin análisis' }}</code></p>
-        </details>
+
       </li>
       {% endfor %}
     </ul>

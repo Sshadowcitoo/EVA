@@ -46,7 +46,7 @@ class RevisionCocinaTests(SimpleTestCase):
 
     def test_razon_visible_cuando_confirmar_esta_bloqueado(self):
         simulado = revision(puede_confirmar=False, caso={**CASO, "origen": "SIMULADO"})
-        self.assertIn("SIMULADO", simulado)
+        self.assertIn("datos son de ejemplo", simulado)
         self.assertIn("Este resultado no reúne las condiciones para confirmarlo", simulado)
         sin_fotos = revision(puede_confirmar=False, foto_servido_url="", foto_retorno_url="")
         self.assertIn("no se puede confirmar a ciegas", sin_fotos)
@@ -73,7 +73,7 @@ class RevisionCocinaTests(SimpleTestCase):
         html = revision()
         self.assertIn("Bandeja", html)
         self.assertIn("EVA-001", html)
-        self.assertIn(SERVICIO, html)
+        self.assertNotIn(SERVICIO, html)
 
     def test_decision_vigente_se_lee_en_palabras_y_pide_rectificar(self):
         html = revision(revision_actual=VIGENTE)
@@ -112,7 +112,7 @@ class RevisionCocinaTests(SimpleTestCase):
 
     def test_simulado_se_marca_arriba(self):
         html = revision(caso={**CASO, "origen": "SIMULADO"})
-        self.assertIn("SIMULADO: solo prueba del flujo", html)
+        self.assertIn("datos son de ejemplo", html)
 
     def test_el_script_solo_se_carga_con_formulario(self):
         self.assertIn("js/analisis.js", revision())

@@ -27,7 +27,7 @@ class IntegracionRecomendacionesTests(BaseHistorico):
         e = m.EvaluacionEvidencia.objects.get()
         self.assertRedirects(respuesta, reverse('recomendaciones:evaluacion', args=[e.pk]))
         detalle = self.client.get(respuesta.url)
-        self.assertContains(detalle, 'Evidencia insuficiente')
+        self.assertContains(detalle, 'Todavía falta información para sugerir un cambio')
         self.assertEqual(self.client.post(reverse('recomendaciones:generar', args=[e.pk])).status_code, 409)
         self.assertEqual(m.Recomendacion.objects.count(), 0)
         self.assertContains(self.client.get(reverse('recomendaciones:lista')), 'seco')

@@ -11,6 +11,7 @@
 {% elif motivo == 'COMPONENTES_INVALIDOS' %}Componentes incompatibles
 {% elif motivo == 'CRITERIOS_INVALIDOS' %}Evidencia fuera de criterios
 {% elif motivo == 'SIN_CONTEXTO_HISTORICO' %}Falta contexto para comparar este grupo
+{% elif motivo == 'SIN_DATOS' %}No hay servicios registrados para estas fechas
 {% elif motivo == 'SIN_REGISTROS_APTOS' %}No hay registros aptos para calcular este indicador
 {% else %}El resultado no cumple las condiciones de la consulta{% endif %}</span>
 {% include "includes/detalles_tecnicos.html" with valor=motivo etiqueta="Motivo de exclusión" only %}

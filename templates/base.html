@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="{% static 'css/eva_pastel.css' %}?v=20261109-claridad" />
     <link rel="stylesheet" href="{% static 'css/navegacion.css' %}" />
     <link rel="stylesheet" href="{% static 'css/interfaz.css' %}" />
-    <link rel="stylesheet" href="{% static 'css/experiencia.css' %}?v=20261124-simple" />
+    <link rel="stylesheet" href="{% static 'css/experiencia.css' %}?v=20261124-claro" />
     {% block page_styles %}{% endblock %}
   </head>
   <body class="eva-pastel{% block body_classes %}{% endblock %}"{% block body_attributes %}{% endblock %}>
@@ -97,10 +97,10 @@
                 {% block content %}
                 {% endblock %}
                 <details class="panel eva-tecnico-final" id="detalles-tecnicos">
-                  <summary>Detalles técnicos</summary>
+                  <summary>Más información</summary>
                   <div data-detalles-contenido>
-                    {% if entorno_presentacion %}<section class="eva-tecnico-bloque"><h2>Origen de los datos</h2><p>Datos de ejemplo. Los resultados de este entorno no acreditan servicios reales.</p></section>{% endif %}
-                    <p data-detalles-vacio>Esta página no contiene identificadores adicionales.</p>
+                    {% if entorno_presentacion %}<section class="eva-tecnico-bloque"><h2>Origen de los datos</h2><p>Estos datos son de ejemplo y no corresponden a servicios reales.</p></section>{% endif %}
+                    <p data-detalles-vacio>{% block informacion_adicional %}Las acciones disponibles dependen de tu cuenta. Usa el menú para volver al inicio o abrir otra función.{% endblock %}</p>
                   </div>
                 </details>
             </main>
@@ -119,6 +119,6 @@
     }
   });
 </script>
-<script src="{% static 'js/detalles_tecnicos.js' %}?v=20261124-simple" defer></script>
+<script src="{% static 'js/detalles_tecnicos.js' %}?v=20261124-claro" defer></script>
 </body>
 </html>

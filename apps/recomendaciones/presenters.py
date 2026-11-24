@@ -19,6 +19,7 @@ def textos_caso(caso):
     grupo_visible = ' · '.join(nombres.get(str(filtros.get(k)), str(filtros.get(k)).replace('_', ' ').capitalize())
                              for k in ('plato', 'componente', 'porcion') if filtros.get(k))
     return dict(grupo_visible=grupo_visible,
+                componente_visible=str(filtros.get('componente') or '').replace('_', ' ').capitalize(),
                 categoria_visible=CATEGORIAS_VISIBLES.get(recomendacion['categoria'], recomendacion['categoria']) if recomendacion else None,
                 decision_visible=DECISIONES_VISIBLES.get(decision['decision'], decision['decision']) if decision else None,
                 historial_visible=[{**x, 'decision_visible':DECISIONES_VISIBLES.get(x['decision'],x['decision'])} for x in caso['historial_decisiones']] if caso else [])

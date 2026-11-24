@@ -1,15 +1,29 @@
 {% if categoria == 'MANTENER' %}
-<p>Conserva la cantidad actual de {% if componente %}{{ componente|lower }}{% else %}este alimento{% endif %} y observa los próximos servicios antes de plantear un cambio.</p>
-{% if ampliada %}<p><strong>Siguiente paso:</strong> sigue registrando los sobrantes y la opinión del comensal sobre el tamaño de la porción. Vuelve a revisar la recomendación si cambia el patrón.</p>{% endif %}
+<p>Conserva la cantidad actual de {% if componente %}{{ componente|lower }}{% else %}este alimento{% endif %} para el plato y la porción indicados.</p>
 {% elif categoria == 'REVISAR_PORCION' %}
-<p>Comprueba con Cocina si la cantidad servida de {% if componente %}{{ componente|lower }}{% else %}este alimento{% endif %} se ajusta a lo que consumen los comensales. La sugerencia es revisar la porción, no reducirla automáticamente.</p>
-{% if ampliada %}<p><strong>Siguiente paso:</strong> revisa los sobrantes del periodo y la opinión de los comensales. Si decides ajustar la cantidad, registra un ajuste temporal y compara sus resultados antes de mantener el cambio.</p>{% endif %}
+<p>Revisa con Cocina la cantidad servida de {% if componente %}{{ componente|lower }}{% else %}este alimento{% endif %} para el plato y la porción indicados. La sugerencia es revisar la porción, no reducirla automáticamente.</p>
 {% elif categoria == 'REVISAR_PREPARACION' %}
-<p>Revisa con Cocina cómo se prepara y presenta {% if componente %}{{ componente|lower }}{% else %}este alimento{% endif %}, antes de decidir si conviene cambiar la cantidad servida.</p>
-{% if ampliada %}<p><strong>Siguiente paso:</strong> identifica un aspecto concreto que quieras probar, registra el cambio y observa si varían los sobrantes y la opinión del comensal. Esta recomendación no identifica por sí sola la causa del sobrante.</p>{% endif %}
+<p>Revisa con Cocina la preparación y la presentación de {% if componente %}{{ componente|lower }}{% else %}este alimento{% endif %} antes de cambiar la cantidad servida.</p>
 {% elif categoria == 'PRUEBA_CONTROLADA' %}
-<p>Realiza un ajuste temporal en {% if componente %}{{ componente|lower }}{% else %}este alimento{% endif %} y comprueba qué ocurre antes de aplicarlo de forma permanente.</p>
-{% if ampliada %}<p><strong>Siguiente paso:</strong> acuerda con Cocina qué vas a cambiar y durante qué fechas. Registra el ajuste y compara periodos compatibles para decidir si mantienes el ajuste o vuelves a la situación anterior.</p>{% endif %}
-{% else %}
-<p>Consulta los detalles de esta sugerencia antes de decidir el siguiente paso.</p>
+<p>Acuerda con Cocina un ajuste temporal en {% if componente %}{{ componente|lower }}{% else %}este alimento{% endif %} y registra qué vas a cambiar antes de aplicarlo de forma permanente.</p>
+{% else %}<p>Revisa la información disponible con Cocina antes de decidir un cambio.</p>{% endif %}
+{% if ampliada %}
+<h3>Por qué</h3>
+{% if indicadores.n > 0 and indicadores.intensidad is not None %}
+<p>En {{ indicadores.n }} servicios utilizados quedó, en promedio, un {{ indicadores.intensidad|floatformat:2 }} % del área visible de {% if componente %}{{ componente|lower }}{% else %}este alimento{% endif %} servido.</p>
+<p>Este porcentaje describe lo que se ve en las fotos; no indica cuántos gramos hay que retirar o añadir.</p>
+{% else %}<p>La sugerencia se basa en los servicios revisados de esta consulta. No hay un promedio único disponible para mostrar aquí.</p>{% endif %}
+<h3>Siguiente paso:</h3>
+{% if categoria == 'MANTENER' %}
+<p>Mantén la porción actual y sigue registrando los sobrantes. Pregunta a los comensales si la cantidad les resulta suficiente.</p>
+{% elif categoria == 'REVISAR_PORCION' %}
+<p>Revisa los sobrantes y la opinión de los comensales con Cocina. Si acuerdan cambiar la cantidad, define la nueva porción con Cocina y registra un ajuste temporal con sus fechas. No conviertas el porcentaje visual en una reducción de gramos.</p>
+{% elif categoria == 'REVISAR_PREPARACION' %}
+<p>Consulta qué parte del alimento se deja y si hay observaciones sobre sabor, textura o presentación. Elige un solo cambio de preparación y registra qué se modifica y durante qué fechas.</p>
+{% elif categoria == 'PRUEBA_CONTROLADA' %}
+<p>Elige con Cocina un solo cambio: cantidad, preparación o presentación. Anota la situación actual, el cambio acordado y las fechas de seguimiento.</p>
+{% else %}<p>Completa la información que falta antes de aplicar un ajuste.</p>{% endif %}
+<h3>Cómo comprobarlo</h3>
+{% if categoria == 'MANTENER' %}<p>Vuelve a consultar los sobrantes y la opinión de los comensales en los próximos servicios. Revisa la decisión si cambia el patrón.</p>
+{% else %}<p>Registra servido y retorno durante el cambio y completa la revisión de Cocina. Después compara con el periodo anterior del mismo plato, alimento y porción de referencia, respetando las condiciones del ajuste. Mantén el cambio solo después de revisar los resultados y la opinión de los comensales.</p>{% endif %}
 {% endif %}

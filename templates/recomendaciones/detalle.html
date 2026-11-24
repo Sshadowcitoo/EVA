@@ -14,7 +14,7 @@
 <section class="panel rec-recomendacion-principal"><span class="eyebrow">QUÉ TE RECOMENDAMOS</span><h2>{{ categoria_visible }}</h2>
 {% if grupo_visible %}<p><strong>{{ grupo_visible }}</strong></p>{% endif %}
 {% if caso.evaluacion.vigente and caso.evaluacion.suficiencia == 'SUFICIENTE' %}
-{% include 'recomendaciones/_orientacion.html' with categoria=caso.recomendacion.categoria ampliada=True only %}
+{% include 'recomendaciones/_orientacion.html' with categoria=caso.recomendacion.categoria componente=componente_visible indicadores=caso.evaluacion.indicadores ampliada=True only %}
 {% else %}<p>Esta sugerencia corresponde a una evaluación anterior o sin evidencia suficiente. Consulta los avisos y actualiza la evaluación antes de decidir un cambio.</p>{% endif %}
 <p class="muted">Periodo revisado: {{ caso.evaluacion.filtros.desde|date:'d/m/Y' }} – {{ caso.evaluacion.filtros.hasta|date:'d/m/Y' }}</p>
 <p class="muted">Es una sugerencia para tu revisión; los cambios no se aplican automáticamente.</p></section>

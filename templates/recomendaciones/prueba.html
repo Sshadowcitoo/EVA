@@ -25,7 +25,10 @@
 <h3>Frecuencia de los sobrantes</h3>
 {% if diferencias.prevalencia_pp is None %}<p>No hay información suficiente para comparar cuántos servicios tuvieron sobrantes.</p>{% elif diferencias.prevalencia_pp > 0 %}<p>Una mayor proporción de los servicios tuvo sobrantes después del cambio.</p>{% elif diferencias.prevalencia_pp < 0 %}<p>Una menor proporción de los servicios tuvo sobrantes después del cambio.</p>{% else %}<p>La proporción de servicios con sobrantes se mantuvo igual.</p>{% endif %}
 {% endwith %}
-<p><strong>¿Qué hacer ahora?</strong> Revisa estos resultados con Cocina y la opinión de los comensales antes de decidir si mantienes el ajuste.</p>
+{% if prueba.comparacion.diferencias.intensidad_pp is not None %}
+{% if prueba.comparacion.diferencias.intensidad_pp >= 0 %}<p><strong>El ajuste no redujo el sobrante observado.</strong> Revisa con Cocina si conviene volver a la cantidad anterior o evaluar otro aspecto, como la preparación. No mantengas el cambio como una mejora demostrada.</p>
+{% else %}<p><strong>Se observó menos sobrante durante el cambio.</strong> Revisa con Cocina que la cantidad siga siendo suficiente para los comensales antes de decidir si mantienes el ajuste.</p>{% endif %}
+{% else %}<p><strong>¿Qué hacer ahora?</strong> Completa la información y vuelve a comparar antes de decidir si mantienes el ajuste.</p>{% endif %}
 {% else %}<p>No podemos comparar estos periodos de forma fiable. Revisa los avisos antes de sacar una conclusión.</p>{% endif %}
 <p>La comparación muestra lo que ocurrió entre ambos periodos, pero no permite asegurar que el ajuste haya sido la causa.</p>
 </section>

@@ -6,8 +6,8 @@
 {% if prueba %}
 {% if not caso.evaluacion.vigente %}<section class="rec-aviso" role="alert"><h2>Evidencia vinculada desactualizada</h2><p>El ajuste y sus resultados anteriores se conservan. No admite nuevas evaluaciones con esta evidencia.</p>{% for motivo in caso.evaluacion.motivos_vigencia %}<div>{% include 'historico/_motivo_exclusion.html' with motivo=motivo only %}</div>{% endfor %}</section>{% endif %}
 {% if administracion and not prueba.puede_evaluar %}<p class="rec-aviso">La evaluación de este ajuste no está habilitada. Revisa la vigencia de la evidencia y la aceptación vinculada.</p>{% endif %}
-{% if caso.evaluacion.solo_pruebas %}<details class="eva-tecnico"><summary>Origen de los datos</summary><p class="rec-aviso"><strong>Datos de prueba</strong> · No acreditan resultados reales.</p></details>{% endif %}
-<section class="panel"><h2>{% if prueba.estado == 'REGISTRADA' %}Registrada{% elif prueba.estado == 'EVALUADA' %}Evaluada{% else %}No evaluable{% endif %}</h2><p>{{ prueba.cambio }}</p><p>Responsable: {{ prueba.responsable_nombre }} · Registrada por {{ prueba.registrada_por }} · {{ prueba.registrada_en|date:'d/m/Y H:i' }}</p><details class="eva-tecnico"><summary>Datos del registro</summary><p>Versión {{ prueba.version }}</p></details>
+{% if caso.evaluacion.solo_pruebas and not entorno_presentacion %}<details class="eva-informacion"><summary>Sobre estos datos</summary><p>Estos datos son de ejemplo y no corresponden a servicios reales.</p></details>{% endif %}
+<section class="panel"><h2>{% if prueba.estado == 'REGISTRADA' %}Registrada{% elif prueba.estado == 'EVALUADA' %}Evaluada{% else %}No evaluable{% endif %}</h2><p>{{ prueba.cambio }}</p><p>Responsable: {{ prueba.responsable_nombre }} · Registrada por {{ prueba.registrada_por }} · {{ prueba.registrada_en|date:'d/m/Y H:i' }}</p>
 {% include "includes/detalles_tecnicos.html" with valor=prueba.aceptacion_id etiqueta="Aceptación vinculada" only %}
 <dl class="rec-periodos"><div><dt>Antes del cambio</dt><dd>{{ prueba.periodos.referencia_desde|date:'d/m/Y' }} – {{ prueba.periodos.referencia_hasta|date:'d/m/Y' }}</dd></div><div><dt>Durante el cambio</dt><dd>{{ prueba.periodos.intervencion_desde|date:'d/m/Y' }} – {{ prueba.periodos.intervencion_hasta|date:'d/m/Y' }}</dd></div></dl>
 {% for motivo in prueba.motivos %}<div class="rec-aviso">{% include 'historico/_motivo_exclusion.html' with motivo=motivo only %}</div>{% endfor %}
@@ -28,13 +28,7 @@
 <p><strong>¿Qué hacer ahora?</strong> Revisa estos resultados con Cocina y la opinión de los comensales antes de decidir si mantienes el ajuste.</p>
 {% else %}<p>No podemos comparar estos periodos de forma fiable. Revisa los avisos antes de sacar una conclusión.</p>{% endif %}
 <p>La comparación muestra lo que ocurrió entre ambos periodos, pero no permite asegurar que el ajuste haya sido la causa.</p>
-<details class="eva-tecnico"><summary>Cifras de la comparación</summary>
-{% if not prueba.comparacion.comparable %}<p class="rec-aviso">Periodos no comparables. No se afirma una mejora.</p>{% endif %}
-{% for motivo in prueba.comparacion.motivos %}<div>{% include 'historico/_motivo_exclusion.html' with motivo=motivo only %}</div>{% endfor %}
-<dl><dt>Diferencia de prevalencia (intervención − referencia)</dt><dd>{% if prueba.comparacion.diferencias.prevalencia_pp is not None %}{{ prueba.comparacion.diferencias.prevalencia_pp|floatformat:2 }} pp{% else %}No disponible{% endif %}</dd><dt>Diferencia de intensidad (intervención − referencia)</dt><dd>{% if prueba.comparacion.diferencias.intensidad_pp is not None %}{{ prueba.comparacion.diferencias.intensidad_pp|floatformat:2 }} pp{% else %}No disponible{% endif %}</dd></dl><p>El cambio de porción es una intervención deliberada; una diferencia observada no demuestra causalidad.</p>
-<h3>Antes del cambio</h3>{% include 'historico/_resumen.html' with datos=prueba.comparacion.referencia %}
-<h3>Durante el cambio</h3>{% include 'historico/_resumen.html' with datos=prueba.comparacion.comparado %}
-</details></section>
+</section>
 {% else %}<p>Todavía no hay una comparación disponible.</p>{% endif %}
 {% elif version_form.is_bound %}<section class="panel"><h2>Solicitud sin confirmar</h2>{% include 'recomendaciones/_campos.html' with formulario=version_form %}</section>{% endif %}
 {% endblock %}

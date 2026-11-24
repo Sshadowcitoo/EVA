@@ -8,9 +8,9 @@ Se conserva el código técnico en un desplegable para poder rastrearlo.
 {% elif motivo == "NO_COMPARABLE" %}Las fotos no son comparables
 {% elif motivo == "OCULTACION" %}El componente está oculto
 {% elif motivo == "SIN_DETECCION" %}No pudimos identificar {{ componente|default:"el componente"|lower }}
-{% elif motivo == "MAYOR_100" %}El resultado supera el 100 %
-{% elif motivo == "SIN_CRITERIO" %}Sin criterio aprobado
-{% elif motivo == "BAJA_CONFIANZA" %}Confianza insuficiente
-{% else %}Motivo no reconocido{% endif %}</span>
+{% elif motivo == "MAYOR_100" %}La medida obtenida no es fiable; revisa las fotografías
+{% elif motivo == "SIN_CRITERIO" %}Todavía no está habilitado el cálculo para este caso
+{% elif motivo == "BAJA_CONFIANZA" %}No pudimos identificar el alimento con suficiente seguridad
+{% else %}No hay información suficiente para explicar este resultado{% endif %}</span>
 {% include "includes/detalles_tecnicos.html" with valor=motivo etiqueta="Diagnóstico" only %}
 {% endif %}

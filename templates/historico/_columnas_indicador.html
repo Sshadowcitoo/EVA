@@ -9,7 +9,7 @@
     {% for perfil in perfiles %}
       <div class="eva-column">
         <div class="eva-column-plot"><div class="eva-column-fill" style="height: {{ perfil.intensidad|unlocalize }}%"><strong>{{ perfil.intensidad|floatformat:2 }} %</strong></div></div>
-        <span class="eva-column-label">{{ perfil.nombre }}<small>n = {{ perfil.n }}</small></span>
+        <span class="eva-column-label">{{ perfil.nombre }}<small>{{ perfil.n }} servicios</small></span>
       </div>
     {% endfor %}
     </div>

@@ -23,7 +23,7 @@
     <dt>{{ fotografia.get_etapa_display }}</dt>
     {% if not fotografia.disponible %}<dd>Fotografía no disponible por retención; historial conservado.</dd>{% endif %}
     <dd><time datetime="{{ fotografia.fecha|date:'c' }}">{{ fotografia.fecha|localtime|date:"d/m/Y H:i:s" }}</time> (hora de Ecuador)</dd>
-    {% if fotografia.protocolo_version %}<div data-eva-tecnico data-titulo="Condiciones de la fotografía"><dt>Protocolo</dt><dd>{{ fotografia.protocolo_version }} · Checklist confirmado por el operador.</dd></div>{% endif %}
+    {% if fotografia.protocolo_version %}<dt>Revisión de la fotografía</dt><dd>Condiciones de captura confirmadas por el operador.</dd>{% endif %}
     {% endfor %}
   </dl>
   <p class="muted">Fecha y hora registradas automáticamente al guardar cada fotografía.</p>

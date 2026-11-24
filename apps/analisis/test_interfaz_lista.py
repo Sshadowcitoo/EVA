@@ -25,8 +25,8 @@ class ListaAnalisisTests(SimpleTestCase):
         self.assertIn("Completado", html)
         self.assertIn("Tiempo agotado", html)
         self.assertNotIn("TIEMPO_AGOTADO", html)
-        self.assertIn("Simulado", html)
-        self.assertIn("Real", html)
+        self.assertIn("datos son de ejemplo", html)
+        self.assertNotIn("Origen: Real", html)
         self.assertIn("EVA-001", html)
 
     def test_la_columna_se_llama_bandeja_y_distingue_el_servicio(self):
@@ -35,8 +35,8 @@ class ListaAnalisisTests(SimpleTestCase):
         self.assertIn(">Bandeja<", html)
         self.assertNotIn(">Registro<", html)
         self.assertNotIn("Servicio 7c9e6679", html)
-        self.assertIn('<summary>Detalles técnicos · Servicio</summary>', html)
-        self.assertIn('<code data-valor-tecnico>7c9e6679-7425-40de-944b-e07fc1f90ae7</code>', html)
+        self.assertIn('<summary>Más información</summary>', html)
+        self.assertNotIn('7c9e6679-7425-40de-944b-e07fc1f90ae7', html)
 
     def test_accion_solo_si_hay_ruta_de_detalle(self):
         html = render_to_string("analisis/lista.html", {"casos": CASOS})

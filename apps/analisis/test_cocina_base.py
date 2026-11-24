@@ -34,7 +34,7 @@ class BaseCocinaTests(SimpleTestCase):
         html = render_to_string("analisis/revision.html", {"caso": {"origen": "SIMULADO"}, "decision_url": "/fixture/",
             "resultados": [{"componente": "Pescado", "motivo": "OCULTACION"}]})
         self.assertIn('value="CONFIRMADO" disabled', html)
-        self.assertIn("SIMULADO", html)
+        self.assertIn("datos son de ejemplo", html)
         self.assertIn("No concluyente", html)
 
     def test_permisos_revision_no_se_heredan_por_otro_rol(self):

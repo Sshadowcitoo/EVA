@@ -102,6 +102,14 @@ class RecomendacionesWebTests(TestCase):
         self.assertEqual(respuesta.status_code, 302)
         self.assertEqual(self.servicios['evaluar_evidencia'].call_args.args[1], version)
 
+    def test_comparar_lleva_al_resultado_visible(self):
+        respuesta = self.client.post(EVALUAR_PRUEBA, {'version_esperada': 1})
+        self.assertRedirects(respuesta, PRUEBA + '#resultado-comparacion', fetch_redirect_response=False)
+        pagina = self.client.get(PRUEBA)
+        self.assertContains(pagina, 'id="resultado-comparacion"')
+        self.assertContains(pagina, 'Comparación actualizada. Consulta qué ocurrió con el cambio.')
+        self.assertContains(pagina, '¿Qué ocurrió con el cambio?')
+
     def test_version_enviada_invalida_no_se_sustituye_por_vigente(self):
         respuesta = self.client.post(EVALUAR, {**FILTROS, 'version_criterios': 'inventada'})
         self.assertEqual(respuesta.status_code, 400)

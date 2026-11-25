@@ -17,7 +17,7 @@
 {% if administracion and prueba.puede_evaluar %}<form method="post" action="{% url 'recomendaciones:evaluar_prueba' prueba_id=prueba.id %}" data-rec-submit{% if bloqueado %} data-bloqueado="true"{% endif %}>{% csrf_token %}{% include 'recomendaciones/_campos.html' with formulario=version_form %}<button class="button" type="submit"{% if bloqueado %} disabled{% endif %}>{% include "includes/icono.html" with nombre="revisar" only %} Comparar resultados</button><p data-envio role="status"></p></form>{% endif %}
 </section>
 {% if prueba.comparacion %}
-<section class="panel"><h2>¿Qué ocurrió con el cambio?</h2>
+<section class="panel" id="resultado-comparacion" tabindex="-1"><h2>¿Qué ocurrió con el cambio?</h2>
 {% if prueba.comparacion.comparable %}
 {% with diferencias=prueba.comparacion.diferencias %}
 <h3>Cantidad de sobrante</h3>

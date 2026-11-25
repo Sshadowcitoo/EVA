@@ -215,8 +215,8 @@ def evaluar_prueba(request, prueba_id):
     if form.is_valid():
         try:
             datos = services.evaluar_prueba(prueba_id, request.user, form.cleaned_data['version_esperada'])
-            messages.success(request, 'Evaluación de la prueba registrada. Revisa sus límites de comparabilidad.')
-            return redirect('recomendaciones:prueba', prueba_id=datos['prueba']['id'])
+            messages.success(request, 'Comparación actualizada. Consulta qué ocurrió con el cambio.')
+            return redirect(reverse('recomendaciones:prueba', kwargs={'prueba_id': datos['prueba']['id']}) + '#resultado-comparacion')
         except ERRORES as exc:
             status, error = _error(exc, form)
     try:

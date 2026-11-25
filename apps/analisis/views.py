@@ -2,11 +2,16 @@ from django.conf import settings
 from django.core.exceptions import PermissionDenied, ValidationError
 from django.core.paginator import Paginator
 from django.db.models import OuterRef, Subquery
-from django.http import Http404, HttpResponse, JsonResponse
+from django.http import Http404, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.views.decorators.cache import never_cache
 from django.views.decorators.http import require_GET, require_POST
+from rest_framework.authentication import SessionAuthentication
+from rest_framework.decorators import api_view, authentication_classes, permission_classes, renderer_classes
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.renderers import JSONRenderer
+from rest_framework.response import Response
 
 from apps.captura import storage
 from apps.captura.models import Servicio
@@ -125,13 +130,16 @@ def detalle(request, analisis_id):
 
 @never_cache
 @roles_required(COCINA)
-@require_GET
+@api_view(['GET'])
+@authentication_classes([SessionAuthentication])
+@permission_classes([IsAuthenticated])
+@renderer_classes([JSONRenderer])
 def estado(request, analisis_id):
     _permiso(request, 'view_analisisservicio')
     intento = ultimo_intento(_analisis(analisis_id))
     if intento is None:
         raise Http404
-    return JsonResponse(dict(estado=intento.estado))
+    return Response(dict(estado=intento.estado))
 
 
 @never_cache

@@ -227,6 +227,33 @@ class WorkerEvidenciaTests(BaseWebMotor):
 
 
 class EndpointsAnalisisTests(BaseWebMotor):
+    def test_estado_drf_conserva_json_y_no_modifica_intento(self):
+        from rest_framework.response import Response
+
+        intento = self.en_proceso()
+        url = reverse('analisis:estado', args=[intento.analisis_id])
+        for estado in IntentoAnalisis.Estado.values:
+            IntentoAnalisis.objects.filter(pk=intento.pk).update(estado=estado)
+            respuesta = self.client.get(url, HTTP_ACCEPT='application/json')
+            self.assertIsInstance(respuesta, Response)
+            self.assertEqual(respuesta.status_code, 200)
+            self.assertEqual(respuesta['Content-Type'], 'application/json')
+            self.assertEqual(respuesta.json(), {'estado': estado})
+            self.assertIn('no-store', respuesta['Cache-Control'])
+            intento.refresh_from_db()
+            self.assertEqual(intento.estado, estado)
+        self.assertEqual(self.client.post(url).status_code, 405)
+
+    def test_estado_drf_exige_permiso_y_controla_no_encontrado(self):
+        from uuid import uuid4
+
+        intento = self.en_proceso()
+        url = reverse('analisis:estado', args=[intento.analisis_id])
+        self.assertEqual(self.client.get(reverse('analisis:estado', args=[uuid4()])).status_code, 404)
+        permiso = self.usuario.groups.get(name='Cocina').permissions.get(codename='view_analisisservicio')
+        self.usuario.groups.get(name='Cocina').permissions.remove(permiso)
+        self.assertEqual(self.client.get(url).status_code, 403)
+
     def test_solicitar_idempotente_y_estado_json_privado(self):
         url = reverse('analisis:solicitar', args=[self.servicio.pk])
         self.assertEqual(self.client.get(url).status_code, 405)
